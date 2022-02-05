@@ -91,12 +91,11 @@ namespace Xunkong.Desktop.ViewModels
                     _IsRegisterDailyNoteTask = true;
                     OnPropertyChanged(nameof(IsRegisterDailyNoteTask));
                 }
-                var settings = ApplicationData.Current.LocalSettings.Values;
-                _EnableDailyNoteNotification = (bool)(settings[SettingKeys.EnableDailyNoteNotification] ?? false);
+                _EnableDailyNoteNotification = LocalSettingHelper.GetSetting<bool>(SettingKeys.EnableDailyNoteNotification);
                 OnPropertyChanged(nameof(EnableDailyNoteNotification));
-                _DailyNoteNotification_ResinThreshold = (int)(settings[SettingKeys.DailyNoteNotification_ResinThreshold] ?? 160);
+                _DailyNoteNotification_ResinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_ResinThreshold, 160);
                 OnPropertyChanged(nameof(DailyNoteNotification_ResinThreshold));
-                _DailyNoteNotification_HomeCoinThreshold = (double)(settings[SettingKeys.DailyNoteNotification_HomeCoinThreshold] ?? 1.0);
+                _DailyNoteNotification_HomeCoinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_HomeCoinThreshold, 1.0);
                 OnPropertyChanged(nameof(DailyNoteNotification_HomeCoinThreshold));
             }
             catch (Exception ex)
@@ -367,7 +366,7 @@ namespace Xunkong.Desktop.ViewModels
             {
                 if (_EnableDailyNoteNotification != value)
                 {
-                    ApplicationData.Current.LocalSettings.Values[SettingKeys.EnableDailyNoteNotification] = value;
+                    LocalSettingHelper.SaveSetting(SettingKeys.EnableDailyNoteNotification, value);
                 }
                 SetProperty(ref _EnableDailyNoteNotification, value);
             }
@@ -384,7 +383,7 @@ namespace Xunkong.Desktop.ViewModels
                 if (_DailyNoteNotification_ResinThreshold != value)
                 {
                     _DailyNoteNotification_ResinThreshold = value;
-                    ApplicationData.Current.LocalSettings.Values[SettingKeys.DailyNoteNotification_ResinThreshold] = value;
+                    LocalSettingHelper.SaveSetting(SettingKeys.DailyNoteNotification_ResinThreshold, value);
                 }
                 OnPropertyChanged();
             }
@@ -401,7 +400,7 @@ namespace Xunkong.Desktop.ViewModels
                 if (_DailyNoteNotification_HomeCoinThreshold != value)
                 {
                     _DailyNoteNotification_HomeCoinThreshold = value;
-                    ApplicationData.Current.LocalSettings.Values[SettingKeys.DailyNoteNotification_HomeCoinThreshold] = value;
+                    LocalSettingHelper.SaveSetting(SettingKeys.DailyNoteNotification_HomeCoinThreshold, value);
                 }
                 OnPropertyChanged();
             }

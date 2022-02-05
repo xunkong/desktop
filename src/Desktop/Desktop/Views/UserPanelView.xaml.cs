@@ -59,9 +59,10 @@ namespace Xunkong.Desktop.Views
             FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
         }
 
-        private void _ImageEx_LeftAvatar_Tapped(object sender, TappedRoutedEventArgs e)
+
+        private void OpenOrCloseNavigationViewPane(object sender, TappedRoutedEventArgs e)
         {
-            WeakReferenceMessenger.Default.Send(new OpenNavigationPanelMessage());
+            WeakReferenceMessenger.Default.Send(new OpenOrCloseNavigationPaneMessage());
         }
 
         private void _Flyout_UserPanelSelector_Opening(object sender, object e)

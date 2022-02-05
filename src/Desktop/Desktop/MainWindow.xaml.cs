@@ -47,13 +47,12 @@ namespace Xunkong.Desktop
 
         private void InitializeWindowSize()
         {
-            var setting = ApplicationData.Current.LocalSettings.Values;
             // 无法在启动时最大化窗口
-            //var showCmd = (bool)setting[SettingKeys.IsWindowMax] ? ShowWindowCommand.SW_MAXIMIZE : ShowWindowCommand.SW_NORMAL;
-            var left = (int)(setting[SettingKeys.WindowLeft] ?? 0);
-            var top = (int)(setting[SettingKeys.WindowTop] ?? 0);
-            var right = (int)(setting[SettingKeys.WindowRight] ?? 0);
-            var bottom = (int)(setting[SettingKeys.WindowBottom] ?? 0);
+            //var showCmd = LocalSettingHelper.GetSetting<bool>(SettingKeys.IsWindowMax) ? ShowWindowCommand.SW_MAXIMIZE : ShowWindowCommand.SW_NORMAL;
+            var left = LocalSettingHelper.GetSetting<int>(SettingKeys.WindowLeft);
+            var top = LocalSettingHelper.GetSetting<int>(SettingKeys.WindowTop);
+            var right = LocalSettingHelper.GetSetting<int>(SettingKeys.WindowRight);
+            var bottom = LocalSettingHelper.GetSetting<int>(SettingKeys.WindowBottom);
             var rect = new RECT(left, top, right, bottom);
             if (rect.Width * rect.Height == 0)
             {
@@ -85,13 +84,12 @@ namespace Xunkong.Desktop
         {
             var wp = new User32.WINDOWPLACEMENT();
             User32.GetWindowPlacement(Hwnd, ref wp);
-            var setting = ApplicationData.Current.LocalSettings.Values;
             // 无法在启动时最大化窗口
-            //setting[SettingKeys.IsWindowMax] = wp.showCmd == ShowWindowCommand.SW_SHOWMAXIMIZED;
-            setting[SettingKeys.WindowLeft] = wp.rcNormalPosition.left;
-            setting[SettingKeys.WindowTop] = wp.rcNormalPosition.top;
-            setting[SettingKeys.WindowRight] = wp.rcNormalPosition.right;
-            setting[SettingKeys.WindowBottom] = wp.rcNormalPosition.bottom;
+            //LocalSettingHelper.SaveSetting(SettingKeys.IsWindowMax, wp.showCmd == ShowWindowCommand.SW_MAXIMIZE);
+            LocalSettingHelper.SaveSetting(SettingKeys.WindowLeft, wp.rcNormalPosition.left);
+            LocalSettingHelper.SaveSetting(SettingKeys.WindowTop, wp.rcNormalPosition.top);
+            LocalSettingHelper.SaveSetting(SettingKeys.WindowRight, wp.rcNormalPosition.right);
+            LocalSettingHelper.SaveSetting(SettingKeys.WindowBottom, wp.rcNormalPosition.bottom);
         }
 
 

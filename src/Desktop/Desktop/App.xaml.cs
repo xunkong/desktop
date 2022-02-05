@@ -157,7 +157,7 @@ namespace Xunkong.Desktop
             sc.AddTransient(_ => new DbConnectionFactory<SqliteConnection>(sqlConStr));
             if (File.Exists(dbPath))
             {
-                var vs = ApplicationData.Current.LocalSettings.Values[SettingKeys.LastVersion] as string;
+                var vs = LocalSettingHelper.GetSetting<string>(SettingKeys.LastVersion);
                 if (Version.TryParse(vs, out var lastVersion))
                 {
                     if (lastVersion >= XunkongEnvironment.AppVersion)
@@ -172,7 +172,7 @@ namespace Xunkong.Desktop
             }
             using var ctx = new XunkongDbContext(new DbContextOptionsBuilder<XunkongDbContext>().UseSqlite(sqlConStr).Options);
             ctx.Database.Migrate();
-            ApplicationData.Current.LocalSettings.Values[SettingKeys.LastVersion] = XunkongEnvironment.AppVersion.ToString();
+            LocalSettingHelper.SaveSetting(SettingKeys.LastVersion, XunkongEnvironment.AppVersion.ToString());
         }
 
 
@@ -193,7 +193,7 @@ namespace Xunkong.Desktop
 
         private bool CheckUserDataPath()
         {
-            var userDataPath = ApplicationData.Current.LocalSettings.Values[SettingKeys.UserDataPath] as string;
+            var userDataPath = LocalSettingHelper.GetSetting<string>(SettingKeys.UserDataPath);
             if (string.IsNullOrWhiteSpace(userDataPath))
             {
                 return false;

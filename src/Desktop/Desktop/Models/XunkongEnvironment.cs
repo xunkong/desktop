@@ -38,7 +38,7 @@ namespace Xunkong.Desktop.Models
             var hash = MD5.HashData(bytes);
             DeviceId = Convert.ToHexString(hash);
 
-            UserDataPath = ApplicationData.Current.LocalSettings.Values[SettingKeys.UserDataPath] as string;
+            UserDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Xunkong");
             try
             {
                 WebView2Version = Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetAvailableBrowserVersionString();

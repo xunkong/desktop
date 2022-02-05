@@ -1,18 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using CommunityToolkit.WinUI.Notifications;
-using Dapper;
-using Microsoft.Data.Sqlite;
 using Serilog;
-using System.Diagnostics;
-using System.Text;
 using System.Timers;
-using Windows.Data.Xml.Dom;
-using Windows.Storage;
-using Windows.UI.Notifications;
-using Windows.UI.StartScreen;
-using Xunkong.Core.Hoyolab;
-using Xunkong.Desktop.Helpers;
-using Xunkong.Desktop.Models;
 
 namespace Xunkong.Desktop.Extension;
 
@@ -79,13 +67,9 @@ class Program
 
     private static void CheckUserDataPath()
     {
-        var userDataPath = ApplicationData.Current.LocalSettings.Values["UserDataPath"] as string;
-        if (!string.IsNullOrWhiteSpace(userDataPath))
-        {
-            UserPath = userDataPath;
-            DbPath = Path.Combine(userDataPath, @"Data\XunkongData.db");
-            DbStr = $"Data Source={DbPath}";
-        }
+        UserPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"Xunkong");
+        DbPath = Path.Combine(UserPath, @"Data\XunkongData.db");
+        DbStr = $"Data Source={DbPath}";
     }
 
 

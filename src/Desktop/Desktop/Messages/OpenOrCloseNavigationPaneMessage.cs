@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Xunkong.Desktop.Messages
 {
-    internal class OpenNavigationPanelMessage
+    internal class OpenOrCloseNavigationPaneMessage
     {
     }
 }

@@ -4,7 +4,7 @@ using Windows.ApplicationModel;
 using Windows.Storage;
 using Xunkong.Core.XunkongApi;
 
-namespace Xunkong.Desktop.Models
+namespace Xunkong.Desktop.Extension
 {
     internal static class XunkongEnvironment
     {
@@ -35,7 +35,7 @@ namespace Xunkong.Desktop.Models
             var bytes = Encoding.UTF8.GetBytes(UserName + MachineGuid);
             var hash = MD5.HashData(bytes);
             DeviceId = Convert.ToHexString(hash);
-           
+
         }
 
 

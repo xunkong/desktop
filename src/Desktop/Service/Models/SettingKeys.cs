@@ -17,7 +17,7 @@
 
         public const string LastSelectGameRoleUid = nameof(LastSelectGameRoleUid);
 
-        [Obsolete("暂时不提供更改个人数据文件夹")]
+        [Obsolete("暂时不提供更改个人数据文件夹的功能")]
         public const string UserDataPath = nameof(UserDataPath);
 
         public const string LastVersion = nameof(LastVersion);

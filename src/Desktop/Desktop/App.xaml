@@ -29,7 +29,7 @@
             <StaticResource x:Key="WindowCaptionForegroundDisabled" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <SolidColorBrush x:Key="SystemControlCustomBackgroundBrush" Color="Transparent" />
             <x:Double x:Key="ContentDialogMaxWidth">800</x:Double>
-            <FontFamily x:Key="SymbolThemeFontFamily" >Font/SegMDL2.ttf#Segoe MDL2 Assets</FontFamily>
+            <FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/SegMDL2.ttf#Segoe MDL2 Assets</FontFamily>
 
             <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
 

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Xunkong.Core.Metadata;
+using Xunkong.Core.Wish;
 using Xunkong.Core.XunkongApi;
 
 namespace Xunkong.Desktop.Services
@@ -210,7 +212,77 @@ namespace Xunkong.Desktop.Services
 
 
 
+        #region Genshin Metadata
 
+
+        public async Task<IEnumerable<CharacterInfo>> GetCharacterInfosFromServerAsync()
+        {
+            var characterInfos = await _xunkongClient.GetCharacterInfosAsync();
+            using var ctx = _dbContextFactory.CreateDbContext();
+            var ids = characterInfos.Select(x => x.Id).ToList();
+            using var t = ctx.Database.BeginTransaction();
+            try
+            {
+                await ctx.Database.ExecuteSqlRawAsync($"DELETE FROM Info_Character WHERE Id IN ({string.Join(",", ids)});");
+                ctx.AddRange(characterInfos);
+                await ctx.SaveChangesAsync();
+                await t.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await t.RollbackAsync();
+                throw;
+            }
+            return characterInfos;
+        }
+
+
+        public async Task<IEnumerable<WeaponInfo>> GetWeaponInfosFromServerAsync()
+        {
+            var weaponInfos = await _xunkongClient.GetWeaponInfosAsync();
+            using var ctx = _dbContextFactory.CreateDbContext();
+            var ids = weaponInfos.Select(x => x.Id).ToList();
+            using var t = ctx.Database.BeginTransaction();
+            try
+            {
+                await ctx.Database.ExecuteSqlRawAsync($"DELETE FROM Info_Weapon WHERE Id IN ({string.Join(",", ids)});");
+                ctx.AddRange(weaponInfos);
+                await ctx.SaveChangesAsync();
+                await t.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await t.RollbackAsync();
+                throw;
+            }
+            return weaponInfos;
+        }
+
+
+        public async Task<IEnumerable<WishEventInfo>> GetWishEventInfosFromServerAsync()
+        {
+            var wishEventInfos = await _xunkongClient.GetWishEventInfosAsync();
+            using var ctx = _dbContextFactory.CreateDbContext();
+            var ids = wishEventInfos.Select(x => x.Id).ToList();
+            using var t = ctx.Database.BeginTransaction();
+            try
+            {
+                await ctx.Database.ExecuteSqlRawAsync($"DELETE FROM Info_WishEvent WHERE Id IN ({string.Join(",", ids)});");
+                ctx.AddRange(wishEventInfos);
+                await ctx.SaveChangesAsync();
+                await t.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await t.RollbackAsync();
+                throw;
+            }
+            return wishEventInfos;
+        }
+
+
+
+        #endregion
 
 
 

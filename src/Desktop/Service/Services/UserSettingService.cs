@@ -29,20 +29,20 @@ namespace Xunkong.Desktop.Services
             _logger.LogTrace("Query UserSetting by key {Key} with value {Value}", key, value);
             if (value == null)
             {
-                return default(T);
+                return default;
             }
             try
             {
                 var converter = TypeDescriptor.GetConverter(typeof(T));
                 if (converter == null)
                 {
-                    return default(T);
+                    return default;
                 }
                 return (T?)converter.ConvertFromString(value);
             }
             catch (NotSupportedException)
             {
-                return default(T);
+                return default;
             }
         }
 

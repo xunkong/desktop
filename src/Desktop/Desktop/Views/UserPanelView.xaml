@@ -41,7 +41,8 @@
                                     Height="44"
                                     CornerRadius="1000"
                                     Source="{Binding SelectedUserPanelModel.UserInfo.AvatarUrl, FallbackValue={StaticResource AvatarUrlFallback}}"
-                                    Stretch="Uniform" />
+                                    Stretch="Uniform"
+                                    Tapped="OpenOrCloseNavigationViewPane" />
                         <!--  昵称  -->
                         <!--  检查是否有米游社账号  -->
                         <cc:SwitchPresenter Grid.Column="1"
@@ -510,7 +511,7 @@
                             CornerRadius="1000"
                             Source="{Binding SelectedUserPanelModel.UserInfo.AvatarUrl, FallbackValue={StaticResource AvatarUrlFallback}}"
                             Stretch="Uniform"
-                            Tapped="_ImageEx_LeftAvatar_Tapped" />
+                            Tapped="OpenOrCloseNavigationViewPane" />
             </cc:Case>
         </cc:SwitchPresenter>
     </Grid>

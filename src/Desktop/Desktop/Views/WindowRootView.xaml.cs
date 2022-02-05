@@ -50,7 +50,7 @@ namespace Xunkong.Desktop.Views
             _logger = App.Current.Services.GetService<ILogger<WindowRootView>>()!;
             WeakReferenceMessenger.Default.Register<RefreshWebToolNavItemMessage>(this, async (_, _) => await RefreshWebToolNavItemAsync());
             WeakReferenceMessenger.Default.Register<NavigateMessage>(this, (_, m) => NavigateTo(m));
-            WeakReferenceMessenger.Default.Register<OpenNavigationPanelMessage>(this, (_, _) => _NavigationView.IsPaneOpen = true); ;
+            WeakReferenceMessenger.Default.Register<OpenOrCloseNavigationPaneMessage>(this, (_, _) => _NavigationView.IsPaneOpen = !_NavigationView.IsPaneOpen); ;
             Loaded += WindowRootView_Loaded;
         }
 
@@ -59,14 +59,14 @@ namespace Xunkong.Desktop.Views
             await RefreshWebToolNavItemAsync();
             await GetNotificationsAsync();
             vm.CheckVersionUpdateAsync();
-            if ((bool)(ApplicationData.Current.LocalSettings.Values[SettingKeys.HasShownWelcomePage] ?? false))
+            if (LocalSettingHelper.GetSetting<bool>(SettingKeys.HasShownWelcomePage))
             {
                 vm.CheckWebView2Runtime();
             }
             else
             {
                 NavigationHelper.NavigateTo(typeof(WelcomePage));
-                ApplicationData.Current.LocalSettings.Values[SettingKeys.HasShownWelcomePage] = true;
+                LocalSettingHelper.SaveSetting(SettingKeys.HasShownWelcomePage, true);
             }
         }
 

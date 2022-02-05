@@ -78,6 +78,12 @@ namespace Xunkong.Desktop.Services
 
 
 
+        /// <summary>
+        /// 获取祈愿记录网址对应的uid
+        /// </summary>
+        /// <param name="wishlogUrl"></param>
+        /// <returns></returns>
+        /// <exception cref="HoyolabException"></exception>
         public async Task<int> GetUidByWishlogUrl(string wishlogUrl)
         {
             var uid = await _wishlogClient.GetUidAsync(wishlogUrl);

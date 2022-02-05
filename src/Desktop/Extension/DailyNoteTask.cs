@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.StartScreen;
 using Xunkong.Core.Hoyolab;
-using Xunkong.Desktop.Helpers;
+using Xunkong.Desktop.Models;
 
 namespace Xunkong.Desktop.Extension
 {
@@ -61,12 +61,11 @@ namespace Xunkong.Desktop.Extension
                     Log.Error(ex, $"HoyolabException (Uid {role.Uid}, nickname {role.Nickname})");
                 }
             });
-            var settings = ApplicationData.Current.LocalSettings.Values;
-            if ((bool)(settings["EnableDailyNoteNotification"] ?? false))
+            if (LocalSettingHelper.GetSetting<bool>(SettingKeys.EnableDailyNoteNotification))
             {
                 Log.Information("Enable DailyNote Notification");
-                var resinThreshold = (int)(settings["DailyNoteNotification_ResinThreshold"] ?? 160);
-                var homeCoinThreshold = (double)(settings["DailyNoteNotification_HomeCoinThreshold"] ?? 1);
+                var resinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_ResinThreshold, 160);
+                var homeCoinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_HomeCoinThreshold, 1.0);
                 Log.Debug($"Resin threshold {resinThreshold}, home coin threshold {homeCoinThreshold:F2}");
                 var notifications = new List<(string? nickname, bool isResin, bool isHomeCoin)>();
                 foreach (var item in list)

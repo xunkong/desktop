@@ -81,7 +81,11 @@
                                  HorizontalAlignment="Right"
                                  VerticalAlignment="Top"
                                  Fill="{StaticResource AccentFillColorDefaultBrush}"
-                                 Visibility="Collapsed" />
+                                 Visibility="Collapsed">
+                            <Ellipse.Transitions>
+                                <ReorderThemeTransition />
+                            </Ellipse.Transitions>
+                        </Ellipse>
                     </Grid>
                     <Button.Flyout>
                         <Flyout x:Name="_Flyout_Notification"

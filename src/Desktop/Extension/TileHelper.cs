@@ -5,7 +5,7 @@ using Windows.UI.StartScreen;
 using WinRT.Interop;
 using Xunkong.Core.Hoyolab;
 
-namespace Xunkong.Desktop.Helpers
+namespace Xunkong.Desktop.Extension
 {
     internal class TileHelper
     {
@@ -411,7 +411,7 @@ namespace Xunkong.Desktop.Helpers
                                                 },
                                                 new AdaptiveText
                                                 {
-                                                    Text = info.Expeditions[0].Status == null ? "" :(info.Expeditions[0].IsFinished ? "-" : info.Expeditions[0].FinishedTime.ToString("HH:mm")),
+                                                    Text = info.Expeditions[0].Status == null ? "" :info.Expeditions[0].IsFinished ? "-" : info.Expeditions[0].FinishedTime.ToString("HH:mm"),
                                                     HintAlign = AdaptiveTextAlign.Center,
                                                 }
                                             }
@@ -429,7 +429,7 @@ namespace Xunkong.Desktop.Helpers
                                                 },
                                                 new AdaptiveText
                                                 {
-                                                    Text = info.Expeditions[1].Status == null ? "" :(info.Expeditions[1].IsFinished ? "-" : info.Expeditions[1].FinishedTime.ToString("HH:mm")),
+                                                    Text = info.Expeditions[1].Status == null ? "" :info.Expeditions[1].IsFinished ? "-" : info.Expeditions[1].FinishedTime.ToString("HH:mm"),
                                                     HintAlign = AdaptiveTextAlign.Center,
                                                 }
                                             }
@@ -447,7 +447,7 @@ namespace Xunkong.Desktop.Helpers
                                                 },
                                                 new AdaptiveText
                                                 {
-                                                    Text = info.Expeditions[2].Status == null ? "" :(info.Expeditions[2].IsFinished ? "-" : info.Expeditions[2].FinishedTime.ToString("HH:mm")),
+                                                    Text = info.Expeditions[2].Status == null ? "" :info.Expeditions[2].IsFinished ? "-" : info.Expeditions[2].FinishedTime.ToString("HH:mm"),
                                                     HintAlign = AdaptiveTextAlign.Center,
                                                 }
                                             }
@@ -465,7 +465,7 @@ namespace Xunkong.Desktop.Helpers
                                                 },
                                                 new AdaptiveText
                                                 {
-                                                    Text = info.Expeditions[3].Status == null ? "" :(info.Expeditions[3].IsFinished ? "-" : info.Expeditions[3].FinishedTime.ToString("HH:mm")),
+                                                    Text = info.Expeditions[3].Status == null ? "" :info.Expeditions[3].IsFinished ? "-" : info.Expeditions[3].FinishedTime.ToString("HH:mm"),
                                                     HintAlign = AdaptiveTextAlign.Center,
                                                 }
                                             }
@@ -483,7 +483,7 @@ namespace Xunkong.Desktop.Helpers
                                                 },
                                                 new AdaptiveText
                                                 {
-                                                    Text = info.Expeditions[4].Status == null ? "" :(info.Expeditions[4].IsFinished ? "-" : info.Expeditions[4].FinishedTime.ToString("HH:mm")),
+                                                    Text = info.Expeditions[4].Status == null ? "" :info.Expeditions[4].IsFinished ? "-" : info.Expeditions[4].FinishedTime.ToString("HH:mm"),
                                                     HintAlign = AdaptiveTextAlign.Center,
                                                 }
                                             }
@@ -650,7 +650,7 @@ namespace Xunkong.Desktop.Helpers
                                                 },
                                                 new AdaptiveText
                                                 {
-                                                    Text = info.Expeditions[0].Status == null ? "" :(info.Expeditions[0].IsFinished ? "-" : info.Expeditions[0].FinishedTime.ToString("HH:mm")),
+                                                    Text = info.Expeditions[0].Status == null ? "" :info.Expeditions[0].IsFinished ? "-" : info.Expeditions[0].FinishedTime.ToString("HH:mm"),
                                                     HintAlign = AdaptiveTextAlign.Center,
                                                 }
                                             }
@@ -668,7 +668,7 @@ namespace Xunkong.Desktop.Helpers
                                                 },
                                                 new AdaptiveText
                                                 {
-                                                    Text = info.Expeditions[1].Status == null ? "" :(info.Expeditions[1].IsFinished ? "-" : info.Expeditions[1].FinishedTime.ToString("HH:mm")),
+                                                    Text = info.Expeditions[1].Status == null ? "" :info.Expeditions[1].IsFinished ? "-" : info.Expeditions[1].FinishedTime.ToString("HH:mm"),
                                                     HintAlign = AdaptiveTextAlign.Center,
                                                 }
                                             }
@@ -686,7 +686,7 @@ namespace Xunkong.Desktop.Helpers
                                                 },
                                                 new AdaptiveText
                                                 {
-                                                    Text = info.Expeditions[2].Status == null ? "" :(info.Expeditions[2].IsFinished ? "-" : info.Expeditions[2].FinishedTime.ToString("HH:mm")),
+                                                    Text = info.Expeditions[2].Status == null ? "" :info.Expeditions[2].IsFinished ? "-" : info.Expeditions[2].FinishedTime.ToString("HH:mm"),
                                                     HintAlign = AdaptiveTextAlign.Center,
                                                 }
                                             }
@@ -704,7 +704,7 @@ namespace Xunkong.Desktop.Helpers
                                                 },
                                                 new AdaptiveText
                                                 {
-                                                    Text = info.Expeditions[3].Status == null ? "" :(info.Expeditions[3].IsFinished ? "-" : info.Expeditions[3].FinishedTime.ToString("HH:mm")),
+                                                    Text = info.Expeditions[3].Status == null ? "" :info.Expeditions[3].IsFinished ? "-" : info.Expeditions[3].FinishedTime.ToString("HH:mm"),
                                                     HintAlign = AdaptiveTextAlign.Center,
                                                 }
                                             }
@@ -722,7 +722,7 @@ namespace Xunkong.Desktop.Helpers
                                                 },
                                                 new AdaptiveText
                                                 {
-                                                    Text = info.Expeditions[4].Status == null ? "" :(info.Expeditions[4].IsFinished ? "-" : info.Expeditions[4].FinishedTime.ToString("HH:mm")),
+                                                    Text = info.Expeditions[4].Status == null ? "" :info.Expeditions[4].IsFinished ? "-" : info.Expeditions[4].FinishedTime.ToString("HH:mm"),
                                                     HintAlign = AdaptiveTextAlign.Center,
                                                 }
                                             }

@@ -11,11 +11,6 @@ namespace Xunkong.Desktop.BackgroundTask
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
             BackgroundTaskDeferral deferral = taskInstance.GetDeferral();
-            var path = ApplicationData.Current.LocalSettings.Values["UserDataPath"] as string;
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                return;
-            }
             await FullTrustProcessLauncher.LaunchFullTrustProcessForCurrentAppAsync("DailyNoteTask");
             deferral.Complete();
         }
