@@ -21,19 +21,13 @@ namespace Xunkong.Desktop
     /// <summary>
     /// An empty window that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainWindow : Window, INotifyPropertyChanged
+    public sealed partial class MainWindow : Window
     {
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
 
         private readonly ILogger<MainWindow> _logger;
 
-        private readonly DbConnectionFactory<SqliteConnection> _dbConnectionFactory;
+        private WallpaperInfo? _wallpaperInfo;
 
 
         public static new Window Current { get; private set; }
@@ -42,14 +36,13 @@ namespace Xunkong.Desktop
 
         public static IntPtr Hwnd { get; private set; }
 
-        private WallpaperInfo? _wallpaperInfo;
+
 
         public MainWindow()
         {
             Current = this;
             Closed += MainWindow_Closed;
             _logger = App.Current.Services.GetService<ILogger<MainWindow>>()!;
-            _dbConnectionFactory = App.Current.Services.GetService<DbConnectionFactory<SqliteConnection>>()!;
             this.InitializeComponent();
             RefreshBackgroundWallpaper();
             ExtendsContentIntoTitleBar = true;

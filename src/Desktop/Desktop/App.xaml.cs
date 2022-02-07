@@ -53,8 +53,6 @@ namespace Xunkong.Desktop
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
-            Log.Information(XunkongEnvironment.GetLogHeader());
-            //var param = AppInstance.GetCurrent().GetActivatedEventArgs();
             m_window = new MainWindow();
             m_window.Activate();
         }
@@ -107,7 +105,9 @@ namespace Xunkong.Desktop
                                                     .Enrich.FromLogContext()
                                                     .CreateLogger();
             var myLogger = new LoggerConfiguration().MinimumLevel.Verbose()
-                                                    .Filter.ByIncludingOnly("StartsWith(SourceContext, 'Xunkong')")
+                                                    .MinimumLevel.Override("System", LogEventLevel.Warning)
+                                                    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+                                                    //.Filter.ByIncludingOnly("StartsWith(SourceContext, 'Xunkong')")
                                                     .WriteTo.Async(x => x.File(path: myLogPath, outputTemplate: logTemplate, shared: true, retainedFileCountLimit: 1000))
                                                     .Enrich.FromLogContext()
                                                     .CreateLogger();
@@ -117,6 +117,7 @@ namespace Xunkong.Desktop
                 logBuilder.AddSerilog(fxLogger, true);
                 logBuilder.AddSerilog(myLogger, true);
             });
+            Log.Information(XunkongEnvironment.GetLogHeader());
         }
 
 
@@ -160,19 +161,24 @@ namespace Xunkong.Desktop
                 var vs = LocalSettingHelper.GetSetting<string>(SettingKeys.LastVersion);
                 if (Version.TryParse(vs, out var lastVersion))
                 {
+                    Log.Information($"Last version is {lastVersion}.");
                     if (lastVersion >= XunkongEnvironment.AppVersion)
                     {
+                        Log.Information("Last version is equal with or bigger than current version, don't need to migrate database.");
                         return;
                     }
                 }
             }
             else
             {
+                Log.Information("Database is not existed.");
                 Directory.CreateDirectory(Path.GetDirectoryName(dbPath)!);
             }
+            Log.Information("Start migrating database.");
             using var ctx = new XunkongDbContext(new DbContextOptionsBuilder<XunkongDbContext>().UseSqlite(sqlConStr).Options);
             ctx.Database.Migrate();
             LocalSettingHelper.SaveSetting(SettingKeys.LastVersion, XunkongEnvironment.AppVersion.ToString());
+            Log.Information($"Migrate finished.");
         }
 
 

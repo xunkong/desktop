@@ -141,7 +141,10 @@ namespace Xunkong.Desktop.Pages
 
         }
 
-
-
+        private void _Button_NotShowWelcomePage_Click(object sender, RoutedEventArgs e)
+        {
+            LocalSettingHelper.SaveSetting(SettingKeys.HasShownWelcomePage, true);
+            InfoBarHelper.Information("不再显示欢迎界面");
+        }
     }
 }

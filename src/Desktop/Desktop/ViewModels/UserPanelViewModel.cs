@@ -90,7 +90,6 @@ namespace Xunkong.Desktop.ViewModels
             _logger.LogDebug("Initlize User Panel.");
             try
             {
-                _logger.LogInformation(Environment.CommandLine);
                 var userInfo = await _hoyolabService.GetLastSelectedOrFirstUserInfoAsync();
                 if (userInfo == null)
                 {

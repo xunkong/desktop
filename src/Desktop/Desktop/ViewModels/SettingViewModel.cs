@@ -95,9 +95,9 @@ namespace Xunkong.Desktop.ViewModels
                 }
                 _EnableDailyNoteNotification = LocalSettingHelper.GetSetting<bool>(SettingKeys.EnableDailyNoteNotification);
                 OnPropertyChanged(nameof(EnableDailyNoteNotification));
-                _DailyNoteNotification_ResinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_ResinThreshold, 160);
+                _DailyNoteNotification_ResinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_ResinThreshold, 150);
                 OnPropertyChanged(nameof(DailyNoteNotification_ResinThreshold));
-                _DailyNoteNotification_HomeCoinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_HomeCoinThreshold, 1.0);
+                _DailyNoteNotification_HomeCoinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_HomeCoinThreshold, 0.9);
                 OnPropertyChanged(nameof(DailyNoteNotification_HomeCoinThreshold));
             }
             catch (Exception ex)

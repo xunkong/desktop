@@ -64,6 +64,11 @@
                         Click="_Button_OpenDataFolder_Click"
                         Content="打开文件夹" />
 
+                <TextBlock />
+                <Button Name="_Button_NotShowWelcomePage"
+                        Click="_Button_NotShowWelcomePage_Click"
+                        Content="我已了解" />
+
             </StackPanel>
 
         </ScrollViewer>

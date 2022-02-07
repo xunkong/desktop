@@ -86,7 +86,6 @@ namespace Xunkong.Desktop.Views
             else
             {
                 NavigationHelper.NavigateTo(typeof(WelcomePage));
-                LocalSettingHelper.SaveSetting(SettingKeys.HasShownWelcomePage, true);
             }
         }
 
@@ -164,35 +163,12 @@ namespace Xunkong.Desktop.Views
         }
 
 
-        private void _NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
-        {
-            TryGoBack();
-        }
 
-
-        private bool TryGoBack()
-        {
-            if (_rootFrame.CanGoBack)
-            {
-                _rootFrame.GoBack();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
 
 
         #endregion
 
 
-
-
-        private void ShowAttachedFlyout(object sender, TappedRoutedEventArgs e)
-        {
-            FlyoutBase.ShowAttachedFlyout((FrameworkElement)sender);
-        }
 
 
         private void _NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
@@ -231,6 +207,27 @@ namespace Xunkong.Desktop.Views
             }
         }
 
+
+
+        private void _NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+        {
+            TryGoBack();
+        }
+
+
+        private bool TryGoBack()
+        {
+            if (_rootFrame.CanGoBack)
+            {
+                _rootFrame.GoBack();
+                _NavigationView.SelectedItem = null;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
 
 

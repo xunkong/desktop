@@ -64,8 +64,8 @@ namespace Xunkong.Desktop.Extension
             if (LocalSettingHelper.GetSetting<bool>(SettingKeys.EnableDailyNoteNotification))
             {
                 Log.Information("Enable DailyNote Notification");
-                var resinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_ResinThreshold, 160);
-                var homeCoinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_HomeCoinThreshold, 1.0);
+                var resinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_ResinThreshold, 150);
+                var homeCoinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_HomeCoinThreshold, 0.9);
                 Log.Debug($"Resin threshold {resinThreshold}, home coin threshold {homeCoinThreshold:F2}");
                 var notifications = new List<(string? nickname, bool isResin, bool isHomeCoin)>();
                 foreach (var item in list)
