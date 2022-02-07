@@ -52,27 +52,37 @@ namespace Xunkong.Desktop.Services
 
 
 
-        public async Task<bool> GetNotificationsAsync(ChannelType channel, Version version)
+        public async Task<bool> HasUnreadNotification()
         {
             using var cnt = _dbConnectionFactory.CreateDbConnection();
-            var lastId = await cnt.QueryFirstOrDefaultAsync<int>("SELECT Id FROM Notifications ORDER BY Id DESC;");
+            var notification = await cnt.QueryFirstOrDefaultAsync<int>("SELECT Id FROM Notifications WHERE HasRead=FALSE LIMIT 1;");
+            return notification != 0;
+        }
+
+
+
+        public async Task<bool> GetNotificationsAsync(ChannelType channel, Version version)
+        {
+            using var ctx = _dbContextFactory.CreateDbContext();
+            var lastId = await ctx.NotificationItems.OrderByDescending(x => x.Id).Select(x => x.Id).FirstOrDefaultAsync();
             var wrapper = await _xunkongClient.GetNotificationsAsync<NotificationDesktopModel>(channel, version, lastId);
             var list = wrapper.List;
-            if (!list.Any())
+            if (list.Any())
             {
-                return false;
+                var existList = await ctx.NotificationItems.AsNoTracking().Select(x => x.Id).ToListAsync();
+                var addList = list.ExceptBy(existList, x => x.Id);
+                if (addList.Any())
+                {
+                    ctx.AddRange(addList);
+                    await ctx.SaveChangesAsync();
+                    return true;
+                }
             }
-            using var ctx = _dbContextFactory.CreateDbContext();
-            var existList = await ctx.NotificationItems.AsNoTracking().Select(x => x.Id).ToListAsync();
-            var addList = list.ExceptBy(existList, x => x.Id);
-            ctx.AddRange(addList);
-            await ctx.SaveChangesAsync();
-            return addList.Any();
+            return false;
         }
 
 
         #endregion
-
 
 
 
@@ -285,7 +295,16 @@ namespace Xunkong.Desktop.Services
         #endregion
 
 
+        #region Genshin Wallpaper
 
+
+        public async Task<WallpaperInfo?> GetWallpaperInfoAsync(int excludeId = 0)
+        {
+            return await _xunkongClient.GetWallpaperInfoAsync(excludeId);
+        }
+
+
+        #endregion
 
 
     }

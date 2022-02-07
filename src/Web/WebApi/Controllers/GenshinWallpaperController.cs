@@ -1,0 +1,50 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Xunkong.Core.XunkongApi;
+using Xunkong.Web.Api.Filters;
+using Xunkong.Web.Api.Services;
+
+namespace Xunkong.Web.Api.Controllers
+{
+
+    [ApiController]
+    [ApiVersion("0.1")]
+    [Route("v{version:ApiVersion}/Genshin/Wallpaper")]
+    [ServiceFilter(typeof(BaseRecordResultFilter))]
+    public class GenshinWallpaperController : Controller
+    {
+
+
+        private readonly ILogger<GenshinWallpaperController> _logger;
+
+        private readonly XunkongDbContext _dbContext;
+
+        private readonly IMemoryCache _cache;
+
+
+        public GenshinWallpaperController(ILogger<GenshinWallpaperController> logger, XunkongDbContext dbContext, IMemoryCache cache)
+        {
+            _logger = logger;
+            _dbContext = dbContext;
+            _cache = cache;
+        }
+
+
+
+        [HttpGet("random")]
+        public async Task<ResponseBaseWrapper> GetOneWallpaperForJsonResultAsync(int excludeId = 0)
+        {
+            var count = await _dbContext.WallpaperInfos.CountAsync() - (excludeId == 0 ? 0 : 1);
+            var index = Random.Shared.Next(count);
+            var info = await _dbContext.WallpaperInfos.Where(x => x.Id != excludeId).Skip(index).FirstOrDefaultAsync();
+            return ResponseBaseWrapper.Ok(info!);
+        }
+
+
+
+
+
+
+    }
+}

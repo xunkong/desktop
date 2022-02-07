@@ -33,6 +33,7 @@ namespace Xunkong.Desktop
         {
             UnhandledException += App_UnhandledException;
             Services = ConfigureServiceProvider();
+            InitializeApplicationTheme();
             this.InitializeComponent();
         }
 
@@ -53,7 +54,6 @@ namespace Xunkong.Desktop
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
             Log.Information(XunkongEnvironment.GetLogHeader());
-
             //var param = AppInstance.GetCurrent().GetActivatedEventArgs();
             m_window = new MainWindow();
             m_window.Activate();
@@ -189,6 +189,20 @@ namespace Xunkong.Desktop
             sc.AddTransient<XunkongApiService>();
         }
 
+
+
+        private void InitializeApplicationTheme()
+        {
+            var themeIndex = LocalSettingHelper.GetSetting<int>(SettingKeys.ApplicationTheme);
+            if (themeIndex == 1)
+            {
+                RequestedTheme = ApplicationTheme.Light;
+            }
+            if (themeIndex == 2)
+            {
+                RequestedTheme = ApplicationTheme.Dark;
+            }
+        }
 
 
         private bool CheckUserDataPath()

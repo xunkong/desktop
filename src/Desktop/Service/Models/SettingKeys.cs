@@ -22,6 +22,10 @@
 
         public const string LastVersion = nameof(LastVersion);
 
+        public const string ApplicationTheme = nameof(ApplicationTheme);
+
+        public const string NavigationViewPaneClose = nameof(NavigationViewPaneClose);
+
         public const string HasShownWelcomePage = nameof(HasShownWelcomePage);
 
         public const string EnableDailyNoteNotification = nameof(EnableDailyNoteNotification);

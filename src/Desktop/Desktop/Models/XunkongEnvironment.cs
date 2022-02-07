@@ -19,7 +19,7 @@ namespace Xunkong.Desktop.Models
 
         public static readonly string DeviceId;
 
-        public static readonly string? UserDataPath;
+        public static readonly string UserDataPath;
 
         public static readonly string? WebView2Version;
 

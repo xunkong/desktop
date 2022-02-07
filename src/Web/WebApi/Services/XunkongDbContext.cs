@@ -42,6 +42,8 @@ namespace Xunkong.Web.Api.Services
         public DbSet<DesktopChangelog> DesktopChangelogs { get; set; }
 
 
+        public DbSet<WallpaperInfo> WallpaperInfos { get; set; }
+
 
 
         public XunkongDbContext(DbContextOptions<XunkongDbContext> options) : base(options)

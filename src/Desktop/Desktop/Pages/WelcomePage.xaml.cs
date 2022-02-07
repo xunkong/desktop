@@ -17,6 +17,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.Json.Nodes;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Microsoft.Web.WebView2.Core;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -52,7 +53,6 @@ namespace Xunkong.Desktop.Pages
 
 
 
-        private readonly string url = "https://sdk-static.mihoyo.com/hk4e_cn/mdk/launcher/api/content?filter_adv=true&language=zh-cn&launcher_id=18&key=eYd89JmJ";
 
 
         private string _WebView2State;
@@ -67,28 +67,16 @@ namespace Xunkong.Desktop.Pages
         }
 
 
-        private async void WelcomPage_Loading(FrameworkElement sender, object args)
+        private void WelcomPage_Loading(FrameworkElement sender, object args)
         {
             try
             {
-                var version = Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetAvailableBrowserVersionString();
+                var version = CoreWebView2Environment.GetAvailableBrowserVersionString();
                 WebView2State = $"已安装 ({version})";
             }
             catch
             {
                 WebView2State = "未检测到 WebView2 Runtime";
-            }
-            using var client = new HttpClient();
-            try
-            {
-                var str = await _httpClient.GetStringAsync(url);
-                var node = JsonNode.Parse(str);
-                var i = (string)node["data"]["adv"]["background"];
-                _ImageEx_Background.Source = i;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error when get backgournd wallpaper in WelcomPage.");
             }
         }
 
@@ -97,23 +85,33 @@ namespace Xunkong.Desktop.Pages
 
         private string GetXunkongDataPath()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Xunkong");
+            return XunkongEnvironment.UserDataPath;
         }
+
 
         private void _Button_OpenDataFolder_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(new ProcessStartInfo
+            try
             {
-                FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Xunkong"),
-                UseShellExecute = true,
-            });
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = XunkongEnvironment.UserDataPath,
+                    UseShellExecute = true,
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Start process to open userdata folder.");
+                InfoBarHelper.Error(ex);
+            }
         }
+
 
         private void _Button_RefreshStats_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                var version = Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetAvailableBrowserVersionString();
+                var version = CoreWebView2Environment.GetAvailableBrowserVersionString();
                 WebView2State = $"已安装 ({version})";
             }
             catch
@@ -122,15 +120,28 @@ namespace Xunkong.Desktop.Pages
             }
         }
 
+
         private void _Button_Download_Click(object sender, RoutedEventArgs e)
         {
             const string url = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
-            var startInfo = new ProcessStartInfo
+            try
             {
-                UseShellExecute = true,
-                FileName = url,
-            };
-            Process.Start(startInfo);
+                var startInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = true,
+                    FileName = url,
+                };
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Start process to download webview2 runtime.");
+                InfoBarHelper.Error(ex);
+            }
+
         }
+
+
+
     }
 }

@@ -1,6 +1,8 @@
 ﻿using AngleSharp;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using CommunityToolkit.WinUI.UI;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml.Controls;
@@ -157,6 +159,30 @@ namespace Xunkong.Desktop.ViewModels
                 InfoBarHelper.Error(ex);
             }
         }
+
+
+
+
+        private string _SelectedTheme;
+        public string SelectedTheme
+        {
+            get => _SelectedTheme;
+            set => SetProperty(ref _SelectedTheme, value);
+        }
+
+        private int _SelectedThemeIndex = LocalSettingHelper.GetSetting<int>(SettingKeys.ApplicationTheme);
+        public int SelectedThemeIndex
+        {
+            get => _SelectedThemeIndex;
+            set
+            {
+                LocalSettingHelper.SaveSetting(SettingKeys.ApplicationTheme, value);
+                SetProperty(ref _SelectedThemeIndex, value);
+            }
+        }
+
+
+
 
 
 
@@ -416,7 +442,7 @@ namespace Xunkong.Desktop.ViewModels
         {
             try
             {
-                InfoBarHelper.Information("请稍等");
+                InfoBarHelper.Information("请稍等", 6000);
                 var role = await _hoyolabService.GetLastSelectedOrFirstUserGameRoleInfoAsync();
                 var now = DateTime.UtcNow.AddHours(8);
                 var month = now.Month;
@@ -435,8 +461,8 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Get travel record summary.");
                 InfoBarHelper.Error(ex);
-                throw;
             }
         }
 
@@ -446,7 +472,7 @@ namespace Xunkong.Desktop.ViewModels
         {
             try
             {
-                InfoBarHelper.Information("请稍等");
+                InfoBarHelper.Information("请稍等", 2000);
                 var role = await _hoyolabService.GetLastSelectedOrFirstUserGameRoleInfoAsync();
                 var c = await _hoyolabService.GetSpiralAbyssInfoAsync(role, 1);
                 var l = await _hoyolabService.GetSpiralAbyssInfoAsync(role, 2);
@@ -454,11 +480,73 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Get spiral abyss summary info.");
                 InfoBarHelper.Error(ex);
-                throw;
             }
         }
 
+
+        [ICommand]
+        private void ChangeAppBackgroundWallpaper()
+        {
+            WeakReferenceMessenger.Default.Send(new ChangeBackgroundWallpaperMessage());
+        }
+
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task SaveBackgroundWallpaperAsync()
+        {
+            var wallpaper = WeakReferenceMessenger.Default.Send<RequestMessage<WallpaperInfo?>>()?.Response;
+            if (string.IsNullOrWhiteSpace(wallpaper?.Url))
+            {
+                return;
+            }
+            try
+            {
+                var storageFile = await ImageCache.Instance.GetFileFromCacheAsync(new Uri(wallpaper.Url));
+                var sourcePath = storageFile?.Path;
+                if (string.IsNullOrWhiteSpace(sourcePath))
+                {
+                    InfoBarHelper.Warning("无法下载或缓存失效");
+                    return;
+                }
+                if (!File.Exists(sourcePath))
+                {
+                    InfoBarHelper.Warning("找不到文件");
+                    return;
+                }
+                var destFolder = Path.Combine(XunkongEnvironment.UserDataPath, "Wallpaper");
+                var fileName = wallpaper.FileName ?? Path.GetFileName(wallpaper.Url);
+                var destPath = Path.Combine(destFolder, fileName);
+                Directory.CreateDirectory(destFolder);
+                File.Copy(sourcePath, destPath, true);
+                var button = new Button
+                {
+                    Content = "打开文件",
+                    HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Right,
+                };
+                button.Click += (_, _) => Process.Start(new ProcessStartInfo
+                {
+                    FileName = destPath,
+                    UseShellExecute = true,
+                });
+                var infobar = new InfoBar
+                {
+                    Severity = InfoBarSeverity.Success,
+                    Title = "已保存",
+                    Message = fileName,
+                    ActionButton = button,
+                    IsOpen = true,
+                };
+                InfoBarHelper.Show(infobar, 3000);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Save background wallpaper.");
+                InfoBarHelper.Error(ex);
+            }
+        }
 
 
     }

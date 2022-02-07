@@ -1,10 +1,17 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.Mvvm.Messaging.Messages;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
 using Vanara.PInvoke;
 using Windows.Storage;
 using WinRT.Interop;
+using Xunkong.Core.XunkongApi;
+using Xunkong.Desktop.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -24,6 +31,10 @@ namespace Xunkong.Desktop
         }
 
 
+        private readonly ILogger<MainWindow> _logger;
+
+        private readonly DbConnectionFactory<SqliteConnection> _dbConnectionFactory;
+
 
         public static new Window Current { get; private set; }
 
@@ -31,16 +42,23 @@ namespace Xunkong.Desktop
 
         public static IntPtr Hwnd { get; private set; }
 
+        private WallpaperInfo? _wallpaperInfo;
+
         public MainWindow()
         {
             Current = this;
             Closed += MainWindow_Closed;
+            _logger = App.Current.Services.GetService<ILogger<MainWindow>>()!;
+            _dbConnectionFactory = App.Current.Services.GetService<DbConnectionFactory<SqliteConnection>>()!;
             this.InitializeComponent();
+            RefreshBackgroundWallpaper();
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(_rootView.AppTitleBar);
             InfoBarHelper.Initialize(_InfoBarContainer);
             Hwnd = WindowNative.GetWindowHandle(this);
             InitializeWindowSize();
+            WeakReferenceMessenger.Default.Register<ChangeBackgroundWallpaperMessage>(this, (_, _) => RefreshBackgroundWallpaper(true));
+            WeakReferenceMessenger.Default.Register<RequestMessage<WallpaperInfo?>>(this, (_, e) => e.Reply(_wallpaperInfo));
         }
 
 
@@ -69,14 +87,12 @@ namespace Xunkong.Desktop
             var wp = new User32.WINDOWPLACEMENT
             {
                 length = 44,
-                showCmd = ShowWindowCommand.SW_NORMAL,
+                showCmd = ShowWindowCommand.SW_SHOWNORMAL,
                 ptMaxPosition = new System.Drawing.Point(-1, -1),
                 rcNormalPosition = rect,
             };
             User32.SetWindowPlacement(Hwnd, ref wp);
         }
-
-
 
 
 
@@ -93,8 +109,63 @@ namespace Xunkong.Desktop
         }
 
 
+        private void _chromeButton_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var point = e.GetPosition(_chromeButton);
+            var x = Math.Round(point.X, 0);
+            if (x < 40)
+            {
+                // 最小化
+                User32.PostMessage(Hwnd, (uint)User32.WindowMessage.WM_SYSCOMMAND, (IntPtr)0xF020, (IntPtr)0);
+            }
+            else if (x < 80)
+            {
+                // 最大化或还原
+                var wp = new User32.WINDOWPLACEMENT();
+                User32.GetWindowPlacement(Hwnd, ref wp);
+                if (wp.showCmd == ShowWindowCommand.SW_MAXIMIZE)
+                {
+                    User32.PostMessage(Hwnd, (uint)User32.WindowMessage.WM_SYSCOMMAND, (IntPtr)0xF120, (IntPtr)0);
+                }
+                else
+                {
+                    User32.PostMessage(Hwnd, (uint)User32.WindowMessage.WM_SYSCOMMAND, (IntPtr)0xF030, (IntPtr)0);
+                }
+            }
+            else
+            {
+                // 关闭
+                Close();
+            }
+        }
 
 
+
+        private void RefreshBackgroundWallpaper(bool showError = false)
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    var client = App.Current.Services.GetService<XunkongApiService>()!;
+                    var image = await client.GetWallpaperInfoAsync(_wallpaperInfo?.Id ?? 0);
+                    if (!string.IsNullOrWhiteSpace(image?.Url))
+                    {
+                        DispatcherQueue.TryEnqueue(() => _Image_Background.Source = image.Url);
+                        _wallpaperInfo = image;
+                        _logger.LogInformation($"Select background image:\n{image.Url}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Refresh app background image.");
+                    if (showError)
+                    {
+                        InfoBarHelper.Error(ex);
+                    }
+                }
+            });
+        }
 
 
 

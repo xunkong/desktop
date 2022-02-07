@@ -14,20 +14,22 @@
             </ResourceDictionary.MergedDictionaries>
             <!--  Other app resources here  -->
 
-            <ResourceDictionary.ThemeDictionaries>
-                <ResourceDictionary x:Key="Dark">
-                    <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" />
-                </ResourceDictionary>
-                <ResourceDictionary x:Key="Light">
-                    <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" />
-                </ResourceDictionary>
-            </ResourceDictionary.ThemeDictionaries>
 
             <StaticResource x:Key="WindowCaptionBackground" ResourceKey="SystemControlCustomBackgroundBrush" />
             <StaticResource x:Key="WindowCaptionBackgroundDisabled" ResourceKey="SystemControlCustomBackgroundBrush" />
             <StaticResource x:Key="WindowCaptionForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <StaticResource x:Key="WindowCaptionForegroundDisabled" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <SolidColorBrush x:Key="SystemControlCustomBackgroundBrush" Color="Transparent" />
+
+            <AcrylicBrush x:Key="CustomAcrylicBrush"
+                          FallbackColor="{StaticResource SystemBaseHighColor}"
+                          Opacity="0.6"
+                          TintColor="{StaticResource SystemChromeAltHighColor}"
+                          TintOpacity="0.1" />
+
+            <StaticResource x:Key="CustomPageBackgroundBrush" ResourceKey="CustomAcrylicBrush" />
+
+
             <x:Double x:Key="ContentDialogMaxWidth">800</x:Double>
             <FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/SegMDL2.ttf#Segoe MDL2 Assets</FontFamily>
 
@@ -52,6 +54,7 @@
             <xdc:DateTimeOffsetToTimeStringConverter x:Key="DateTimeOffsetToTimeStringConverter" />
             <xdc:DateTimeOffsetToDateTimeStringConverter x:Key="DateTimeOffsetToDateTimeStringConverter" />
             <xdc:ExpeditionStatusToColorConverter x:Key="ExpeditionStatusToColorConverter" />
+            <xdc:EnumToDescriptionOrStringConverter x:Key="EnumToDescriptionOrStringConverter" />
 
 
             <Style TargetType="cc:ImageEx">

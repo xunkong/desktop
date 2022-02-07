@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Xunkong.Core.Hoyolab;
 using Xunkong.Core.Metadata;
 using Xunkong.Core.Wish;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Xunkong.Core.XunkongApi
 {
@@ -218,6 +219,20 @@ namespace Xunkong.Core.XunkongApi
         #endregion
 
 
+
+
+        #region Genshin Wallpaper
+
+
+        public async Task<WallpaperInfo?> GetWallpaperInfoAsync(int excludeId = 0)
+        {
+            var url = $"{BaseUrl}/{ApiVersion}/genshin/wallpaper/random?excludeId={excludeId}";
+            return await CommonGetAsync<WallpaperInfo>(url);
+        }
+
+
+
+        #endregion
 
 
 

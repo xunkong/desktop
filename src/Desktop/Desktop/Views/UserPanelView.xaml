@@ -59,7 +59,7 @@
                                     <cc:Case Value="True">
                                         <StackPanel>
                                             <TextBlock Margin="0,0,0,4" Text="{x:Bind vm.SelectedUserPanelModel.GameRoleInfo.Nickname}" />
-                                            <TextBlock Foreground="Gray" Style="{StaticResource CaptionTextBlockStyle}">
+                                            <TextBlock Foreground="{StaticResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}">
                                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.GameRoleInfo.RegionName}" />
                                                 <Run Text=" " />
                                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.GameRoleInfo.Level}" />
@@ -71,7 +71,7 @@
                                     <cc:Case Value="False">
                                         <StackPanel>
                                             <TextBlock Margin="0,0,0,4" Text="{x:Bind vm.SelectedUserPanelModel.UserInfo.Nickname}" />
-                                            <TextBlock Foreground="Gray"
+                                            <TextBlock Foreground="{StaticResource TextFillColorSecondaryBrush}"
                                                        Style="{StaticResource CaptionTextBlockStyle}"
                                                        Text="没有已绑定的游戏账号" />
                                         </StackPanel>
@@ -83,7 +83,7 @@
                                 <Button VerticalAlignment="Center" Content="添加账号">
                                     <Button.Flyout>
                                         <MenuFlyout Placement="RightEdgeAlignedTop">
-                                            <MenuFlyoutItem Text="网页登录" />
+                                            <MenuFlyoutItem Command="{x:Bind vm.HoyolabLogin_WebLoginCommand}" Text="网页登录" />
                                             <MenuFlyoutItem Command="{x:Bind vm.HoyolabLogin_InputCookieCommand}" Text="输入 Cookie" />
                                         </MenuFlyout>
                                     </Button.Flyout>
@@ -102,7 +102,7 @@
                                   Height="16"
                                   Margin="4,0,4,0"
                                   Data="M533.333333 776.533333L341.333333 584.533333l29.866667-29.866666 162.133333 162.133333 162.133334-162.133333 29.866666 29.866666-192 192z m0-503.466666l-162.133333 162.133333-29.866667-29.866667L533.333333 213.333333 725.333333 405.333333l-29.866666 29.866667-162.133334-162.133333z"
-                                  Fill="Gray"
+                                  Fill="{StaticResource TextFillColorSecondaryBrush}"
                                   Stretch="Uniform" />
                             <Button.Resources>
                                 <CollectionViewSource x:Key="UserPanelViewSource"
@@ -152,7 +152,7 @@
                                                 </StackPanel>
                                                 <Button.Flyout>
                                                     <MenuFlyout Placement="RightEdgeAlignedTop">
-                                                        <MenuFlyoutItem Text="网页登录" />
+                                                        <MenuFlyoutItem Command="{x:Bind vm.HoyolabLogin_WebLoginCommand}" Text="网页登录" />
                                                         <MenuFlyoutItem Command="{x:Bind vm.HoyolabLogin_InputCookieCommand}" Text="输入 Cookie" />
                                                     </MenuFlyout>
                                                 </Button.Flyout>
@@ -217,7 +217,7 @@
                                                     <Grid>
                                                         <StackPanel Margin="0,4,0,4" Spacing="2">
                                                             <TextBlock Text="{x:Bind GameRoleInfo.Nickname}" />
-                                                            <TextBlock FontSize="12" Foreground="Gray">
+                                                            <TextBlock FontSize="12" Foreground="{StaticResource TextFillColorSecondaryBrush}">
                                                                 <Run Text="{x:Bind GameRoleInfo.RegionName}" />
                                                                 <Run Text="{x:Bind GameRoleInfo.Level}" />
                                                                 <Run Text="级" />
@@ -274,7 +274,7 @@
                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.MaxResin}" />
                             </TextBlock>
                             <TextBlock HorizontalAlignment="Center"
-                                       Foreground="Gray"
+                                       Foreground="{StaticResource TextFillColorSecondaryBrush}"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Text="原粹树脂" />
                         </StackPanel>
@@ -285,7 +285,7 @@
                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.MaxHomeCoin}" />
                             </TextBlock>
                             <TextBlock HorizontalAlignment="Center"
-                                       Foreground="Gray"
+                                       Foreground="{StaticResource TextFillColorSecondaryBrush}"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Text="洞天宝钱" />
                         </StackPanel>
@@ -296,7 +296,7 @@
                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.MaxExpeditionNumber}" />
                             </TextBlock>
                             <TextBlock HorizontalAlignment="Center"
-                                       Foreground="Gray"
+                                       Foreground="{StaticResource TextFillColorSecondaryBrush}"
                                        Style="{StaticResource CaptionTextBlockStyle}"
                                        Text="探索派遣" />
                         </StackPanel>
@@ -307,7 +307,7 @@
                                 VerticalAlignment="Stretch"
                                 Content="&#xE76C;"
                                 FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                Foreground="Gray"
+                                Foreground="{StaticResource TextFillColorSecondaryBrush}"
                                 Style="{StaticResource DateTimePickerFlyoutButtonStyle}">
                             <Button.Flyout>
                                 <!--  实时便笺详细内容  -->
@@ -320,11 +320,11 @@
                                                     Command="{x:Bind vm.RefreshDailyNoteCommand}"
                                                     Content="&#xE72C;"
                                                     FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                    Foreground="Gray"
+                                                    Foreground="{StaticResource TextFillColorSecondaryBrush}"
                                                     Style="{StaticResource DateTimePickerFlyoutButtonStyle}" />
                                             <TextBlock Margin="8,0,0,0"
                                                        VerticalAlignment="Center"
-                                                       Foreground="Gray">
+                                                       Foreground="{StaticResource TextFillColorSecondaryBrush}">
                                                 <Run Text="更新于" />
                                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.Time, Converter={StaticResource DateTimeOffsetToTimeStringConverter}}" />
                                                 <LineBreak />
@@ -342,10 +342,10 @@
                                             <StackPanel Width="200" Margin="12,0,0,0">
                                                 <TextBlock Text="原粹树脂" />
                                                 <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Visibility="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.IsResinFull, Converter={StaticResource BoolToVisibilityReversedConverter}}">
-                                                    <Run Foreground="Gray" Text="将于" />
+                                                    <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="将于" />
                                                     <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.ResinRecoveryDayString}" />
                                                     <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.ResinFullTime, Converter={StaticResource DateTimeOffsetToTimeStringConverter}}" />
-                                                    <Run Foreground="Gray" Text="全部恢复" />
+                                                    <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="全部恢复" />
                                                 </TextBlock>
                                                 <TextBlock Foreground="Green"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
@@ -368,10 +368,10 @@
                                             <StackPanel Width="200" Margin="12,0,0,0">
                                                 <TextBlock Text="洞天宝钱" />
                                                 <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Visibility="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.IsHomeCoinFull, Converter={StaticResource BoolToVisibilityReversedConverter}}">
-                                                    <Run Foreground="Gray" Text="将于" />
+                                                    <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="将于" />
                                                     <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.HomeCoinRecoveryDayString}" />
                                                     <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.HomeCoinFullTime, Converter={StaticResource DateTimeOffsetToTimeStringConverter}}" />
-                                                    <Run Foreground="Gray" Text="达到存储上限" />
+                                                    <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="达到存储上限" />
                                                 </TextBlock>
                                                 <TextBlock Foreground="Green"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
@@ -395,7 +395,7 @@
                                                 <TextBlock Text="每日委托任务" />
                                                 <cc:SwitchPresenter TargetType="x:String" Value="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.IsExtraTaskRewardReceived}">
                                                     <cc:Case Value="True">
-                                                        <TextBlock Foreground="Gray"
+                                                        <TextBlock Foreground="{StaticResource TextFillColorSecondaryBrush}"
                                                                    Style="{StaticResource CaptionTextBlockStyle}"
                                                                    Text="奖励已领取" />
                                                     </cc:Case>
@@ -445,7 +445,7 @@
                                                         Stretch="Uniform" />
                                             <StackPanel Width="200" Margin="12,0,0,0">
                                                 <TextBlock Text="值得铭记的强敌" />
-                                                <TextBlock Foreground="Gray"
+                                                <TextBlock Foreground="{StaticResource TextFillColorSecondaryBrush}"
                                                            Style="{StaticResource CaptionTextBlockStyle}"
                                                            Text="本周剩余消耗减半次数" />
                                             </StackPanel>
@@ -457,7 +457,7 @@
                                         </StackPanel>
                                         <MenuFlyoutSeparator />
                                         <!--  探索派遣  -->
-                                        <TextBlock Margin="0,0,0,0" Foreground="Gray">
+                                        <TextBlock Margin="0,0,0,0" Foreground="{StaticResource TextFillColorSecondaryBrush}">
                                             <Run Text="探索派遣 (" /><Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.CurrentExpeditionNumber}" /><Run Text="/" /><Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.MaxExpeditionNumber}" /><Run Text=")" />
                                         </TextBlock>
                                         <ItemsRepeater Margin="0,-8,0,0" ItemsSource="{Binding SelectedUserPanelModel.DailyNoteInfo.Expeditions}">
@@ -480,10 +480,10 @@
                                                                    VerticalAlignment="Bottom"
                                                                    Style="{StaticResource CaptionTextBlockStyle}"
                                                                    Visibility="{Binding IsFinished, Converter={StaticResource BoolToVisibilityReversedConverter}}">
-                                                            <Run Foreground="Gray" Text="将于" />
+                                                            <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="将于" />
                                                             <Run Text="{Binding FinishedDayString}" />
                                                             <Run Text="{Binding FinishedTime, Converter={StaticResource DateTimeOffsetToTimeStringConverter}}" />
-                                                            <Run Foreground="Gray" Text="完成探索任务" />
+                                                            <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="完成探索任务" />
                                                         </TextBlock>
                                                         <TextBlock Width="200"
                                                                    Margin="4,0,0,4"

@@ -5,66 +5,69 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:Xunkong.Desktop.Pages"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+      Background="{StaticResource CustomPageBackgroundBrush}"
       mc:Ignorable="d">
 
-    <Grid>
-        <cc:ImageEx Name="_ImageEx_Background" Stretch="UniformToFill" />
+    <Grid RowSpacing="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
-        <Border Background="#40000000" IsHitTestVisible="False" />
+        <TextBlock Margin="48,24,0,0"
+                   Style="{StaticResource TitleTextBlockStyle}"
+                   Text="欢迎使用「寻空」" />
 
+        <ScrollViewer Grid.Row="1">
 
-        <StackPanel Margin="0,120,0,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    RequestedTheme="Dark"
-                    Spacing="8">
-            <TextBlock FontSize="36" Text="欢迎使用「寻空」" />
-            <TextBlock FontSize="12" Text="此页面首次启动后不再显示" />
-            <TextBlock />
-            <TextBlock Text="您需要了解以下几项内容" />
+            <StackPanel Margin="48,0,48,0"
+                        RequestedTheme="Default"
+                        Spacing="16">
+                <TextBlock Text="您需要了解以下几项内容" />
 
-            <TextBlock FontSize="24" Text="App Center" />
-            <TextBlock>
-                <Run Text="您需要同意「寻空」使用" />
-                <Hyperlink NavigateUri="https://appcenter.ms/">Microsoft App Center</Hyperlink>
-                <Run Text="进行数据统计，此功能不会收集您的个人隐私。" />
-            </TextBlock>
+                <TextBlock />
+                <TextBlock FontSize="24" Text="App Center" />
+                <TextBlock>
+                    <Run Text="您需要同意「寻空」使用" />
+                    <Hyperlink NavigateUri="https://appcenter.ms/">Microsoft App Center</Hyperlink>
+                    <Run Text="进行数据统计，此功能不会收集您的个人隐私。" />
+                </TextBlock>
 
-            <TextBlock />
-            <TextBlock FontSize="24" Text="WebView2" />
-            <TextBlock>
-                <Run Text="「寻空」使用 WebView2 丰富应用功能，您需要安装" />
-                <Hyperlink NavigateUri="https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/">WebView2 Runtime</Hyperlink>
-                <Run Text="。" />
-            </TextBlock>
-            <TextBlock>
-                <Run Text="状态:" />
-                <Run Text="{x:Bind WebView2State, Mode=OneWay}" />
-            </TextBlock>
-            <StackPanel Orientation="Horizontal" Spacing="12">
-                <Button Name="_Button_Download"
-                        Click="_Button_Download_Click"
-                        Content="下载"
-                        Style="{StaticResource ButtonRevealStyle}" />
-                <Button Name="_Button_RefreshStats"
-                        Click="_Button_RefreshStats_Click"
-                        Content="刷新状态"
-                        Style="{StaticResource ButtonRevealStyle}" />
+                <TextBlock />
+                <TextBlock FontSize="24" Text="WebView2" />
+                <TextBlock>
+                    <Run Text="「寻空」使用 WebView2 丰富应用功能，您需要安装" />
+                    <Hyperlink NavigateUri="https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/">WebView2 Runtime</Hyperlink>
+                    <Run Text="。" />
+                </TextBlock>
+                <TextBlock>
+                    <Run Text="状态:" />
+                    <Run Text="{x:Bind WebView2State, Mode=OneWay}" />
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button Name="_Button_Download"
+                            Click="_Button_Download_Click"
+                            Content="下载" />
+                    <Button Name="_Button_RefreshStats"
+                            Click="_Button_RefreshStats_Click"
+                            Content="刷新状态" />
+                </StackPanel>
+
+                <TextBlock />
+                <TextBlock FontSize="24" Text="数据文件夹" />
+                <TextBlock Text="您的个人数据保存在「我的文档\Xunkong」文件夹中。" />
+                <TextBlock>
+                    <Run Text="存储位置：" />
+                    <Run Text="{x:Bind GetXunkongDataPath()}" />
+                </TextBlock>
+                <Button Name="_Button_OpenDataFolder"
+                        Click="_Button_OpenDataFolder_Click"
+                        Content="打开文件夹" />
+
             </StackPanel>
 
-            <TextBlock />
-            <TextBlock FontSize="24" Text="数据文件夹" />
-            <TextBlock Text="您的个人数据保存在 我的文档\Xunkong 文件夹中。" />
-            <TextBlock>
-                <Run Text="存储位置：" />
-                <Run Text="{x:Bind GetXunkongDataPath()}" />
-            </TextBlock>
-            <Button Name="_Button_OpenDataFolder"
-                    Click="_Button_OpenDataFolder_Click"
-                    Content="打开文件夹"
-                    Style="{StaticResource ButtonRevealStyle}" />
+        </ScrollViewer>
 
-        </StackPanel>
     </Grid>
+
 </Page>

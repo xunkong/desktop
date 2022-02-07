@@ -48,16 +48,36 @@ namespace Xunkong.Desktop.Views
             DataContext = App.Current.Services.GetService<WindowRootViewModel>();
             _dbConnectionFactory = App.Current.Services.GetService<DbConnectionFactory<SqliteConnection>>()!;
             _logger = App.Current.Services.GetService<ILogger<WindowRootView>>()!;
-            WeakReferenceMessenger.Default.Register<RefreshWebToolNavItemMessage>(this, async (_, _) => await RefreshWebToolNavItemAsync());
-            WeakReferenceMessenger.Default.Register<NavigateMessage>(this, (_, m) => NavigateTo(m));
-            WeakReferenceMessenger.Default.Register<OpenOrCloseNavigationPaneMessage>(this, (_, _) => _NavigationView.IsPaneOpen = !_NavigationView.IsPaneOpen); ;
+            RegisterMessage();
+            Loading += WindowRootView_Loading;
             Loaded += WindowRootView_Loaded;
         }
+
+
+        private void RegisterMessage()
+        {
+            WeakReferenceMessenger.Default.Register<RefreshWebToolNavItemMessage>(this, async (_, _) => await RefreshWebToolNavItemAsync());
+            WeakReferenceMessenger.Default.Register<NavigateMessage>(this, (_, m) => NavigateTo(m));
+            WeakReferenceMessenger.Default.Register<OpenOrCloseNavigationPaneMessage>(this, (_, _) =>
+            {
+                _NavigationView.IsPaneOpen = !_NavigationView.IsPaneOpen;
+                LocalSettingHelper.SaveSetting(SettingKeys.NavigationViewPaneClose, !_NavigationView.IsPaneOpen);
+            });
+        }
+
+        private void WindowRootView_Loading(FrameworkElement sender, object args)
+        {
+            if (LocalSettingHelper.GetSetting<bool>(SettingKeys.NavigationViewPaneClose))
+            {
+                _NavigationView.IsPaneOpen = false;
+            }
+        }
+
 
         private async void WindowRootView_Loaded(object sender, RoutedEventArgs e)
         {
             await RefreshWebToolNavItemAsync();
-            await GetNotificationsAsync();
+            CheckNotifications();
             vm.CheckVersionUpdateAsync();
             if (LocalSettingHelper.GetSetting<bool>(SettingKeys.HasShownWelcomePage))
             {
@@ -262,23 +282,33 @@ namespace Xunkong.Desktop.Views
 
 
 
-        private async Task GetNotificationsAsync()
+
+
+        private void CheckNotifications()
         {
-            try
+            Task.Run(async () =>
             {
-                var channel = XunkongEnvironment.Channel;
-                var version = XunkongEnvironment.AppVersion;
-                var xunkongApiService = App.Current.Services.GetService<XunkongApiService>();
-                var hasNew = await xunkongApiService!.GetNotificationsAsync(channel, version);
-                if (hasNew)
+                try
                 {
-                    _Badge_Notification.Visibility = Visibility.Visible;
+                    var xunkongApiService = App.Current.Services.GetService<XunkongApiService>()!;
+                    var hasUnread = await xunkongApiService.HasUnreadNotification();
+                    if (hasUnread)
+                    {
+                        _Badge_Notification.DispatcherQueue.TryEnqueue(() => _Badge_Notification.Visibility = Visibility.Visible);
+                    }
+                    var channel = XunkongEnvironment.Channel;
+                    var version = XunkongEnvironment.AppVersion;
+                    var hasNew = await xunkongApiService.GetNotificationsAsync(channel, version);
+                    if (hasNew)
+                    {
+                        _Badge_Notification.DispatcherQueue.TryEnqueue(() => _TeachingTip_NewNotification.IsOpen = true);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in {MethodName}", nameof(GetNotificationsAsync));
-            }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error in {MethodName}", nameof(CheckNotifications));
+                }
+            });
         }
 
 
@@ -287,6 +317,12 @@ namespace Xunkong.Desktop.Views
         {
             _Badge_Notification.Visibility = Visibility.Collapsed;
         }
+
+
+
+
+
+
     }
 
 

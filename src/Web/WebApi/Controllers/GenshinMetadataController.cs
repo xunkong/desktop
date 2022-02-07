@@ -8,7 +8,7 @@ using Xunkong.Web.Api.Services;
 namespace Xunkong.Web.Api.Controllers
 {
     [ApiController]
-    [ApiVersion("0")]
+    [ApiVersion("0.1")]
     [Route("v{version:ApiVersion}/Genshin/Metadata")]
     [ServiceFilter(typeof(BaseRecordResultFilter))]
     public class GenshinMetadataController : ControllerBase

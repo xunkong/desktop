@@ -15,10 +15,32 @@
 
 
 
-
-
     <Grid>
 
+        <NavigationView Name="_NavigationView"
+                        BackRequested="_NavigationView_BackRequested"
+                        DisplayModeChanged="_NavigationView_DisplayModeChanged"
+                        IsBackEnabled="{x:Bind _rootFrame.CanGoBack}"
+                        IsPaneToggleButtonVisible="False"
+                        ItemInvoked="_NavigationView_ItemInvoked"
+                        PaneClosing="_NavigationView_PaneClosing"
+                        PaneOpening="_NavigationView_PaneOpening">
+            <NavigationView.Resources>
+                <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
+                <!--<Thickness x:Key="NavigationViewContentGridBorderThickness">0</Thickness>-->
+            </NavigationView.Resources>
+            <!--  导航栏左上部那一块  -->
+            <NavigationView.PaneCustomContent>
+                <xdv:UserPanelView NavigationViewPaneOpen="{x:Bind _NavigationView.IsPaneOpen}" />
+            </NavigationView.PaneCustomContent>
+
+
+            <NavigationView.MenuItems />
+
+
+            <Frame Name="_rootFrame" Visibility="Visible" />
+
+        </NavigationView>
 
 
 
@@ -69,7 +91,9 @@
 
 
                 <!--  通知  -->
-                <Button Height="28" Style="{StaticResource DateTimePickerFlyoutButtonStyle}">
+                <Button Name="_Button_Notification"
+                        Height="28"
+                        Style="{StaticResource DateTimePickerFlyoutButtonStyle}">
                     <Grid Margin="2">
                         <Path Data="M904 176H120c-30.9 0-56 25.1-56 56v560c0 30.9 25.1 56 56 56h784c30.9 0 56-25.1 56-56V232c0-30.9-25.1-56-56-56z m0 56v81.6L522.9 476.8c-6.9 2.9-14.9 3-21.9-0.1L120 313.6V232h784zM120 792V374.5l358.9 153.8c10.6 4.5 21.9 6.8 33.1 6.8 11.3 0 22.6-2.3 33.1-6.8L904 374.5V792H120z"
                               Fill="{StaticResource TextFillColorTertiaryBrush}"
@@ -101,31 +125,19 @@
                         </Flyout>
                     </Button.Flyout>
                 </Button>
+
+
+                <TeachingTip Name="_TeachingTip_NewNotification"
+                             Content="收到了新的通知"
+                             PlacementMargin="0 0 -12 0"
+                             PreferredPlacement="Bottom"
+                             Target="{x:Bind _Button_Notification}" />
+
+
+
             </StackPanel>
 
         </Grid>
-
-
-        <NavigationView Name="_NavigationView"
-                        BackRequested="_NavigationView_BackRequested"
-                        DisplayModeChanged="_NavigationView_DisplayModeChanged"
-                        IsBackEnabled="{x:Bind _rootFrame.CanGoBack}"
-                        IsPaneToggleButtonVisible="False"
-                        ItemInvoked="_NavigationView_ItemInvoked"
-                        PaneClosing="_NavigationView_PaneClosing"
-                        PaneOpening="_NavigationView_PaneOpening">
-            <!--  导航栏左上部那一块  -->
-            <NavigationView.PaneCustomContent>
-                <xdv:UserPanelView NavigationViewPaneOpen="{x:Bind _NavigationView.IsPaneOpen}" />
-            </NavigationView.PaneCustomContent>
-
-
-            <NavigationView.MenuItems />
-
-
-            <Frame Name="_rootFrame" />
-
-        </NavigationView>
 
 
 

@@ -225,8 +225,17 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
+        [ICommand]
+        private void HoyolabLogin_WebLogin()
+        {
+            Task.Run(() =>
+           InfoBarHelper.Warning("此功能尚未完成（咕咕", 3000));
+        }
+
+
+
         [ICommand(AllowConcurrentExecutions = false)]
-        public async Task HoyolabLogin_InputCookieAsync()
+        private async Task HoyolabLogin_InputCookieAsync()
         {
             _logger.LogDebug("Login Input Cookie button has been pressed.");
             var dialog = new ContentDialog

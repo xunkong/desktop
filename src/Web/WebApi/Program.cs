@@ -23,11 +23,6 @@ builder.Services.AddControllers(options =>
 //builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v0", new()
-    {
-        Title = "Xunkong Web Api",
-        Version = "v0",
-    });
     c.SwaggerDoc("v0.1", new()
     {
         Title = "Xunkong Web Api",
@@ -119,7 +114,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v0/swagger.json", "Xunkong Web Api v0");
         c.SwaggerEndpoint("/swagger/v0.1/swagger.json", "Xunkong Web Api v0.1");
     });
 }
