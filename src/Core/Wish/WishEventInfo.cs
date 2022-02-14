@@ -13,6 +13,9 @@ namespace Xunkong.Core.Wish
 
         public WishType WishType { get; set; }
 
+        [JsonIgnore, NotMapped]
+        public WishType QueryType => WishTypeToQueryType(WishType);
+
         [MaxLength(255)]
         public string Name { get; set; }
 
@@ -49,31 +52,14 @@ namespace Xunkong.Core.Wish
 
 
 
-        [JsonIgnore, NotMapped]
-        public string DisplayName
-        {
-            get
-            {
-                return $"{Version:F1} {Name}";
-            }
-        }
 
-        [JsonIgnore, NotMapped]
-        public string UpItems
+        private WishType WishTypeToQueryType(WishType type)
         {
-            get
+            return type switch
             {
-                string result = "";
-                foreach (var item in Rank5UpItems)
-                {
-                    result += $" {item}";
-                }
-                foreach (var item in Rank4UpItems)
-                {
-                    result += $" {item}";
-                }
-                return result.Trim();
-            }
+                WishType.CharacterEvent_2 => WishType.CharacterEvent,
+                _ => type,
+            };
         }
 
 
@@ -84,7 +70,7 @@ namespace Xunkong.Core.Wish
 
         private static DateTimeOffset TimeStringToTimeOffset(string str)
         {
-            if (str.Contains("+") || str.Contains("-"))
+            if (str.Contains("+"))
             {
                 return DateTimeOffset.Parse(str);
             }

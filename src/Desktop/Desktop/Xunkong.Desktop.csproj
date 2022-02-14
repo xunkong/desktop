@@ -12,10 +12,22 @@
 		<UseWinUI>true</UseWinUI>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="Controls\EChartControl.xaml" />
+	  <None Remove="Controls\GenshinElementLoading.xaml" />
 	  <None Remove="Controls\NotificationControl.xaml" />
 	  <None Remove="Controls\WebToolContentControl.xaml" />
 	  <None Remove="Pages\WebViewPage.xaml" />
 	  <None Remove="Pages\WelcomePage.xaml" />
+	  <None Remove="Pages\WishEventStatsPage.xaml" />
+	  <None Remove="Pages\WishlogManagePage.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="WebViews\dist\*">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="WebViews\html\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 	
 	
@@ -27,12 +39,12 @@
 		<PackageReference Include="Dapper" Version="2.0.123" />
 		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.5.0" />
 		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.5.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Windows.CsWinRT" Version="1.4.1" />
+		<PackageReference Include="Microsoft.Windows.CsWinRT" Version="1.5.0" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
 		<PackageReference Include="Serilog.Expressions" Version="3.2.1" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
@@ -44,8 +56,26 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Xunkong.Core.csproj" />
 		<ProjectReference Include="..\BackgroundTask\Xunkong.Desktop.BackgroundTask.csproj" />
+		<ProjectReference Include="..\Database\Xunkong.Desktop.Database.csproj" />
 		<ProjectReference Include="..\Extension\Xunkong.Desktop.Extension.csproj" />
-		<ProjectReference Include="..\Service\Xunkong.Desktop.Service.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Controls\GenshinElementLoading.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Pages\WishEventStatsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Pages\WishlogManagePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -55,9 +85,10 @@
 	  <Page Update="Controls\NotificationControl.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
-	  <None Update="Controls\WelcomeControl.xaml">
+	  <Page Update="Controls\EChartControl.xaml">
 	    <Generator>MSBuild:Compile</Generator>
-	  </None>
+	  </Page>
+	  
 	  <Page Update="Pages\WelcomePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>

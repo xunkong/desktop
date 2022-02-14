@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Numerics;
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml;
 
 namespace Xunkong.Desktop.Helpers
 {
@@ -145,6 +146,35 @@ namespace Xunkong.Desktop.Helpers
             });
         }
 
+
+
+        public static void ShowWithButton(InfoBarSeverity severity, string? title, string? message, string buttonContent, RoutedEventHandler handler, int delay = 0)
+        {
+            _container.DispatcherQueue.TryEnqueue(async () =>
+            {
+                var button = new Button
+                {
+                    Content = buttonContent,
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    Style = Application.Current.Resources["DateTimePickerFlyoutButtonStyle"] as Style,
+                };
+                button.Click += handler;
+                var infoBar = new InfoBar
+                {
+                    Severity = severity,
+                    Title = title,
+                    Message = message,
+                    ActionButton = button,
+                    IsOpen = true,
+                };
+                _container.Children.Add(infoBar);
+                if (delay > 0)
+                {
+                    await Task.Delay(delay);
+                    infoBar.IsOpen = false;
+                }
+            });
+        }
 
 
 

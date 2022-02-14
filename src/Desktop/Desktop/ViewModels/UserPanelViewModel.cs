@@ -84,9 +84,30 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
+        private bool _IsLoadingActived;
+        public bool IsLoadingActived
+        {
+            get => _IsLoadingActived;
+            set => SetProperty(ref _IsLoadingActived, value);
+        }
+
+
+
+
+        private void ShowGenshinElementLoading()
+        {
+            IsLoadingActived = true;
+            if (SelectedUserPanelModel is not null)
+            {
+                SelectedUserPanelModel.DailyNoteInfo = null;
+            }
+        }
+
+
 
         public async Task InitializeDataAsync()
         {
+            ShowGenshinElementLoading();
             _logger.LogDebug("Initlize User Panel.");
             try
             {
@@ -106,12 +127,18 @@ namespace Xunkong.Desktop.ViewModels
                 _logger.LogError(ex, "Exception in method {MethodName}.", nameof(InitializeDataAsync));
                 InfoBarHelper.Error(ex);
             }
+            finally
+            {
+                await Task.Delay(100);
+                IsLoadingActived = false;
+            }
         }
 
 
         [ICommand(AllowConcurrentExecutions = false)]
-        public async Task RefreshAllUserPanelModelAsync(bool showResult = false)
+        public async Task RefreshAllUserPanelModelAsync()
         {
+            ShowGenshinElementLoading();
             _logger.LogDebug("Start refresh all hoyolab and genshin user info.");
             HideUserPanelSelectorFlyout?.Invoke();
             try
@@ -209,16 +236,16 @@ namespace Xunkong.Desktop.ViewModels
                 var lastRoleUid = await _userSettingService.GetSettingAsync<int>(LastSelectGameRoleUid);
                 var lastModel = list.FirstOrDefault(x => x?.GameRoleInfo?.Uid == lastRoleUid) ?? list.FirstOrDefault();
                 SelectedUserPanelModel = lastModel;
-                if (showResult)
-                {
-                    InfoBarHelper.Success("刷新完成");
-                }
                 _logger.LogDebug("Finish refresh all hoyolab and genshin user info.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Catch Exception when refresh all hoyolab and genshin user info.");
                 InfoBarHelper.Error(ex, $"刷新所有账号信息");
+            }
+            finally
+            {
+                IsLoadingActived = false;
             }
         }
 
@@ -227,8 +254,7 @@ namespace Xunkong.Desktop.ViewModels
         [ICommand]
         private void HoyolabLogin_WebLogin()
         {
-            Task.Run(() =>
-           InfoBarHelper.Warning("此功能尚未完成（咕咕", 3000));
+            Task.Run(() => InfoBarHelper.Warning("此功能尚未完成（咕咕", 3000));
         }
 
 
@@ -258,6 +284,7 @@ namespace Xunkong.Desktop.ViewModels
                 }
                 try
                 {
+                    ShowGenshinElementLoading();
                     _logger.LogDebug("Start get info by cookie.");
                     var userInfo = await _hoyolabService.GetUserInfoAsync(cookie);
                     var gameRoles = await _hoyolabService.GetUserGameRoleInfoListAsync(cookie);
@@ -301,6 +328,10 @@ namespace Xunkong.Desktop.ViewModels
                     _logger.LogError(ex, "Error in {MethodName}", nameof(HoyolabLogin_InputCookieAsync));
                     InfoBarHelper.Error(ex);
                 }
+                finally
+                {
+                    IsLoadingActived = false;
+                }
             }
             else
             {
@@ -319,6 +350,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             try
             {
+                ShowGenshinElementLoading();
                 _logger.LogDebug("Refresh daily note with genshin nickname {Nickname} uid {Uid}", model.GameRoleInfo.Nickname, model.GameRoleInfo.Uid);
                 var info = await _hoyolabService.GetDailyNoteInfoAsync(model.GameRoleInfo);
                 model.DailyNoteInfo = info;
@@ -331,6 +363,10 @@ namespace Xunkong.Desktop.ViewModels
             {
                 _logger.LogError(ex, "Error in {MethodName}", nameof(RefreshDailyNoteAsync));
                 InfoBarHelper.Error(ex);
+            }
+            finally
+            {
+                IsLoadingActived = false;
             }
         }
 

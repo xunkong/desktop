@@ -1,12 +1,13 @@
-﻿global using CommunityToolkit.Mvvm.Messaging;
+﻿global using CommunityToolkit.Mvvm.ComponentModel;
+global using CommunityToolkit.Mvvm.Messaging;
 global using Dapper;
 global using Microsoft.Data.Sqlite;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
+global using System.Collections.ObjectModel;
 global using Xunkong.Desktop.Controls;
 global using Xunkong.Desktop.Helpers;
 global using Xunkong.Desktop.Messages;
 global using Xunkong.Desktop.Models;
 global using Xunkong.Desktop.Services;
 global using Xunkong.Desktop.ViewModels;
-global using Xunkong.Desktop.Views;

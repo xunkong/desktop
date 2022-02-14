@@ -3,7 +3,7 @@
 namespace Xunkong.Core.XunkongApi
 {
 
-    public class WishlogBackupResult
+    public class WishlogCloudBackupResult
     {
 
         public int Uid { get; set; }
@@ -24,7 +24,7 @@ namespace Xunkong.Core.XunkongApi
         public List<WishlogItem>? List { get; set; }
 
 
-        public WishlogBackupResult(int uid, int currentCount, int getCount, int putCount, int deleteCount, List<WishlogItem>? list = null)
+        public WishlogCloudBackupResult(int uid, int currentCount, int getCount, int putCount, int deleteCount, List<WishlogItem>? list = null)
         {
             Uid = uid;
             CurrentCount = currentCount;

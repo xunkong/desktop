@@ -36,25 +36,25 @@ namespace Xunkong.Web.Api.Controllers
         [HttpGet("CheckUpdate")]
         public async Task<ResponseBaseWrapper> CheckUpdateAsync([FromQuery] ChannelType channel)
         {
-            //var key = $"desktop_checkupdate_{channel}";
-            //if (_cache.TryGetValue(key, out ResponseBaseWrapper result))
-            //{
-            //    return result;
-            //}
-            //else
-            //{
-            var version = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Channel == channel).OrderByDescending(x => x.Version).FirstOrDefaultAsync();
-            if (version is not null)
+            var key = $"desktop_checkupdate_{channel}";
+            if (_cache.TryGetValue(key, out ResponseBaseWrapper result))
             {
-                var result = ResponseBaseWrapper.Ok(version);
-                //_cache.Set(key, result, TimeSpan.FromMinutes(15));
                 return result;
             }
             else
             {
-                throw new XunkongException(ErrorCode.NoContentForVersion);
+                var version = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Channel == channel).OrderByDescending(x => x.Version).FirstOrDefaultAsync();
+                if (version is not null)
+                {
+                    result = ResponseBaseWrapper.Ok(version);
+                    _cache.Set(key, result, TimeSpan.FromMinutes(15));
+                    return result;
+                }
+                else
+                {
+                    throw new XunkongException(ErrorCode.NoContentForVersion);
+                }
             }
-            //}
         }
 
 
@@ -67,25 +67,25 @@ namespace Xunkong.Web.Api.Controllers
             {
                 throw new XunkongException(ErrorCode.VersionIsNull);
             }
-            //var key = $"desktop_changelog_{version}";
-            //if (_cache.TryGetValue(key, out ResponseBaseWrapper result))
-            //{
-            //    return result;
-            //}
-            //else
-            //{
-            var changelog = await _dbContext.DesktopChangelogs.AsNoTracking().Where(x => x.Version == v).FirstOrDefaultAsync();
-            if (changelog is not null)
+            var key = $"desktop_changelog_{version}";
+            if (_cache.TryGetValue(key, out ResponseBaseWrapper result))
             {
-                var result = ResponseBaseWrapper.Ok(changelog);
-                //_cache.Set(key, result, TimeSpan.FromMinutes(15));
                 return result;
             }
             else
             {
-                throw new XunkongException(ErrorCode.NoContentForVersion);
+                var changelog = await _dbContext.DesktopChangelogs.AsNoTracking().Where(x => x.Version == v).FirstOrDefaultAsync();
+                if (changelog is not null)
+                {
+                    result = ResponseBaseWrapper.Ok(changelog);
+                    _cache.Set(key, result, TimeSpan.FromMinutes(15));
+                    return result;
+                }
+                else
+                {
+                    throw new XunkongException(ErrorCode.NoContentForVersion);
+                }
             }
-            //}
         }
 
 

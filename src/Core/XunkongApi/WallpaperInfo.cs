@@ -27,6 +27,9 @@ namespace Xunkong.Core.XunkongApi
         [MaxLength(255)]
         public string? FileName { get; set; }
 
+        [JsonIgnore, NotMapped]
+        public string SourceDomain => new Uri(Source ?? "").Host;
+
 
     }
 }

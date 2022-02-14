@@ -28,11 +28,14 @@ class Program
         {
             return;
         }
-        var logPath = Path.Combine(UserPath, $@"Log\BackgroundTask\background_{DateTime.Now:yyyyMMdd}_{DateTime.Now:HHmmss}.txt");
-        Log.Logger = new LoggerConfiguration().MinimumLevel.Verbose()
-                                              .WriteTo.File(path: logPath, outputTemplate: logTemplate, shared: true, retainedFileCountLimit: 1000)
-                                              .Enrich.FromLogContext()
-                                              .CreateLogger();
+        if (!LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundTaskOutputLog))
+        {
+            var logPath = Path.Combine(UserPath, $@"Log\BackgroundTask\background_{DateTime.Now:yyyyMMdd}_{DateTime.Now:HHmmss}.txt");
+            Log.Logger = new LoggerConfiguration().MinimumLevel.Verbose()
+                                                  .WriteTo.File(path: logPath, outputTemplate: logTemplate, shared: true, retainedFileCountLimit: 1000)
+                                                  .Enrich.FromLogContext()
+                                                  .CreateLogger();
+        }
         Log.Information(XunkongEnvironment.GetLogHeader());
 
         try

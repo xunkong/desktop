@@ -32,7 +32,7 @@ namespace Xunkong.Web.Api.Controllers
             {
                 return result;
             }
-            var list = await _dbContext.CharacterInfos.AsNoTracking().Where(x => x.ConstllationName != null).ToListAsync();
+            var list = await _dbContext.CharacterInfos.AsNoTracking().Where(x => x.Enable).ToListAsync();
             result = ResponseBaseWrapper.Ok(new { Count = list.Count, List = list });
             _cache.Set("characterinfos", result);
             return result;
@@ -46,7 +46,7 @@ namespace Xunkong.Web.Api.Controllers
             {
                 return result;
             }
-            var list = await _dbContext.WeaponInfos.AsNoTracking().Where(x => x.GachaIcon != null).ToListAsync();
+            var list = await _dbContext.WeaponInfos.AsNoTracking().Where(x => x.Enable).ToListAsync();
             result = ResponseBaseWrapper.Ok(new { Count = list.Count, List = list });
             _cache.Set("weaponinfos", result);
             return result;

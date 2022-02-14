@@ -9,6 +9,9 @@ using System.Net;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Xunkong.Core.XunkongApi;
+using CommunityToolkit.Mvvm.Messaging.Messages;
+using Microsoft.UI.Dispatching;
+using CommunityToolkit.WinUI.UI;
 
 namespace Xunkong.Desktop.ViewModels
 {
@@ -36,6 +39,7 @@ namespace Xunkong.Desktop.ViewModels
             _userSettingService = userSettingService;
             _hoyolabService = hoyolabService;
             _xunkongApiService = xunkongApiService;
+            WeakReferenceMessenger.Default.Register<WallpaperInfo>(this, (_, e) => BackgroundWallpaper = e);
         }
 
 
@@ -49,21 +53,8 @@ namespace Xunkong.Desktop.ViewModels
             catch
             {
                 const string url = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
-                var button = new Button { Content = "下载", HorizontalAlignment = HorizontalAlignment.Right };
-                button.Click += (_, _) => Process.Start(new ProcessStartInfo
-                {
-                    FileName = url,
-                    UseShellExecute = true,
-                });
-                var infoBar = new InfoBar
-                {
-                    Severity = InfoBarSeverity.Warning,
-                    Title = "警告",
-                    Message = "没有找到WebView2运行时，会影响软件必要的功能。",
-                    ActionButton = button,
-                    IsOpen = true,
-                };
-                InfoBarHelper.Show(infoBar);
+                RoutedEventHandler eventHandler = (_, _) => Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true, });
+                InfoBarHelper.ShowWithButton(InfoBarSeverity.Warning, "警告", "没有找到 WebView2 运行时，会影响软件必要的功能。", "下载", eventHandler);
             }
         }
 
@@ -79,21 +70,8 @@ namespace Xunkong.Desktop.ViewModels
                     var version = await _xunkongApiService.CheckUpdateAsync(ChannelType.Development);
                     if (version.Version > XunkongEnvironment.AppVersion && !string.IsNullOrWhiteSpace(version.PackageUrl))
                     {
-                        var button = new Button { Content = "下载", HorizontalAlignment = HorizontalAlignment.Right };
-                        button.Click += (_, _) => Process.Start(new ProcessStartInfo
-                        {
-                            FileName = version.PackageUrl,
-                            UseShellExecute = true,
-                        });
-                        var infoBar = new InfoBar
-                        {
-                            Severity = InfoBarSeverity.Success,
-                            Title = $"新版本 {version.Version}",
-                            Message = version.Abstract,
-                            ActionButton = button,
-                            IsOpen = true,
-                        };
-                        InfoBarHelper.Show(infoBar);
+                        RoutedEventHandler eventHandler = (_, _) => Process.Start(new ProcessStartInfo { FileName = version.PackageUrl, UseShellExecute = true, });
+                        InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, $"新版本 {version.Version}", version.Abstract, "下载", eventHandler);
                     }
                 }
                 catch (Exception ex)
@@ -102,6 +80,69 @@ namespace Xunkong.Desktop.ViewModels
                 }
             }
         }
+
+
+
+
+        private WallpaperInfo? _BackgroundWallpaper;
+        public WallpaperInfo? BackgroundWallpaper
+        {
+            get => _BackgroundWallpaper;
+            set => SetProperty(ref _BackgroundWallpaper, value);
+        }
+
+
+        [ICommand]
+        private void ChangeAppBackgroundWallpaper(string randomOrNext)
+        {
+            if (randomOrNext == "next")
+            {
+                WeakReferenceMessenger.Default.Send(new ChangeBackgroundWallpaperMessage(1));
+            }
+            else
+            {
+                WeakReferenceMessenger.Default.Send(new ChangeBackgroundWallpaperMessage(0));
+            }
+        }
+
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task SaveBackgroundWallpaperAsync()
+        {
+            if (string.IsNullOrWhiteSpace(BackgroundWallpaper?.Url))
+            {
+                return;
+            }
+            try
+            {
+                var storageFile = await ImageCache.Instance.GetFileFromCacheAsync(new Uri(BackgroundWallpaper.Url));
+                var sourcePath = storageFile?.Path;
+                if (string.IsNullOrWhiteSpace(sourcePath))
+                {
+                    InfoBarHelper.Warning("无法下载或缓存失效");
+                    return;
+                }
+                if (!File.Exists(sourcePath))
+                {
+                    InfoBarHelper.Warning("找不到文件");
+                    return;
+                }
+                var destFolder = Path.Combine(XunkongEnvironment.UserDataPath, "Wallpaper");
+                var fileName = BackgroundWallpaper.FileName ?? Path.GetFileName(BackgroundWallpaper.Url);
+                var destPath = Path.Combine(destFolder, fileName);
+                Directory.CreateDirectory(destFolder);
+                File.Copy(sourcePath, destPath, true);
+                RoutedEventHandler eventHandler = (_, _) => Process.Start(new ProcessStartInfo { FileName = destPath, UseShellExecute = true });
+                InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, "已保存", fileName, "打开文件", eventHandler, 3000);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Save background wallpaper.");
+                InfoBarHelper.Error(ex);
+            }
+        }
+
 
 
 

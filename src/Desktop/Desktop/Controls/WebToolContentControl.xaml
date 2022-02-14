@@ -24,21 +24,21 @@
             <StackPanel Orientation="Horizontal">
                 <Button Command="{x:Bind GoBackCommand, Mode=OneTime}"
                         Content="&#xE72B;"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
                         FontSize="16"
                         IsEnabled="{x:Bind _WebView2.CanGoBack}"
-                        Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}" />
+                        Style="{ThemeResource CommandBarFlyoutEllipsisButtonStyle}" />
                 <Button Command="{x:Bind GoForwardCommand, Mode=OneTime}"
                         Content="&#xE72A;"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
                         FontSize="16"
                         IsEnabled="{x:Bind _WebView2.CanGoForward}"
-                        Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}" />
+                        Style="{ThemeResource CommandBarFlyoutEllipsisButtonStyle}" />
                 <Button Command="{x:Bind RefreshCommand, Mode=OneTime}"
                         Content="&#xE72C;"
-                        FontFamily="{StaticResource SymbolThemeFontFamily}"
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
                         FontSize="16"
-                        Style="{StaticResource CommandBarFlyoutEllipsisButtonStyle}" />
+                        Style="{ThemeResource CommandBarFlyoutEllipsisButtonStyle}" />
             </StackPanel>
 
             <TextBox Name="_TextBox_Address"

@@ -14,6 +14,60 @@
              mc:Ignorable="d">
 
 
+    <UserControl.Resources>
+        <Style x:Key="WallpaperPanelButtonStyle"
+               BasedOn="{StaticResource DateTimePickerFlyoutButtonStyle}"
+               TargetType="Button">
+            <Setter Property="Width" Value="28" />
+            <Setter Property="Height" Value="28" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+            <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+        </Style>
+        <Flyout x:Key="WallpaperInfoFlyout" Placement="RightEdgeAlignedBottom">
+            <StackPanel Width="200" Spacing="8">
+                <TextBlock FontSize="16" Text="图片信息" />
+                <MenuFlyoutSeparator />
+                <TextBlock Grid.Column="1">
+                    <Run FontSize="14" Text="{x:Bind vm.BackgroundWallpaper.Title}" />
+                    <LineBreak />
+                    <Run FontSize="12"
+                         Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                         Text="{x:Bind vm.BackgroundWallpaper.Author}" />
+                </TextBlock>
+                <TextBlock FontSize="12"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                           Text="{x:Bind vm.BackgroundWallpaper.Description}"
+                           TextWrapping="Wrap" />
+                <MenuFlyoutSeparator />
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <Button Command="{x:Bind vm.ChangeAppBackgroundWallpaperCommand, Mode=OneTime}"
+                            CommandParameter="next"
+                            Content="&#xE72A;"
+                            FontSize="14"
+                            Style="{ThemeResource WallpaperPanelButtonStyle}"
+                            ToolTipService.ToolTip="下一张" />
+                    <Button Command="{x:Bind vm.ChangeAppBackgroundWallpaperCommand, Mode=OneTime}"
+                            CommandParameter="random"
+                            Content="&#xE895;"
+                            FontSize="14"
+                            Style="{ThemeResource WallpaperPanelButtonStyle}"
+                            ToolTipService.ToolTip="随机一张" />
+                    <Button Command="{x:Bind vm.SaveBackgroundWallpaperCommand, Mode=OneTime}"
+                            Content="&#xE74E;"
+                            FontSize="16"
+                            Style="{ThemeResource WallpaperPanelButtonStyle}"
+                            ToolTipService.ToolTip="保存到本地" />
+                    <HyperlinkButton Content="图源链接"
+                                     NavigateUri="{x:Bind vm.BackgroundWallpaper.Source}"
+                                     ToolTipService.ToolTip="{x:Bind vm.BackgroundWallpaper.SourceDomain}"
+                                     Visibility="{x:Bind vm.BackgroundWallpaper.Source, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
+                </StackPanel>
+            </StackPanel>
+        </Flyout>
+    </UserControl.Resources>
+
+
 
     <Grid>
 
@@ -35,7 +89,76 @@
             </NavigationView.PaneCustomContent>
 
 
-            <NavigationView.MenuItems />
+            <NavigationView.MenuItems>
+                <NavigationViewItemSeparator />
+                <NavigationViewItemHeader Content="祈愿" />
+                <NavigationViewItem Content="祈愿记录管理" Tag="WishlogManagePage">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon Width="36"
+                                    Height="36"
+                                    ShowAsMonochrome="False"
+                                    UriSource="ms-appx:///Assets/Images/Ui_SystemOpenIcon_Gacha.png" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+            </NavigationView.MenuItems>
+
+
+            <NavigationView.PaneFooter>
+                <cc:SwitchPresenter Value="{x:Bind _NavigationView.IsPaneOpen}">
+                    <cc:Case Value="{StaticResource True}">
+                        <Grid Margin="4,0,4,0"
+                              Padding="12,8,12,8"
+                              ColumnSpacing="8"
+                              Height="48"
+                              CornerRadius="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="24" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Path Width="16"
+                                  HorizontalAlignment="Left"
+                                  Data="M128.299 128C92.788 128 64 156.788 64 192.299v639.4C64 867.212 92.788 896 128.299 896H895.7c35.512 0 64.3-28.788 64.3-64.299V192.299C960 156.788 931.212 128 895.701 128H128.299zM128 588.313l178.162-178.162c24.795-24.795 64.996-24.795 89.792 0L817.803 832H128V588.313z m768 231.375L666.385 590.073l64.718-64.718c25.153-25.152 65.933-25.152 91.085 0L896 599.167v220.521zM694.65 471.299l-73.519 73.519L432.653 356.34c-45.064-45.064-118.127-45.064-163.19 0L128 497.803V192h768v316.657l-37.358-37.358c-45.286-45.285-118.707-45.285-163.992 0z"
+                                  Fill="{ThemeResource TextFillColorPrimaryBrush}"
+                                  Stretch="Uniform" />
+                            <TextBlock Grid.Column="1">
+                                <Run FontSize="12" Text="{x:Bind vm.BackgroundWallpaper.Title}" />
+                                <LineBreak />
+                                <Run FontSize="12"
+                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                     Text="{x:Bind vm.BackgroundWallpaper.Author}" />
+                            </TextBlock>
+                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                <Button Command="{x:Bind vm.ChangeAppBackgroundWallpaperCommand, Mode=OneTime}"
+                                        CommandParameter="random"
+                                        Content="&#xE895;"
+                                        FontSize="14"
+                                        Style="{ThemeResource WallpaperPanelButtonStyle}"
+                                        ToolTipService.ToolTip="切换背景图（随机的哦" />
+                                <Button Command="{x:Bind vm.SaveBackgroundWallpaperCommand, Mode=OneTime}"
+                                        Content="&#xE74E;"
+                                        FontSize="16"
+                                        Style="{ThemeResource WallpaperPanelButtonStyle}"
+                                        ToolTipService.ToolTip="保存到本地" />
+                                <Button Content="&#xE76C;"
+                                        Flyout="{StaticResource WallpaperInfoFlyout}"
+                                        FontSize="14"
+                                        Style="{ThemeResource WallpaperPanelButtonStyle}" />
+                            </StackPanel>
+                        </Grid>
+                    </cc:Case>
+                    <cc:Case Value="{StaticResource False}">
+                        <Button Margin="4 0 0 5" Width="40"  Height="36"    Style="{ThemeResource DateTimePickerFlyoutButtonStyle}" Flyout="{StaticResource WallpaperInfoFlyout}">
+                            <Path Width="16"
+                                  HorizontalAlignment="Center"
+                                  Data="M128.299 128C92.788 128 64 156.788 64 192.299v639.4C64 867.212 92.788 896 128.299 896H895.7c35.512 0 64.3-28.788 64.3-64.299V192.299C960 156.788 931.212 128 895.701 128H128.299zM128 588.313l178.162-178.162c24.795-24.795 64.996-24.795 89.792 0L817.803 832H128V588.313z m768 231.375L666.385 590.073l64.718-64.718c25.153-25.152 65.933-25.152 91.085 0L896 599.167v220.521zM694.65 471.299l-73.519 73.519L432.653 356.34c-45.064-45.064-118.127-45.064-163.19 0L128 497.803V192h768v316.657l-37.358-37.358c-45.286-45.285-118.707-45.285-163.992 0z"
+                                  Fill="{ThemeResource TextFillColorPrimaryBrush}"
+                                  Stretch="Uniform" />
+                        </Button>
+                    </cc:Case>
+                </cc:SwitchPresenter>
+
+            </NavigationView.PaneFooter>
 
 
             <Frame Name="_rootFrame" Visibility="Visible" />
@@ -63,7 +186,7 @@
                     <TextBlock x:Name="AppTitle"
                                HorizontalAlignment="Left"
                                VerticalAlignment="Center"
-                               Style="{StaticResource CaptionTextBlockStyle}"
+                               Style="{ThemeResource CaptionTextBlockStyle}"
                                Text="{x:Bind GetAppTitleFromPackage()}" />
                 </Grid>
             </Border>
@@ -93,10 +216,10 @@
                 <!--  通知  -->
                 <Button Name="_Button_Notification"
                         Height="28"
-                        Style="{StaticResource DateTimePickerFlyoutButtonStyle}">
+                        Style="{ThemeResource DateTimePickerFlyoutButtonStyle}">
                     <Grid Margin="2">
                         <Path Data="M904 176H120c-30.9 0-56 25.1-56 56v560c0 30.9 25.1 56 56 56h784c30.9 0 56-25.1 56-56V232c0-30.9-25.1-56-56-56z m0 56v81.6L522.9 476.8c-6.9 2.9-14.9 3-21.9-0.1L120 313.6V232h784zM120 792V374.5l358.9 153.8c10.6 4.5 21.9 6.8 33.1 6.8 11.3 0 22.6-2.3 33.1-6.8L904 374.5V792H120z"
-                              Fill="{StaticResource TextFillColorTertiaryBrush}"
+                              Fill="{ThemeResource TextFillColorTertiaryBrush}"
                               Stretch="Uniform" />
                         <Ellipse Name="_Badge_Notification"
                                  Width="8"
@@ -104,12 +227,8 @@
                                  Margin="0,-3,-3,0"
                                  HorizontalAlignment="Right"
                                  VerticalAlignment="Top"
-                                 Fill="{StaticResource AccentFillColorDefaultBrush}"
-                                 Visibility="Collapsed">
-                            <Ellipse.Transitions>
-                                <ReorderThemeTransition />
-                            </Ellipse.Transitions>
-                        </Ellipse>
+                                 Fill="{ThemeResource AccentFillColorDefaultBrush}"
+                                 Visibility="Collapsed" />
                     </Grid>
                     <Button.Flyout>
                         <Flyout x:Name="_Flyout_Notification"

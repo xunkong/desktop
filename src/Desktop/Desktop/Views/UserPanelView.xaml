@@ -2,6 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:cc="using:CommunityToolkit.WinUI.UI.Controls"
+             xmlns:controls="using:Xunkong.Desktop.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="using:Xunkong.Desktop.Controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,17 +15,17 @@
     <UserControl.Resources>
         <!--  这是派蒙  -->
         <x:String x:Key="AvatarUrlFallback">https://img-static.mihoyo.com/avatar/avatar40004.png</x:String>
-        <x:String x:Key="Commission_64">https://xunkong-1306705684.file.myqcloud.com/genshin/open/image/UI_NPCTopIcon_QuestEvent_64.png</x:String>
-        <x:String x:Key="Domain_64">https://xunkong-1306705684.file.myqcloud.com/genshin/open/image/Domain_64.png</x:String>
-        <x:String x:Key="Resin_64">https://xunkong-1306705684.file.myqcloud.com/genshin/open/image/UI_ItemIcon_210@03059961+8b0e749c.png</x:String>
-        <x:String x:Key="HomeCoin_64">https://xunkong-1306705684.file.myqcloud.com/genshin/open/image/UI_ItemIcon_204@03059961+d17bc741.png</x:String>
+        <x:String x:Key="Commission_64">ms-appx:///Assets/Images/UI_NPCTopIcon_QuestEvent_64.png</x:String>
+        <x:String x:Key="Domain_64">ms-appx:///Assets/Images/Domain_64.png</x:String>
+        <x:String x:Key="Resin_64">ms-appx:///Assets/Images/UI_ItemIcon_210@03059961+8b0e749c.png</x:String>
+        <x:String x:Key="HomeCoin_64">ms-appx:///Assets/Images/UI_ItemIcon_204@03059961+d17bc741.png</x:String>
     </UserControl.Resources>
 
     <Grid>
         <cc:SwitchPresenter TargetType="x:String" Value="{x:Bind NavigationViewPaneOpen}">
             <!--  侧栏打开  -->
             <cc:Case Value="True">
-                <Grid Margin="16,8,16,8">
+                <Grid Height="92" Margin="16,8,16,8">
                     <Grid.RowDefinitions>
                         <RowDefinition />
                         <RowDefinition />
@@ -59,7 +60,7 @@
                                     <cc:Case Value="True">
                                         <StackPanel>
                                             <TextBlock Margin="0,0,0,4" Text="{x:Bind vm.SelectedUserPanelModel.GameRoleInfo.Nickname}" />
-                                            <TextBlock Foreground="{StaticResource TextFillColorSecondaryBrush}" Style="{StaticResource CaptionTextBlockStyle}">
+                                            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Style="{ThemeResource CaptionTextBlockStyle}">
                                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.GameRoleInfo.RegionName}" />
                                                 <Run Text=" " />
                                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.GameRoleInfo.Level}" />
@@ -71,8 +72,8 @@
                                     <cc:Case Value="False">
                                         <StackPanel>
                                             <TextBlock Margin="0,0,0,4" Text="{x:Bind vm.SelectedUserPanelModel.UserInfo.Nickname}" />
-                                            <TextBlock Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                       Style="{ThemeResource CaptionTextBlockStyle}"
                                                        Text="没有已绑定的游戏账号" />
                                         </StackPanel>
                                     </cc:Case>
@@ -95,14 +96,14 @@
                                 Width="28"
                                 Padding="0"
                                 VerticalAlignment="Stretch"
-                                Style="{StaticResource DateTimePickerFlyoutButtonStyle}"
+                                Style="{ThemeResource DateTimePickerFlyoutButtonStyle}"
                                 Visibility="{x:Bind vm.SelectedUserPanelModel.UserInfo, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                             <!--  上下箭头展开图标  -->
                             <Path Width="16"
                                   Height="16"
                                   Margin="4,0,4,0"
                                   Data="M533.333333 776.533333L341.333333 584.533333l29.866667-29.866666 162.133333 162.133333 162.133334-162.133333 29.866666 29.866666-192 192z m0-503.466666l-162.133333 162.133333-29.866667-29.866667L533.333333 213.333333 725.333333 405.333333l-29.866666 29.866667-162.133334-162.133333z"
-                                  Fill="{StaticResource TextFillColorSecondaryBrush}"
+                                  Fill="{ThemeResource TextFillColorSecondaryBrush}"
                                   Stretch="Uniform" />
                             <Button.Resources>
                                 <CollectionViewSource x:Key="UserPanelViewSource"
@@ -131,22 +132,21 @@
                                             <!--  全部刷新  -->
                                             <Button HorizontalAlignment="Center"
                                                     Command="{x:Bind vm.RefreshAllUserPanelModelCommand}"
-                                                    CommandParameter="{StaticResource True}"
-                                                    Style="{StaticResource DateTimePickerFlyoutButtonStyle}">
+                                                    Style="{ThemeResource DateTimePickerFlyoutButtonStyle}">
                                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                                     <TextBlock Margin="0,2,0,0"
                                                                VerticalAlignment="Center"
-                                                               FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                                                Text="&#xE72C;" />
                                                     <TextBlock Text="全部刷新" />
                                                 </StackPanel>
                                             </Button>
                                             <!--  添加账号  -->
-                                            <Button HorizontalAlignment="Center" Style="{StaticResource DateTimePickerFlyoutButtonStyle}">
+                                            <Button HorizontalAlignment="Center" Style="{ThemeResource DateTimePickerFlyoutButtonStyle}">
                                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                                     <TextBlock Margin="0,2,0,0"
                                                                VerticalAlignment="Center"
-                                                               FontFamily="{StaticResource SymbolThemeFontFamily}"
+                                                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                                                Text="&#xE710;" />
                                                     <TextBlock Text="添加账号" />
                                                 </StackPanel>
@@ -186,14 +186,15 @@
                                                                            VerticalAlignment="Center"
                                                                            FontSize="16"
                                                                            Text="{Binding Key.Nickname}" />
+                                                                <!--  删除键  -->
                                                                 <Button Grid.Column="2"
                                                                         Content="&#xE74D;"
-                                                                        FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                                        Style="{StaticResource DateTimePickerFlyoutButtonStyle}">
+                                                                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                                        Style="{ThemeResource DateTimePickerFlyoutButtonStyle}">
                                                                     <Button.Flyout>
                                                                         <Flyout>
-                                                                            <StackPanel Spacing="8">
-                                                                                <TextBlock HorizontalAlignment="Left">
+                                                                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                                                                <TextBlock VerticalAlignment="Center">
                                                                                     <Run Text="删除" />
                                                                                     <Run Text="{Binding Key.Nickname}" />
                                                                                     <Run Text="及关联账号？" />
@@ -201,7 +202,7 @@
                                                                                 <Button Name="_Button_DeleteUserInfo"
                                                                                         HorizontalAlignment="Left"
                                                                                         Click="_Button_DeleteUserInfo_Click"
-                                                                                        Content="删除" />
+                                                                                        Content="确认删除" />
                                                                             </StackPanel>
                                                                         </Flyout>
                                                                     </Button.Flyout>
@@ -217,7 +218,7 @@
                                                     <Grid>
                                                         <StackPanel Margin="0,4,0,4" Spacing="2">
                                                             <TextBlock Text="{x:Bind GameRoleInfo.Nickname}" />
-                                                            <TextBlock FontSize="12" Foreground="{StaticResource TextFillColorSecondaryBrush}">
+                                                            <TextBlock FontSize="12" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
                                                                 <Run Text="{x:Bind GameRoleInfo.RegionName}" />
                                                                 <Run Text="{x:Bind GameRoleInfo.Level}" />
                                                                 <Run Text="级" />
@@ -226,8 +227,8 @@
                                                         <Button HorizontalAlignment="Right"
                                                                 VerticalAlignment="Center"
                                                                 Command="{x:Bind PinOrUnpinTileCommand}"
-                                                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                                Style="{StaticResource DateTimePickerFlyoutButtonStyle}"
+                                                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                                Style="{ThemeResource DateTimePickerFlyoutButtonStyle}"
                                                                 Visibility="{x:Bind PinButtonVisibility}">
                                                             <cc:SwitchPresenter TargetType="x:String" Value="{x:Bind IsPinned}">
                                                                 <cc:Case Value="True">
@@ -257,8 +258,15 @@
                             </Button.Flyout>
                         </Button>
                     </Grid>
+                    <controls:GenshinElementLoading x:Name="_GenshinElementLoading"
+                                                    Grid.Row="1"
+                                                    Height="36"
+                                                    Margin="0,12,0,0"
+                                                    IsActive="{x:Bind vm.IsLoadingActived}"
+                                                    Visibility="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo, Converter={StaticResource ObjectToVisibilityReversedConverter}, FallbackValue=Visible}" />
                     <!--  原粹树脂 洞天宝钱 探索派遣，没有则不显示  -->
                     <Grid Grid.Row="1"
+                          Height="36"
                           Margin="0,12,0,0"
                           Visibility="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
                         <Grid.ColumnDefinitions>
@@ -274,8 +282,8 @@
                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.MaxResin}" />
                             </TextBlock>
                             <TextBlock HorizontalAlignment="Center"
-                                       Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       Style="{ThemeResource CaptionTextBlockStyle}"
                                        Text="原粹树脂" />
                         </StackPanel>
                         <StackPanel Grid.Column="1" HorizontalAlignment="Center">
@@ -285,8 +293,8 @@
                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.MaxHomeCoin}" />
                             </TextBlock>
                             <TextBlock HorizontalAlignment="Center"
-                                       Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       Style="{ThemeResource CaptionTextBlockStyle}"
                                        Text="洞天宝钱" />
                         </StackPanel>
                         <StackPanel Grid.Column="2" HorizontalAlignment="Center">
@@ -296,8 +304,8 @@
                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.MaxExpeditionNumber}" />
                             </TextBlock>
                             <TextBlock HorizontalAlignment="Center"
-                                       Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                       Style="{ThemeResource CaptionTextBlockStyle}"
                                        Text="探索派遣" />
                         </StackPanel>
                         <!--  实时便笺详细按钮  -->
@@ -306,9 +314,9 @@
                                 Padding="0"
                                 VerticalAlignment="Stretch"
                                 Content="&#xE76C;"
-                                FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                Style="{StaticResource DateTimePickerFlyoutButtonStyle}">
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Style="{ThemeResource DateTimePickerFlyoutButtonStyle}">
                             <Button.Flyout>
                                 <!--  实时便笺详细内容  -->
                                 <Flyout Placement="RightEdgeAlignedTop">
@@ -319,12 +327,12 @@
                                                     Padding="0"
                                                     Command="{x:Bind vm.RefreshDailyNoteCommand}"
                                                     Content="&#xE72C;"
-                                                    FontFamily="{StaticResource SymbolThemeFontFamily}"
-                                                    Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                                    Style="{StaticResource DateTimePickerFlyoutButtonStyle}" />
+                                                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                    Style="{ThemeResource DateTimePickerFlyoutButtonStyle}" />
                                             <TextBlock Margin="8,0,0,0"
                                                        VerticalAlignment="Center"
-                                                       Foreground="{StaticResource TextFillColorSecondaryBrush}">
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}">
                                                 <Run Text="更新于" />
                                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.Time, Converter={StaticResource DateTimeOffsetToTimeStringConverter}}" />
                                                 <LineBreak />
@@ -334,21 +342,21 @@
                                         <MenuFlyoutSeparator />
                                         <!--  原粹树脂  -->
                                         <StackPanel Orientation="Horizontal">
-                                            <cc:ImageEx Width="20"
-                                                        Height="20"
-                                                        Margin="4,0,0,0"
-                                                        Source="{StaticResource Resin_64}"
-                                                        Stretch="Uniform" />
+                                            <Image Width="20"
+                                                   Height="20"
+                                                   Margin="4,0,0,0"
+                                                   Source="{StaticResource Resin_64}"
+                                                   Stretch="Uniform" />
                                             <StackPanel Width="200" Margin="12,0,0,0">
                                                 <TextBlock Text="原粹树脂" />
-                                                <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Visibility="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.IsResinFull, Converter={StaticResource BoolToVisibilityReversedConverter}}">
-                                                    <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="将于" />
+                                                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Visibility="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.IsResinFull, Converter={StaticResource BoolToVisibilityReversedConverter}}">
+                                                    <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="将于" />
                                                     <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.ResinRecoveryDayString}" />
                                                     <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.ResinFullTime, Converter={StaticResource DateTimeOffsetToTimeStringConverter}}" />
-                                                    <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="全部恢复" />
+                                                    <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="全部恢复" />
                                                 </TextBlock>
                                                 <TextBlock Foreground="Green"
-                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Style="{ThemeResource CaptionTextBlockStyle}"
                                                            Text="已全部恢复"
                                                            Visibility="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.IsResinFull, Converter={StaticResource BoolToVisibilityConverter}}" />
                                             </StackPanel>
@@ -360,21 +368,21 @@
                                         </StackPanel>
                                         <!--  洞天宝钱  -->
                                         <StackPanel Orientation="Horizontal">
-                                            <cc:ImageEx Width="20"
-                                                        Height="20"
-                                                        Margin="4,0,0,0"
-                                                        Source="{StaticResource HomeCoin_64}"
-                                                        Stretch="Uniform" />
+                                            <Image Width="20"
+                                                   Height="20"
+                                                   Margin="4,0,0,0"
+                                                   Source="{StaticResource HomeCoin_64}"
+                                                   Stretch="Uniform" />
                                             <StackPanel Width="200" Margin="12,0,0,0">
                                                 <TextBlock Text="洞天宝钱" />
-                                                <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Visibility="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.IsHomeCoinFull, Converter={StaticResource BoolToVisibilityReversedConverter}}">
-                                                    <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="将于" />
+                                                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Visibility="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.IsHomeCoinFull, Converter={StaticResource BoolToVisibilityReversedConverter}}">
+                                                    <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="将于" />
                                                     <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.HomeCoinRecoveryDayString}" />
                                                     <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.HomeCoinFullTime, Converter={StaticResource DateTimeOffsetToTimeStringConverter}}" />
-                                                    <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="达到存储上限" />
+                                                    <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="达到存储上限" />
                                                 </TextBlock>
                                                 <TextBlock Foreground="Green"
-                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                           Style="{ThemeResource CaptionTextBlockStyle}"
                                                            Text="已达到存储上限"
                                                            Visibility="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.IsHomeCoinFull, Converter={StaticResource BoolToVisibilityConverter}}" />
                                             </StackPanel>
@@ -386,44 +394,44 @@
                                         </StackPanel>
                                         <!--  每日委托  -->
                                         <StackPanel Orientation="Horizontal">
-                                            <cc:ImageEx Width="20"
-                                                        Height="20"
-                                                        Margin="4,0,0,0"
-                                                        Source="{StaticResource Commission_64}"
-                                                        Stretch="Uniform" />
+                                            <Image Width="20"
+                                                   Height="20"
+                                                   Margin="4,0,0,0"
+                                                   Source="{StaticResource Commission_64}"
+                                                   Stretch="Uniform" />
                                             <StackPanel Width="200" Margin="12,0,0,0">
                                                 <TextBlock Text="每日委托任务" />
                                                 <cc:SwitchPresenter TargetType="x:String" Value="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.IsExtraTaskRewardReceived}">
                                                     <cc:Case Value="True">
-                                                        <TextBlock Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                                        <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                                   Style="{ThemeResource CaptionTextBlockStyle}"
                                                                    Text="奖励已领取" />
                                                     </cc:Case>
                                                     <cc:Case Value="False">
                                                         <cc:SwitchPresenter TargetType="x:String" Value="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.FinishedTaskNumber}">
                                                             <cc:Case Value="0">
                                                                 <TextBlock Foreground="OrangeRed"
-                                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                                           Style="{ThemeResource CaptionTextBlockStyle}"
                                                                            Text="任务未完成" />
                                                             </cc:Case>
                                                             <cc:Case Value="1">
                                                                 <TextBlock Foreground="OrangeRed"
-                                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                                           Style="{ThemeResource CaptionTextBlockStyle}"
                                                                            Text="任务未完成" />
                                                             </cc:Case>
                                                             <cc:Case Value="2">
                                                                 <TextBlock Foreground="OrangeRed"
-                                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                                           Style="{ThemeResource CaptionTextBlockStyle}"
                                                                            Text="任务未完成" />
                                                             </cc:Case>
                                                             <cc:Case Value="3">
                                                                 <TextBlock Foreground="OrangeRed"
-                                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                                           Style="{ThemeResource CaptionTextBlockStyle}"
                                                                            Text="任务未完成" />
                                                             </cc:Case>
                                                             <cc:Case Value="4">
                                                                 <TextBlock Foreground="OrangeRed"
-                                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                                           Style="{ThemeResource CaptionTextBlockStyle}"
                                                                            Text="奖励未领取" />
                                                             </cc:Case>
                                                         </cc:SwitchPresenter>
@@ -438,15 +446,15 @@
                                         </StackPanel>
                                         <!--  值得铭记的强敌  -->
                                         <StackPanel Orientation="Horizontal">
-                                            <cc:ImageEx Width="20"
-                                                        Height="20"
-                                                        Margin="4,0,0,0"
-                                                        Source="{StaticResource Domain_64}"
-                                                        Stretch="Uniform" />
+                                            <Image Width="20"
+                                                   Height="20"
+                                                   Margin="4,0,0,0"
+                                                   Source="{StaticResource Domain_64}"
+                                                   Stretch="Uniform" />
                                             <StackPanel Width="200" Margin="12,0,0,0">
                                                 <TextBlock Text="值得铭记的强敌" />
-                                                <TextBlock Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                                           Style="{StaticResource CaptionTextBlockStyle}"
+                                                <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                           Style="{ThemeResource CaptionTextBlockStyle}"
                                                            Text="本周剩余消耗减半次数" />
                                             </StackPanel>
                                             <TextBlock Width="80" VerticalAlignment="Center">
@@ -457,8 +465,11 @@
                                         </StackPanel>
                                         <MenuFlyoutSeparator />
                                         <!--  探索派遣  -->
-                                        <TextBlock Margin="0,0,0,0" Foreground="{StaticResource TextFillColorSecondaryBrush}">
-                                            <Run Text="探索派遣 (" /><Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.CurrentExpeditionNumber}" /><Run Text="/" /><Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.MaxExpeditionNumber}" /><Run Text=")" />
+                                        <TextBlock Margin="0,0,0,0" Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                            <Run Text="探索派遣 (" />
+                                            <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.CurrentExpeditionNumber}" />
+                                            <Run Text="/" /><Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.MaxExpeditionNumber}" />
+                                            <Run Text=")" />
                                         </TextBlock>
                                         <ItemsRepeater Margin="0,-8,0,0" ItemsSource="{Binding SelectedUserPanelModel.DailyNoteInfo.Expeditions}">
                                             <ItemsRepeater.ItemTemplate>
@@ -478,18 +489,18 @@
                                                         <TextBlock Width="200"
                                                                    Margin="4,0,0,4"
                                                                    VerticalAlignment="Bottom"
-                                                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                                                   Style="{ThemeResource CaptionTextBlockStyle}"
                                                                    Visibility="{Binding IsFinished, Converter={StaticResource BoolToVisibilityReversedConverter}}">
-                                                            <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="将于" />
+                                                            <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="将于" />
                                                             <Run Text="{Binding FinishedDayString}" />
                                                             <Run Text="{Binding FinishedTime, Converter={StaticResource DateTimeOffsetToTimeStringConverter}}" />
-                                                            <Run Foreground="{StaticResource TextFillColorSecondaryBrush}" Text="完成探索任务" />
+                                                            <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="完成探索任务" />
                                                         </TextBlock>
                                                         <TextBlock Width="200"
                                                                    Margin="4,0,0,4"
                                                                    VerticalAlignment="Bottom"
                                                                    Foreground="Green"
-                                                                   Style="{StaticResource CaptionTextBlockStyle}"
+                                                                   Style="{ThemeResource CaptionTextBlockStyle}"
                                                                    Text="已完成探索任务"
                                                                    Visibility="{Binding IsFinished, Converter={StaticResource BoolToVisibilityConverter}}" />
                                                     </StackPanel>

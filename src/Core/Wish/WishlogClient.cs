@@ -16,6 +16,7 @@ namespace Xunkong.Core.Wish
 
         public event EventHandler<(WishType WishType, int Page)>? ProgressChanged;
 
+        public delegate void GetWishlogProgressChangedHandler(WishType WishType, int Page);
 
 
         public WishlogClient(HttpClient? httpClient = null)
@@ -97,7 +98,7 @@ namespace Xunkong.Core.Wish
                 ProgressChanged?.Invoke(this, (type, param.Page));
                 var list = await GetWishlogByParamAsync(baseString, param);
                 result.AddRange(list);
-                if (list.Count == size && list.Last().Id < lastId)
+                if (list.Count == size && list.Last().Id > lastId)
                 {
                     param.Page++;
                     param.EndId = list.Last().Id;

@@ -10,7 +10,7 @@
         xmlns:views="using:Xunkong.Desktop.Views"
         mc:Ignorable="d">
 
-    <Grid Background="{StaticResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
 
 
         <controls:CachedImage x:Name="_Image_Background"
@@ -21,7 +21,7 @@
                               IsHitTestVisible="False"
                               Stretch="UniformToFill" />
 
-        <Rectangle Fill="{StaticResource ControlOnImageFillColorDefaultBrush}" IsHitTestVisible="False" />
+        <Rectangle Fill="{ThemeResource ControlOnImageFillColorDefaultBrush}" IsHitTestVisible="False" />
 
         <views:WindowRootView x:Name="_rootView" />
 
@@ -37,7 +37,7 @@
         <Button Name="_chromeButton"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
-                Style="{StaticResource WindowChromeStyle}"
+                Style="{ThemeResource WindowChromeStyle}"
                 Tapped="_chromeButton_Tapped" />
 
     </Grid>

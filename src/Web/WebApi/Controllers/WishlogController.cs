@@ -44,19 +44,19 @@ namespace Xunkong.Web.Api.Controllers
         /// <param name="wishlog"></param>
         /// <returns></returns>
         [HttpPost("get")]
-        public async Task<ResponseBaseWrapper> GetWishlogAsync([FromBody] WishlogBackupRequestModel wishlog)
+        public async Task<ResponseBaseWrapper> GetWishlogAsync([FromBody] WishlogCloudBackupRequestModel wishlog)
         {
             var uid = wishlog.Uid;
             var currentCount = await _dbContext.WishlogItems.Where(x => x.Uid == uid).CountAsync();
             if (currentCount == 0)
             {
-                throw new XunkongException(ErrorCode.UidNotFound);
+                ResponseBaseWrapper.Ok(new WishlogCloudBackupResult(uid, 0, 0, 0, 0));
             }
             var list = await _dbContext.WishlogItems.AsNoTracking()
                                                     .Where(x => x.Uid == uid && x.Id > wishlog.LastId)
                                                     .OrderBy(x => x.Id)
                                                     .ToListAsync();
-            var result = new WishlogBackupResult(uid, currentCount, list.Count, 0, 0, list);
+            var result = new WishlogCloudBackupResult(uid, currentCount, list.Count, 0, 0, list);
             return ResponseBaseWrapper.Ok(result);
         }
 
@@ -67,7 +67,7 @@ namespace Xunkong.Web.Api.Controllers
         /// <param name="wishlog"></param>
         /// <returns></returns>
         [HttpPost("put")]
-        public async Task<ResponseBaseWrapper> UpdateWishlogAsync([FromBody] WishlogBackupRequestModel wishlog)
+        public async Task<ResponseBaseWrapper> UpdateWishlogAsync([FromBody] WishlogCloudBackupRequestModel wishlog)
         {
             var uid = wishlog.Uid;
             var list = wishlog.List?.Where(x => x.Uid == uid).ToList();
@@ -88,7 +88,7 @@ namespace Xunkong.Web.Api.Controllers
             _dbContext.AddRange(inserting);
             var putCount = await _dbContext.SaveChangesAsync();
             var currentCount = await _dbContext.WishlogItems.Where(x => x.Uid == uid).CountAsync();
-            var result = new WishlogBackupResult(uid, currentCount, 0, putCount, 0, null);
+            var result = new WishlogCloudBackupResult(uid, currentCount, 0, putCount, 0, null);
             return ResponseBaseWrapper.Ok(result);
         }
 
@@ -99,7 +99,7 @@ namespace Xunkong.Web.Api.Controllers
         /// <param name="wishlog"></param>
         /// <returns></returns>
         [HttpPost("delete")]
-        public async Task<ResponseBaseWrapper> DeleteWishlogAsync([FromBody] WishlogBackupRequestModel wishlog)
+        public async Task<ResponseBaseWrapper> DeleteWishlogAsync([FromBody] WishlogCloudBackupRequestModel wishlog)
         {
             var uid = wishlog.Uid;
             using var t = await _dbContext.Database.BeginTransactionAsync();
@@ -117,9 +117,9 @@ namespace Xunkong.Web.Api.Controllers
             }
             if (deleteCount == 0)
             {
-                throw new XunkongException(ErrorCode.UidNotFound);
+                ResponseBaseWrapper.Ok(new WishlogCloudBackupResult(uid, 0, 0, 0, 0));
             }
-            var result = new WishlogBackupResult(uid, 0, 0, 0, deleteCount, null);
+            var result = new WishlogCloudBackupResult(uid, 0, 0, 0, deleteCount, null);
             return ResponseBaseWrapper.Ok(result);
         }
 
@@ -131,16 +131,16 @@ namespace Xunkong.Web.Api.Controllers
         /// <param name="wishlog"></param>
         /// <returns></returns>
         [HttpPost("last")]
-        public async Task<ResponseBaseWrapper> GetLastWishlogAsync([FromBody] WishlogBackupRequestModel wishlog)
+        public async Task<ResponseBaseWrapper> GetLastWishlogAsync([FromBody] WishlogCloudBackupRequestModel wishlog)
         {
             var uid = wishlog.Uid;
             var currentCount = await _dbContext.WishlogItems.Where(x => x.Uid == uid).CountAsync();
             if (currentCount == 0)
             {
-                throw new XunkongException(ErrorCode.UidNotFound);
+                return ResponseBaseWrapper.Ok(new WishlogCloudBackupResult(uid, 0, 0, 0, 0));
             }
             var item = await _dbContext.WishlogItems.AsNoTracking().Where(x => x.Uid == uid).OrderBy(x => x.Id).LastOrDefaultAsync();
-            var result = new WishlogBackupResult(uid, currentCount, 1, 0, 0, new List<WishlogItem> { item! });
+            var result = new WishlogCloudBackupResult(uid, currentCount, 1, 0, 0, new List<WishlogItem> { item! });
             return ResponseBaseWrapper.Ok(result);
         }
 

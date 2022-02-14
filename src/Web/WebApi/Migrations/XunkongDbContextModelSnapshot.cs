@@ -16,7 +16,7 @@ namespace Xunkong.Web.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("ProductVersion", "6.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Xunkong.Core.Hoyolab.DailyNoteInfo", b =>
@@ -104,6 +104,9 @@ namespace Xunkong.Web.Api.Migrations
 
                     b.Property<int>("Element")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("FaceIcon")
                         .HasColumnType("longtext");
@@ -198,6 +201,9 @@ namespace Xunkong.Web.Api.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("Enable")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("GachaIcon")
                         .HasColumnType("longtext");

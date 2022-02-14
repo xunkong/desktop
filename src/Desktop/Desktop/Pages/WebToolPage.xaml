@@ -5,7 +5,7 @@
       xmlns:local="using:Xunkong.Desktop.Pages"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       x:DefaultBindMode="OneWay"
-      Background="{StaticResource CustomPageBackgroundBrush}"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
       DataContext="{Binding RelativeSource={RelativeSource Self}}"
       NavigationCacheMode="Required"
       mc:Ignorable="d">

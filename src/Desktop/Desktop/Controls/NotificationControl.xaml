@@ -23,11 +23,11 @@
 
 
         <StackPanel Margin="8,0,0,0" Orientation="Horizontal">
-            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="通知" />
+            <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="通知" />
             <TextBlock Margin="12,0,0,0"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
-                       Foreground="{StaticResource TextFillColorSecondaryBrush}">
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}">
                 <Run Text="{x:Bind UnreadCount}" />
                 <Run Text="/" />
                 <Run Text="{x:Bind TotalCount}" />
@@ -38,7 +38,7 @@
                 HorizontalAlignment="Right"
                 Click="_Button_ReadAll_Click"
                 Content="全部已读"
-                Style="{StaticResource TextBlockButtonStyle}" />
+                Style="{ThemeResource TextBlockButtonStyle}" />
 
 
         <MenuFlyoutSeparator Grid.Row="1" Margin="-8,0,-8,0" />
@@ -62,16 +62,16 @@
                                                     Value="{Binding HasRead}">
                                     <cc:Case Value="True">
                                         <Border Padding="4,2,4,2"
-                                                Background="{StaticResource SystemControlAcrylicElementBrush}"
+                                                Background="{ThemeResource SystemControlAcrylicElementBrush}"
                                                 CornerRadius="4">
-                                            <TextBlock Foreground="{StaticResource TextFillColorDisabledBrush}" Text="{Binding Category}" />
+                                            <TextBlock Foreground="{ThemeResource TextFillColorDisabledBrush}" Text="{Binding Category}" />
                                         </Border>
                                     </cc:Case>
                                     <cc:Case Value="False">
                                         <Border Padding="4,2,4,2"
-                                                Background="{StaticResource SystemControlAccentAcrylicElementAccentMediumHighBrush}"
+                                                Background="{ThemeResource SystemControlAccentAcrylicElementAccentMediumHighBrush}"
                                                 CornerRadius="4">
-                                            <TextBlock Foreground="{StaticResource SystemRevealAltHighColor}" Text="{Binding Category}" />
+                                            <TextBlock Foreground="{ThemeResource SystemRevealAltHighColor}" Text="{Binding Category}" />
                                         </Border>
                                     </cc:Case>
                                 </cc:SwitchPresenter>
@@ -79,7 +79,7 @@
                                 <TextBlock HorizontalAlignment="Right"
                                            VerticalAlignment="Center"
                                            FontSize="12"
-                                           Foreground="{StaticResource TextFillColorSecondaryBrush}"
+                                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                            Text="{Binding Time, Converter={StaticResource DateTimeOffsetToDateTimeStringConverter}}" />
                                 <Button Name="_Button_NotificationTitle"
                                         Grid.Row="1"
@@ -87,8 +87,8 @@
                                         Click="_Button_NotificationTitle_Click"
                                         Content="{Binding Title}"
                                         FontWeight="{Binding HasRead, Converter={StaticResource NotificationReadStateToFontWeightConverter}}"
-                                        Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                        Style="{StaticResource TextBlockButtonStyle}" />
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Style="{ThemeResource TextBlockButtonStyle}" />
                                 <Button Name="_Button_HasRead"
                                         Grid.Row="1"
                                         Margin="0,0,-10,-8"
@@ -96,8 +96,8 @@
                                         Click="_Button_HasRead_Click"
                                         Content="标为已读"
                                         FontSize="12"
-                                        Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                        Style="{StaticResource TextBlockButtonStyle}"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                        Style="{ThemeResource TextBlockButtonStyle}"
                                         Visibility="{Binding HasRead, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
                                 <MenuFlyoutSeparator Grid.Row="2" />
                             </Grid>
@@ -108,7 +108,7 @@
                            Margin="0,12,0,12"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
-                           Foreground="{StaticResource TextFillColorTertiaryBrush}"
+                           Foreground="{ThemeResource TextFillColorTertiaryBrush}"
                            Text="到此为止了" />
             </StackPanel>
         </ScrollViewer>

@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 using CommunityToolkit.WinUI.UI;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
@@ -95,6 +96,8 @@ namespace Xunkong.Desktop.ViewModels
                 }
                 _EnableDailyNoteNotification = LocalSettingHelper.GetSetting<bool>(SettingKeys.EnableDailyNoteNotification);
                 OnPropertyChanged(nameof(EnableDailyNoteNotification));
+                _DisableBackgroundTaskOutputLog = LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundTaskOutputLog);
+                OnPropertyChanged(nameof(DisableBackgroundTaskOutputLog));
                 _DailyNoteNotification_ResinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_ResinThreshold, 150);
                 OnPropertyChanged(nameof(DailyNoteNotification_ResinThreshold));
                 _DailyNoteNotification_HomeCoinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_HomeCoinThreshold, 0.9);
@@ -132,21 +135,8 @@ namespace Xunkong.Desktop.ViewModels
                 var version = await _xunkongApiService.CheckUpdateAsync(SelectedChannel);
                 if (version.Version > XunkongEnvironment.AppVersion && !string.IsNullOrWhiteSpace(version.PackageUrl))
                 {
-                    var button = new Button { Content = "下载", HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Right };
-                    button.Click += (_, _) => Process.Start(new ProcessStartInfo
-                    {
-                        FileName = version.PackageUrl,
-                        UseShellExecute = true,
-                    });
-                    var infoBar = new InfoBar
-                    {
-                        Severity = InfoBarSeverity.Success,
-                        Title = $"新版本 {version.Version}",
-                        Message = version.Abstract,
-                        ActionButton = button,
-                        IsOpen = true,
-                    };
-                    InfoBarHelper.Show(infoBar);
+                    RoutedEventHandler eventHandler = (_, _) => Process.Start(new ProcessStartInfo { FileName = version.PackageUrl, UseShellExecute = true, });
+                    InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, $"新版本 {version.Version}", version.Abstract, "下载", eventHandler);
                 }
                 else
                 {
@@ -399,6 +389,23 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+
+        private bool _DisableBackgroundTaskOutputLog;
+        public bool DisableBackgroundTaskOutputLog
+        {
+            get => _DisableBackgroundTaskOutputLog;
+            set
+            {
+                if (_DisableBackgroundTaskOutputLog != value)
+                {
+                    LocalSettingHelper.SaveSetting(SettingKeys.DisableBackgroundTaskOutputLog, value);
+                }
+                SetProperty(ref _DisableBackgroundTaskOutputLog, value);
+            }
+        }
+
+
+
         private int _DailyNoteNotification_ResinThreshold;
         public int DailyNoteNotification_ResinThreshold
         {
@@ -442,7 +449,6 @@ namespace Xunkong.Desktop.ViewModels
         {
             try
             {
-                InfoBarHelper.Information("请稍等", 6000);
                 var role = await _hoyolabService.GetLastSelectedOrFirstUserGameRoleInfoAsync();
                 var now = DateTime.UtcNow.AddHours(8);
                 var month = now.Month;
@@ -472,7 +478,6 @@ namespace Xunkong.Desktop.ViewModels
         {
             try
             {
-                InfoBarHelper.Information("请稍等", 2000);
                 var role = await _hoyolabService.GetLastSelectedOrFirstUserGameRoleInfoAsync();
                 var c = await _hoyolabService.GetSpiralAbyssInfoAsync(role, 1);
                 var l = await _hoyolabService.GetSpiralAbyssInfoAsync(role, 2);
@@ -486,67 +491,39 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
-        [ICommand]
-        private void ChangeAppBackgroundWallpaper()
-        {
-            WeakReferenceMessenger.Default.Send(new ChangeBackgroundWallpaperMessage());
-        }
-
-
-
         [ICommand(AllowConcurrentExecutions = false)]
-        private async Task SaveBackgroundWallpaperAsync()
+        private async Task MigrateDatabaseAsync()
         {
-            var wallpaper = WeakReferenceMessenger.Default.Send<RequestMessage<WallpaperInfo?>>()?.Response;
-            if (string.IsNullOrWhiteSpace(wallpaper?.Url))
-            {
-                return;
-            }
             try
             {
-                var storageFile = await ImageCache.Instance.GetFileFromCacheAsync(new Uri(wallpaper.Url));
-                var sourcePath = storageFile?.Path;
-                if (string.IsNullOrWhiteSpace(sourcePath))
-                {
-                    InfoBarHelper.Warning("无法下载或缓存失效");
-                    return;
-                }
-                if (!File.Exists(sourcePath))
-                {
-                    InfoBarHelper.Warning("找不到文件");
-                    return;
-                }
-                var destFolder = Path.Combine(XunkongEnvironment.UserDataPath, "Wallpaper");
-                var fileName = wallpaper.FileName ?? Path.GetFileName(wallpaper.Url);
-                var destPath = Path.Combine(destFolder, fileName);
-                Directory.CreateDirectory(destFolder);
-                File.Copy(sourcePath, destPath, true);
-                var button = new Button
-                {
-                    Content = "打开文件",
-                    HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Right,
-                };
-                button.Click += (_, _) => Process.Start(new ProcessStartInfo
-                {
-                    FileName = destPath,
-                    UseShellExecute = true,
-                });
-                var infobar = new InfoBar
-                {
-                    Severity = InfoBarSeverity.Success,
-                    Title = "已保存",
-                    Message = fileName,
-                    ActionButton = button,
-                    IsOpen = true,
-                };
-                InfoBarHelper.Show(infobar, 3000);
+                using var ctx = _dbContextFactory.CreateDbContext();
+                await ctx.Database.MigrateAsync();
+                InfoBarHelper.Success($"成功");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Save background wallpaper.");
+                _logger.LogError(ex, "MigrateDatabaseAsync.");
                 InfoBarHelper.Error(ex);
             }
         }
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task ClearImageCacheAsync()
+        {
+            try
+            {
+                await ImageCache.Instance.ClearAsync();
+                InfoBarHelper.Success($"成功");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "ClearImageCacheAsync.");
+                InfoBarHelper.Error(ex);
+            }
+        }
+
+
 
 
     }

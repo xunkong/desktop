@@ -9,6 +9,8 @@
         [MaxLength(255)]
         public string? Name { get; set; }
 
+        public bool Enable { get; set; }
+
         public string? Description { get; set; }
 
         [JsonIgnore]

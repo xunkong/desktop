@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="using:Xunkong.Desktop.Pages"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      Background="{StaticResource CustomPageBackgroundBrush}"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
       mc:Ignorable="d">
 
     <Grid RowSpacing="24">
@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Margin="48,24,0,0"
-                   Style="{StaticResource TitleTextBlockStyle}"
+                   Style="{ThemeResource TitleTextBlockStyle}"
                    Text="欢迎使用「寻空」" />
 
         <ScrollViewer Grid.Row="1">
@@ -65,6 +65,7 @@
                         Content="打开文件夹" />
 
                 <TextBlock />
+                <TextBlock Text="点击下方按钮不再显示欢迎界面" />
                 <Button Name="_Button_NotShowWelcomePage"
                         Click="_Button_NotShowWelcomePage_Click"
                         Content="我已了解" />

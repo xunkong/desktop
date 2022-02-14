@@ -79,11 +79,8 @@ namespace Xunkong.Desktop.Views
             await RefreshWebToolNavItemAsync();
             CheckNotifications();
             vm.CheckVersionUpdateAsync();
-            if (LocalSettingHelper.GetSetting<bool>(SettingKeys.HasShownWelcomePage))
-            {
-                vm.CheckWebView2Runtime();
-            }
-            else
+            vm.CheckWebView2Runtime();
+            if (!LocalSettingHelper.GetSetting<bool>(SettingKeys.HasShownWelcomePage))
             {
                 NavigationHelper.NavigateTo(typeof(WelcomePage));
             }
@@ -298,7 +295,11 @@ namespace Xunkong.Desktop.Views
                     var hasNew = await xunkongApiService.GetNotificationsAsync(channel, version);
                     if (hasNew)
                     {
-                        _Badge_Notification.DispatcherQueue.TryEnqueue(() => _TeachingTip_NewNotification.IsOpen = true);
+                        _Badge_Notification.DispatcherQueue.TryEnqueue(() =>
+                        {
+                            _Badge_Notification.Visibility = Visibility.Visible;
+                            _TeachingTip_NewNotification.IsOpen = true;
+                        });
                     }
                 }
                 catch (Exception ex)

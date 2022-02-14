@@ -27,7 +27,7 @@ namespace Xunkong.Web.Api.Filters
 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
-            if (context.ActionArguments["wishlog"] is WishlogBackupRequestModel wishlog)
+            if (context.ActionArguments["wishlog"] is WishlogCloudBackupRequestModel wishlog)
             {
                 var uid = wishlog.Uid;
                 if (string.IsNullOrWhiteSpace(wishlog.Url))

@@ -22,17 +22,21 @@ namespace Xunkong.Desktop.Services
 
         private readonly WishlogService _wishlogService;
 
+        private readonly BackupService _backupService;
+
         public XunkongApiService(ILogger<XunkongApiService> logger,
                                  XunkongApiClient xunkongClient,
                                  IDbContextFactory<XunkongDbContext> dbContextFactory,
                                  DbConnectionFactory<SqliteConnection> dbConnectionFactory,
-                                 WishlogService wishlogService)
+                                 WishlogService wishlogService,
+                                 BackupService backupService)
         {
             _logger = logger;
             _xunkongClient = xunkongClient;
             _dbContextFactory = dbContextFactory;
             _dbConnectionFactory = dbConnectionFactory;
             _wishlogService = wishlogService;
+            _backupService = backupService;
         }
 
 
@@ -90,9 +94,10 @@ namespace Xunkong.Desktop.Services
 
 
 
-        private async Task<string> CheckWishlogAuthkey(int uid)
+        private async Task<string> CheckWishlogAuthkey(int uid, Action<string>? progressHandler = null)
         {
             _logger.LogDebug("Start chech wishlog authkey with uid {Uid}.", uid);
+            progressHandler?.Invoke("检查祈愿记录网址的有效性");
             using var ctx = _dbContextFactory.CreateDbContext();
             var auth = await ctx.WishlogAuthkeys.AsNoTracking().FirstOrDefaultAsync(x => x.Uid == uid);
             if (auth is not null)
@@ -104,11 +109,7 @@ namespace Xunkong.Desktop.Services
                 }
             }
             _logger.LogDebug("Wishlog url of uid {Uid} is expired or not found.", uid);
-            var isSea = uid.ToString()[0] switch
-            {
-                > '5' => true,
-                _ => false,
-            };
+            var isSea = uid.ToString().FirstOrDefault() > '5';
             _logger.LogDebug("Start finding wishlog url of uid {Uid} from genshin log file.", uid);
             var url = await _wishlogService.FindWishlogUrlFromLogFileAsync(isSea);
             var newUid = await _wishlogService.GetUidByWishlogUrl(url);
@@ -118,28 +119,30 @@ namespace Xunkong.Desktop.Services
                 return url;
             }
             _logger.LogDebug("Didn't find wishlog url of uid {Uid} from genshin log file.", uid);
-            throw new XunkongException(ErrorCode.UidNotFound, $"Wishlog url of uid {uid} not found.");
+            throw new XunkongException(ErrorCode.UidNotFound, $"Wishlog url of uid {uid} is expired or not found.");
         }
 
 
 
 
-        public async Task<WishlogBackupResult> GetWishlogBackupLastItemAsync(int uid)
+        public async Task<WishlogCloudBackupResult> GetWishlogBackupLastItemAsync(int uid, Action<string>? progressHandler = null)
         {
             _logger.LogInformation("Start getting wishlog backup last item wish uid {Uid}.", uid);
             var url = await CheckWishlogAuthkey(uid);
             _logger.LogInformation("Pass checking authkey of uid {Uid}.", uid);
-            var model = new WishlogBackupRequestModel { Uid = uid, Url = url };
-            var result = await _xunkongClient.GetWishlogBackupLastItemAsync(model);
+            var model = new WishlogCloudBackupRequestModel { Uid = uid, Url = url };
+            progressHandler?.Invoke("查询云端的最新记录");
+            var result = await _xunkongClient.GetWishlogLastItemFromCloudAsync(model);
+            progressHandler?.Invoke($"云端现有 {result.CurrentCount} 条记录");
             return result;
         }
 
 
 
-        public async Task<WishlogBackupResult> GetWishlogBackupListAsync(int uid, bool getAll = false)
+        public async Task<WishlogCloudBackupResult> GetWishlogBackupListAsync(int uid, Action<string>? progressHandler = null, bool getAll = false)
         {
             _logger.LogInformation("Start getting wishlog backup list wish uid {Uid}, get all {getAll}.", uid, getAll);
-            var url = await CheckWishlogAuthkey(uid);
+            var url = await CheckWishlogAuthkey(uid, progressHandler);
             _logger.LogInformation("Pass checking authkey of uid {Uid}.", uid);
             long lastId = 0;
             using var cnt = _dbConnectionFactory.CreateDbConnection();
@@ -148,36 +151,57 @@ namespace Xunkong.Desktop.Services
                 lastId = await cnt.QueryFirstOrDefaultAsync<long>($"SELECT Id FROM Wishlog_Items WHERE Uid={uid} ORDER BY Id DESC;");
                 _logger.LogDebug("The last wishlog id of uid {Uid} is {Id}.", uid, lastId);
             }
-            var model = new WishlogBackupRequestModel { Uid = uid, Url = url, LastId = lastId };
-            var result = await _xunkongClient.GetWishlogBackupListAsync(model);
+            var model = new WishlogCloudBackupRequestModel { Uid = uid, Url = url, LastId = lastId };
+            progressHandler?.Invoke("下载祈愿记录");
+            var result = await _xunkongClient.GetWishlogListFromCloudAsync(model);
             _logger.LogInformation("Wishlog backup result: Uid {Uid}, Current {CurrentCount}, Get {GetCount}, Put {PutCount}, Delete {DeleteCount}.", result);
             if (result.List?.Any() ?? false)
             {
+                progressHandler?.Invoke("写入数据库");
                 var existing = await cnt.QueryAsync<long>($"SELECT Id FROM Wishlog_Items WHERE Uid={uid};");
                 var inserting = result.List.ExceptBy(existing, x => x.Id).ToList();
+                result.PutCount = inserting.Count;
                 if (inserting.Any())
                 {
                     var insertCount = await cnt.ExecuteAsync("INSERT INTO Wishlog_Items (Uid, Id, WishType, Time, Name, Language, ItemType, RankType, QueryType) VALUES (@Uid, @Id, @WishType, @Time, @Name, @Language, @ItemType, @RankType, @QueryType)", inserting);
                     _logger.LogDebug("Inserted {InsertCount} wishlog items of uid {Uid} to database.", insertCount, uid);
                 }
             }
+            var localCount = await cnt.QueryFirstOrDefaultAsync<int>($"SELECT COUNT(*) FROM Wishlog_Items WHERE Uid={uid}");
+            progressHandler?.Invoke($"本地新增 {result.PutCount} 条，本地现有 {localCount} 条，云端现有 {result.CurrentCount} 条");
             result.List = null;
             return result;
         }
 
 
 
-        public async Task<WishlogBackupResult> PutWishlogListAsync(int uid, bool putAll = false)
+        public async Task<string> GetWishlogAndBackupToLoalAsync(int uid, Action<string>? progressHandler = null)
+        {
+            _logger.LogInformation("Start getting wishlog backup list and backup to local wish uid {Uid}, get all {getAll}.", uid);
+            var url = await CheckWishlogAuthkey(uid, progressHandler);
+            _logger.LogInformation("Pass checking authkey of uid {Uid}.", uid);
+            var model = new WishlogCloudBackupRequestModel { Uid = uid, Url = url, LastId = 0 };
+            progressHandler?.Invoke("备份云端祈愿记录到本地");
+            var result = await _xunkongClient.GetWishlogListFromCloudAsync(model);
+            _logger.LogInformation("Wishlog backup result: Uid {Uid}, Current {CurrentCount}, Get {GetCount}, Put {PutCount}, Delete {DeleteCount}.", result);
+            var backupFile = await _backupService.BackupWishlogItemsAsync(result.Uid, result.List!);
+            return backupFile;
+        }
+
+
+
+        public async Task<WishlogCloudBackupResult> PutWishlogListAsync(int uid, Action<string>? progressHandler = null, bool putAll = false)
         {
             _logger.LogInformation("Start putting wishlog backup list wish uid {Uid}, put all {putAll}.", uid, putAll);
-            var url = await CheckWishlogAuthkey(uid);
+            var url = await CheckWishlogAuthkey(uid, progressHandler);
             _logger.LogInformation("Pass checking authkey of uid {Uid}.", uid);
-            var model = new WishlogBackupRequestModel { Uid = uid, Url = url };
+            var model = new WishlogCloudBackupRequestModel { Uid = uid, Url = url };
             long lastId = 0;
-            WishlogBackupResult result = new(uid, 0, 0, 0, 0, null);
+            WishlogCloudBackupResult result = new(uid, 0, 0, 0, 0, null);
             if (!putAll)
             {
-                result = await _xunkongClient.GetWishlogBackupLastItemAsync(model);
+                progressHandler?.Invoke("查询云端的最新记录");
+                result = await _xunkongClient.GetWishlogLastItemFromCloudAsync(model);
                 lastId = result.List?.LastOrDefault()?.Id ?? 0;
             }
             using var ctx = _dbContextFactory.CreateDbContext();
@@ -185,30 +209,31 @@ namespace Xunkong.Desktop.Services
             if (list.Any())
             {
                 _logger.LogInformation("{Count} wishlog items of uid {Uid} need to backup.", list.Count, uid);
+                progressHandler?.Invoke("上传祈愿记录");
+                int addCount = 0;
                 foreach (var chunk in list.Chunk(10000))
                 {
                     model.List = list;
-                    result = await _xunkongClient.PutWishlogListAsync(model);
+                    result = await _xunkongClient.PutWishlogListToCloudAsync(model);
+                    addCount += result.PutCount;
                     _logger.LogInformation("Wishlog backup result: Uid {Uid}, Current {CurrentCount}, Get {GetCount}, Put {PutCount}, Delete {DeleteCount}.", result);
                 }
             }
-            else
-            {
-                _logger.LogInformation("Don't need to backup wishlog items of uid {Uid}.", uid);
-                throw new XunkongException(ErrorCode.Ok, $"Don't need to backup wishlog items of uid {uid}.");
-            }
+            progressHandler?.Invoke($"上传 {result.PutCount} 条，云端现有 {result.CurrentCount} 条");
             return result;
         }
 
 
-        public async Task<WishlogBackupResult> DeleteWishlogBackupAsync(int uid)
+        public async Task<WishlogCloudBackupResult> DeleteWishlogBackupAsync(int uid, Action<string>? progressHandler = null)
         {
             _logger.LogInformation("Start deleting wishlog backup wish uid {Uid}", uid);
-            var url = await CheckWishlogAuthkey(uid);
+            var url = await CheckWishlogAuthkey(uid, progressHandler);
             _logger.LogInformation("Pass checking authkey of uid {Uid}", uid);
-            var model = new WishlogBackupRequestModel { Uid = uid, Url = url };
-            var result = await _xunkongClient.DeleteWishlogBackupAsync(model);
+            var model = new WishlogCloudBackupRequestModel { Uid = uid, Url = url };
+            progressHandler?.Invoke("发送删除请求");
+            var result = await _xunkongClient.DeleteWishlogInCloudAsync(model);
             _logger.LogInformation("Wishlog backup result: Uid {Uid}, Current {CurrentCount}, Get {GetCount}, Put {PutCount}, Delete {DeleteCount}.", result);
+            progressHandler?.Invoke($"已删除 {result.Uid} 祈愿记录 {result.DeleteCount} 条");
             return result;
         }
 
@@ -298,9 +323,16 @@ namespace Xunkong.Desktop.Services
         #region Genshin Wallpaper
 
 
-        public async Task<WallpaperInfo?> GetWallpaperInfoAsync(int excludeId = 0)
+        public async Task<WallpaperInfo?> GetWallpaperInfoAsync(int randomOrNext, int excludeId = 0)
         {
-            return await _xunkongClient.GetWallpaperInfoAsync(excludeId);
+            if (randomOrNext == 0)
+            {
+                return await _xunkongClient.GetRandomWallpaperAsync(excludeId);
+            }
+            else
+            {
+                return await _xunkongClient.GetNextWallpaperAsync(excludeId);
+            }
         }
 
 

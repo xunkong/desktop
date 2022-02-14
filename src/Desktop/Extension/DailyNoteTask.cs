@@ -2,16 +2,7 @@
 using Dapper;
 using Microsoft.Data.Sqlite;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Storage;
-using Windows.UI.StartScreen;
 using Xunkong.Core.Hoyolab;
-using Xunkong.Desktop.Models;
 
 namespace Xunkong.Desktop.Extension
 {

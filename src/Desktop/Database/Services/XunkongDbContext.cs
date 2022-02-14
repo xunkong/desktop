@@ -56,6 +56,8 @@ namespace Xunkong.Desktop.Services
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<WishlogItem>().HasKey(x => new { x.Uid, x.Id });
             modelBuilder.Entity<WishlogAuthkeyItem>().HasKey(x => x.Uid);
+            modelBuilder.Entity<CharacterInfo>().Ignore(x => x.Enable);
+            modelBuilder.Entity<WeaponInfo>().Ignore(x => x.Enable);
             modelBuilder.Entity<WishEventInfo>().Property(x => x.Rank5UpItems).HasConversion(list => string.Join(",", list), s => s.Split(",", StringSplitOptions.None).ToList());
             modelBuilder.Entity<WishEventInfo>().Property(x => x.Rank4UpItems).HasConversion(list => string.Join(",", list), s => s.Split(",", StringSplitOptions.None).ToList());
             modelBuilder.Entity<SpiralAbyssRank>(e =>

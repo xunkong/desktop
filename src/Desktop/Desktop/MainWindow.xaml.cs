@@ -50,8 +50,7 @@ namespace Xunkong.Desktop
             InfoBarHelper.Initialize(_InfoBarContainer);
             Hwnd = WindowNative.GetWindowHandle(this);
             InitializeWindowSize();
-            WeakReferenceMessenger.Default.Register<ChangeBackgroundWallpaperMessage>(this, (_, _) => RefreshBackgroundWallpaper(true));
-            WeakReferenceMessenger.Default.Register<RequestMessage<WallpaperInfo?>>(this, (_, e) => e.Reply(_wallpaperInfo));
+            WeakReferenceMessenger.Default.Register<ChangeBackgroundWallpaperMessage>(this, (_, e) => RefreshBackgroundWallpaper(e.RandomOrNext, true));
         }
 
 
@@ -85,6 +84,7 @@ namespace Xunkong.Desktop
                 rcNormalPosition = rect,
             };
             User32.SetWindowPlacement(Hwnd, ref wp);
+            User32.SetWindowText(Hwnd, XunkongEnvironment.AppName);
         }
 
 
@@ -134,17 +134,21 @@ namespace Xunkong.Desktop
 
 
 
-        private void RefreshBackgroundWallpaper(bool showError = false)
+        private void RefreshBackgroundWallpaper(int randomOrNext = 0, bool showError = false)
         {
             Task.Run(async () =>
             {
                 try
                 {
                     var client = App.Current.Services.GetService<XunkongApiService>()!;
-                    var image = await client.GetWallpaperInfoAsync(_wallpaperInfo?.Id ?? 0);
+                    var image = await client.GetWallpaperInfoAsync(randomOrNext, _wallpaperInfo?.Id ?? 0);
                     if (!string.IsNullOrWhiteSpace(image?.Url))
                     {
-                        DispatcherQueue.TryEnqueue(() => _Image_Background.Source = image.Url);
+                        DispatcherQueue.TryEnqueue(() =>
+                        {
+                            _Image_Background.Source = image.Url; ;
+                            WeakReferenceMessenger.Default.Send(image);
+                        });
                         _wallpaperInfo = image;
                         _logger.LogInformation($"Select background image:\n{image.Url}");
                     }

@@ -1,0 +1,96 @@
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Xunkong.Core.Metadata;
+using Xunkong.Core.Wish;
+using Xunkong.Desktop.Models;
+
+namespace Xunkong.Desktop.ViewModels
+{
+    internal class WishEventStatsViewModel : ObservableObject
+    {
+
+
+        private readonly ILogger<WishEventStatsViewModel> _logger;
+
+        private readonly WishlogService _wishlogService;
+
+        private readonly XunkongApiService _xunkongApiService;
+
+        public WishEventStatsViewModel(ILogger<WishEventStatsViewModel> logger, WishlogService wishlogService, XunkongApiService xunkongApiService)
+        {
+            _logger = logger;
+            _wishlogService = wishlogService;
+            _xunkongApiService = xunkongApiService;
+        }
+
+
+        private ObservableCollection<WishEventStatsModel> _CharacterEventStatsList;
+        public ObservableCollection<WishEventStatsModel> CharacterEventStatsList
+        {
+            get => _CharacterEventStatsList;
+            set => SetProperty(ref _CharacterEventStatsList, value);
+        }
+
+
+        private bool _IsLoading;
+        public bool IsLoading
+        {
+            get => _IsLoading;
+            set => SetProperty(ref _IsLoading, value);
+        }
+
+
+
+        public async Task InitializeCharacterDataAsync(int uid = 0)
+        {
+            try
+            {
+                IsLoading = true;
+                CharacterEventStatsList?.Clear();
+                await Task.Delay(100);
+                var stats = await _wishlogService.GetCharacterWishEventStatsModelsByUidAsync(uid);
+                var collection = new ObservableCollection<WishEventStatsModel>(stats ?? new());
+                CharacterEventStatsList = collection;
+            }
+            catch (Exception ex)
+            {
+                InfoBarHelper.Error(ex);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+
+        public async Task InitializeWeaponDataAsync(int uid = 0)
+        {
+            try
+            {
+                IsLoading = true;
+                CharacterEventStatsList?.Clear();
+                await Task.Delay(100);
+                var stats = await _wishlogService.GetWeaponWishEventStatsModelsByUidAsync(uid);
+                var collection = new ObservableCollection<WishEventStatsModel>(stats ?? new());
+                CharacterEventStatsList = collection;
+            }
+            catch (Exception ex)
+            {
+                InfoBarHelper.Error(ex);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+
+
+
+
+    }
+}

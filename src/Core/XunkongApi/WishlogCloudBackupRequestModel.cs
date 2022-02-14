@@ -2,7 +2,7 @@
 
 namespace Xunkong.Core.XunkongApi
 {
-    public class WishlogBackupRequestModel
+    public class WishlogCloudBackupRequestModel
     {
 
         public int Uid { get; set; }

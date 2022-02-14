@@ -152,34 +152,34 @@ namespace Xunkong.Core.XunkongApi
 
 
 
-        #region Wishlog Backup
+        #region Wishlog Cloud Backup
 
 
-        public async Task<WishlogBackupResult> GetWishlogBackupLastItemAsync(WishlogBackupRequestModel wishlogDto)
+        public async Task<WishlogCloudBackupResult> GetWishlogLastItemFromCloudAsync(WishlogCloudBackupRequestModel wishlogDto)
         {
             var url = $"{BaseUrl}/{ApiVersion}/wishlog/last";
-            return await CommonPostAsync<WishlogBackupResult>(url, wishlogDto);
+            return await CommonPostAsync<WishlogCloudBackupResult>(url, wishlogDto);
         }
 
 
-        public async Task<WishlogBackupResult> GetWishlogBackupListAsync(WishlogBackupRequestModel wishlogDto)
+        public async Task<WishlogCloudBackupResult> GetWishlogListFromCloudAsync(WishlogCloudBackupRequestModel wishlogDto)
         {
             var url = $"{BaseUrl}/{ApiVersion}/wishlog/get";
-            return await CommonPostAsync<WishlogBackupResult>(url, wishlogDto);
+            return await CommonPostAsync<WishlogCloudBackupResult>(url, wishlogDto);
         }
 
 
-        public async Task<WishlogBackupResult> PutWishlogListAsync(WishlogBackupRequestModel wishlogDto)
+        public async Task<WishlogCloudBackupResult> PutWishlogListToCloudAsync(WishlogCloudBackupRequestModel wishlogDto)
         {
             var url = $"{BaseUrl}/{ApiVersion}/wishlog/put";
-            return await CommonPostAsync<WishlogBackupResult>(url, wishlogDto);
+            return await CommonPostAsync<WishlogCloudBackupResult>(url, wishlogDto);
         }
 
 
-        public async Task<WishlogBackupResult> DeleteWishlogBackupAsync(WishlogBackupRequestModel wishlogDto)
+        public async Task<WishlogCloudBackupResult> DeleteWishlogInCloudAsync(WishlogCloudBackupRequestModel wishlogDto)
         {
             var url = $"{BaseUrl}/{ApiVersion}/wishlog/delete";
-            return await CommonPostAsync<WishlogBackupResult>(url, wishlogDto);
+            return await CommonPostAsync<WishlogCloudBackupResult>(url, wishlogDto);
         }
 
 
@@ -224,9 +224,16 @@ namespace Xunkong.Core.XunkongApi
         #region Genshin Wallpaper
 
 
-        public async Task<WallpaperInfo?> GetWallpaperInfoAsync(int excludeId = 0)
+        public async Task<WallpaperInfo?> GetRandomWallpaperAsync(int excludeId = 0)
         {
             var url = $"{BaseUrl}/{ApiVersion}/genshin/wallpaper/random?excludeId={excludeId}";
+            return await CommonGetAsync<WallpaperInfo>(url);
+        }
+
+
+        public async Task<WallpaperInfo?> GetNextWallpaperAsync(int excludeId = 0)
+        {
+            var url = $"{BaseUrl}/{ApiVersion}/genshin/wallpaper/next?excludeId={excludeId}";
             return await CommonGetAsync<WallpaperInfo>(url);
         }
 

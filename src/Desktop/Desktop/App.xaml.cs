@@ -44,6 +44,7 @@ namespace Xunkong.Desktop
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             Log.Fatal(e.Exception, "App crash.");
+            Log.CloseAndFlush();
         }
 
         /// <summary>
@@ -83,8 +84,7 @@ namespace Xunkong.Desktop
             ConfigureDatabase(sc);
             ConfigureServices(sc);
 
-            sc.AddTransient(_ => new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
-
+            sc.AddSingleton(_ => new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
             return sc.BuildServiceProvider();
         }
 
@@ -188,11 +188,14 @@ namespace Xunkong.Desktop
             sc.AddTransient<SettingViewModel>();
             sc.AddTransient<UserPanelViewModel>();
             sc.AddTransient<WindowRootViewModel>();
+            sc.AddTransient<WishlogManageViewModel>();
+            sc.AddTransient<WishEventStatsViewModel>();
 
-            sc.AddTransient<HoyolabService>();
-            sc.AddTransient<UserSettingService>();
-            sc.AddTransient<WishlogService>();
-            sc.AddTransient<XunkongApiService>();
+            sc.AddSingleton<HoyolabService>();
+            sc.AddSingleton<UserSettingService>();
+            sc.AddSingleton<WishlogService>();
+            sc.AddSingleton<XunkongApiService>();
+            sc.AddSingleton<BackupService>();
         }
 
 

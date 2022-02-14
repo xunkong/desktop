@@ -10,7 +10,7 @@ namespace Xunkong.Desktop.Helpers
     internal class TileHelper
     {
 
-        private static readonly string BaseUrl = "https://xunkong-1306705684.file.myqcloud.com/genshin/open/image/";
+        private static readonly string BasePath = "ms-appx:///Assets/Images/";
         private static readonly string Commission_64 = "UI_NPCTopIcon_QuestEvent_64.png";
         private static readonly string Domain_64 = "Domain_64.png";
         private static readonly string Resin_64 = "UI_ItemIcon_210@03059961+8b0e749c.png";
@@ -104,7 +104,7 @@ namespace Xunkong.Desktop.Helpers
             {
                 Visual = new TileVisual
                 {
-                    BaseUri = new Uri(BaseUrl),
+                    BaseUri = new Uri(BasePath),
                     // 小磁贴
                     TileSmall = new TileBinding
                     {

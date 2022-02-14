@@ -54,7 +54,7 @@ namespace Xunkong.Core.Wish
         /// </summary>
         [NotMapped]
         [JsonInclude, JsonPropertyName("time")]
-        public string TimeString { get; private set; }
+        public string _TimeString { get; private set; }
 
         /// <summary>
         /// 物品名称
@@ -112,7 +112,7 @@ namespace Xunkong.Core.Wish
                 '7' => 1,
                 _ => 8,
             };
-            TimeString = Time.UtcDateTime.AddHours(offset).ToString("yyyy-MM-dd HH:mm:ss");
+            _TimeString = Time.UtcDateTime.AddHours(offset).ToString("yyyy-MM-dd HH:mm:ss");
         }
 
         public void OnDeserialized()
@@ -123,7 +123,7 @@ namespace Xunkong.Core.Wish
                 '7' => 1,
                 _ => 8,
             };
-            var time = DateTime.Parse(TimeString);
+            var time = DateTime.Parse(_TimeString);
             Time = new DateTimeOffset(time, TimeSpan.FromHours(offset));
         }
     }

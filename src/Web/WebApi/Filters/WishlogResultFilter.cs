@@ -28,7 +28,7 @@ namespace Xunkong.Web.Api.Filters
             {
                 if (j.Value is ResponseBaseWrapper data)
                 {
-                    if (data.Data is WishlogBackupResult result)
+                    if (data.Data is WishlogCloudBackupResult result)
                     {
                         record.Uid = result.Uid;
                         record.Operation = operation;

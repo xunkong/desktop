@@ -1,4 +1,4 @@
-﻿namespace Xunkong.Desktop.Models
+﻿namespace Xunkong.Desktop.Extension
 {
     public class SettingKeys
     {
@@ -29,6 +29,8 @@
         public const string HasShownWelcomePage = nameof(HasShownWelcomePage);
 
         public const string EnableDailyNoteNotification = nameof(EnableDailyNoteNotification);
+
+        public const string DisableBackgroundTaskOutputLog = nameof(DisableBackgroundTaskOutputLog);
 
         public const string DailyNoteNotification_ResinThreshold = nameof(DailyNoteNotification_ResinThreshold);
 
