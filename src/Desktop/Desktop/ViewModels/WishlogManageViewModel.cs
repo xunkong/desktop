@@ -77,6 +77,7 @@ namespace Xunkong.Desktop.ViewModels
             {
                 IsPageLoadingActive = true;
                 WishlogPanelList.Clear();
+                await Task.Delay(100);
                 var uids = await _wishlogService.GetAllUidsAsync();
                 if (!uids.Any())
                 {
@@ -451,6 +452,44 @@ namespace Xunkong.Desktop.ViewModels
             NavigationHelper.NavigateTo(typeof(WishEventStatsPage), model.Uid, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
         }
 
+
+
+        public async Task ImportWishlogItemsFromJsonFile(IEnumerable<string> files)
+        {
+            IsPageLoadingActive = true;
+            int count = 0;
+            foreach (var file in files)
+            {
+                try
+                {
+                    if (Path.GetExtension(file).ToLower() == ".json")
+                    {
+                        var result = await _wishlogService.ImportFromJsonFile(file);
+                        InfoBarHelper.Success(result, 5000);
+                        count++;
+                        continue;
+                    }
+                    if (Path.GetExtension(file).ToLower() == ".xlsx")
+                    {
+                        var result = await _wishlogService.ImportFromExcelFile(file);
+                        InfoBarHelper.Success(result, 5000);
+                        count++;
+                        continue;
+                    }
+                    InfoBarHelper.Warning("仅支持 Excel 或 Json 文件", 3000);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "ImportWishlogItemsFromJsonFile");
+                    InfoBarHelper.Error(ex);
+                }
+            }
+            if (count > 0)
+            {
+                await RefreshWishlogPanelAsync();
+            }
+            IsPageLoadingActive = false;
+        }
 
 
 

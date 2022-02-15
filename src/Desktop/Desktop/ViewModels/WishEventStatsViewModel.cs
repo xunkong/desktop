@@ -28,11 +28,11 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
-        private ObservableCollection<WishEventStatsModel> _CharacterEventStatsList;
-        public ObservableCollection<WishEventStatsModel> CharacterEventStatsList
+        private ObservableCollection<WishEventStatsModel> _WishEventStatsList;
+        public ObservableCollection<WishEventStatsModel> WishEventStatsList
         {
-            get => _CharacterEventStatsList;
-            set => SetProperty(ref _CharacterEventStatsList, value);
+            get => _WishEventStatsList;
+            set => SetProperty(ref _WishEventStatsList, value);
         }
 
 
@@ -50,11 +50,11 @@ namespace Xunkong.Desktop.ViewModels
             try
             {
                 IsLoading = true;
-                CharacterEventStatsList?.Clear();
+                WishEventStatsList?.Clear();
                 await Task.Delay(100);
                 var stats = await _wishlogService.GetCharacterWishEventStatsModelsByUidAsync(uid);
                 var collection = new ObservableCollection<WishEventStatsModel>(stats ?? new());
-                CharacterEventStatsList = collection;
+                WishEventStatsList = collection;
             }
             catch (Exception ex)
             {
@@ -72,11 +72,11 @@ namespace Xunkong.Desktop.ViewModels
             try
             {
                 IsLoading = true;
-                CharacterEventStatsList?.Clear();
+                WishEventStatsList?.Clear();
                 await Task.Delay(100);
                 var stats = await _wishlogService.GetWeaponWishEventStatsModelsByUidAsync(uid);
                 var collection = new ObservableCollection<WishEventStatsModel>(stats ?? new());
-                CharacterEventStatsList = collection;
+                WishEventStatsList = collection;
             }
             catch (Exception ex)
             {

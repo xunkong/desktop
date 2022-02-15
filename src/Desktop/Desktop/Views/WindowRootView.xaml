@@ -41,13 +41,13 @@
                            TextWrapping="Wrap" />
                 <MenuFlyoutSeparator />
                 <StackPanel Orientation="Horizontal" Spacing="4">
-                    <Button Command="{x:Bind vm.ChangeAppBackgroundWallpaperCommand, Mode=OneTime}"
+                    <Button Command="{x:Bind vm.ChangeBackgroundWallpaperCommand, Mode=OneTime}"
                             CommandParameter="next"
                             Content="&#xE72A;"
                             FontSize="14"
                             Style="{ThemeResource WallpaperPanelButtonStyle}"
                             ToolTipService.ToolTip="下一张" />
-                    <Button Command="{x:Bind vm.ChangeAppBackgroundWallpaperCommand, Mode=OneTime}"
+                    <Button Command="{x:Bind vm.ChangeBackgroundWallpaperCommand, Mode=OneTime}"
                             CommandParameter="random"
                             Content="&#xE895;"
                             FontSize="14"
@@ -129,7 +129,7 @@
                                      Text="{x:Bind vm.BackgroundWallpaper.Author}" />
                             </TextBlock>
                             <StackPanel Grid.Column="2" Orientation="Horizontal">
-                                <Button Command="{x:Bind vm.ChangeAppBackgroundWallpaperCommand, Mode=OneTime}"
+                                <Button Command="{x:Bind vm.ChangeBackgroundWallpaperCommand, Mode=OneTime}"
                                         CommandParameter="random"
                                         Content="&#xE895;"
                                         FontSize="14"

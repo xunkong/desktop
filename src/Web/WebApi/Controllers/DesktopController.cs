@@ -58,6 +58,48 @@ namespace Xunkong.Web.Api.Controllers
         }
 
 
+        [HttpGet("AppInstaller")]
+        public async Task<ActionResult<string>> GetAppInstallerContentAsync([FromQuery] ChannelType channel = ChannelType.All, [FromQuery] string? version = null)
+        {
+            var key = $"desktop_appinstaller_{channel}_{version}";
+            if (_cache.TryGetValue(key, out string result))
+            {
+                if (string.IsNullOrWhiteSpace(result))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return result;
+                }
+            }
+            else
+            {
+                Version.TryParse(version, out var v);
+                var vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => channel.HasFlag(x.Channel) && x.Version == v).OrderByDescending(x => x.Version).FirstOrDefaultAsync();
+                if (vm is null)
+                {
+                    vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => channel.HasFlag(x.Channel)).OrderByDescending(x => x.Version).FirstOrDefaultAsync();
+                }
+                if (vm is null)
+                {
+                    _cache.Set(key, "", TimeSpan.FromMinutes(15));
+                    return NotFound();
+                }
+                else
+                {
+                    if (!_cache.TryGetValue("template.appinstaller", out string template))
+                    {
+                        template = await System.IO.File.ReadAllTextAsync("template.appinstaller");
+                        _cache.Set("template.appinstaller", template);
+                    }
+                    result = template.Replace("{AppVersion}", vm.Version.ToString()).Replace("{PackageUrl}", vm.PackageUrl);
+                    _cache.Set(key, result, TimeSpan.FromMinutes(15));
+                    return result;
+                }
+            }
+        }
+
 
 
         [HttpGet("Changelog")]

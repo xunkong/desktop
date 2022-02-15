@@ -39,7 +39,6 @@ namespace Xunkong.Desktop.ViewModels
             _userSettingService = userSettingService;
             _hoyolabService = hoyolabService;
             _xunkongApiService = xunkongApiService;
-            WeakReferenceMessenger.Default.Register<WallpaperInfo>(this, (_, e) => BackgroundWallpaper = e);
         }
 
 
@@ -92,16 +91,37 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
-        [ICommand]
-        private void ChangeAppBackgroundWallpaper(string randomOrNext)
+        [ICommand(AllowConcurrentExecutions = false)]
+        public async Task ChangeBackgroundWallpaperAsync(string randomOrNext)
         {
             if (randomOrNext == "next")
             {
-                WeakReferenceMessenger.Default.Send(new ChangeBackgroundWallpaperMessage(1));
+                await ChangeBackgroundWallpaperAsync(1, true);
             }
             else
             {
-                WeakReferenceMessenger.Default.Send(new ChangeBackgroundWallpaperMessage(0));
+                await ChangeBackgroundWallpaperAsync(0, true);
+            }
+        }
+
+        private async Task ChangeBackgroundWallpaperAsync(int randomOrNext = 0, bool showError = false)
+        {
+            try
+            {
+                var image = await _xunkongApiService.GetWallpaperInfoAsync(randomOrNext, BackgroundWallpaper?.Id ?? 0);
+                if (!string.IsNullOrWhiteSpace(image?.Url))
+                {
+                    WeakReferenceMessenger.Default.Send(image);
+                    BackgroundWallpaper = image;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Refresh app background image.");
+                if (showError)
+                {
+                    InfoBarHelper.Error(ex);
+                }
             }
         }
 

@@ -149,18 +149,27 @@
                               Icon="ContactInfo"
                               Label="更新元数据"
                               ToolTipService.ToolTip="更新角色、武器、卡池等信息" />
-                <AppBarButton Icon="Download"
-                              Label="导入记录"
-                              Visibility="Collapsed" />
+                <AppBarButton Name="_AppBarButton_Import"
+                              Click="_AppBarButton_Import_Click"
+                              Icon="Download"
+                              Label="导入记录" />
 
             </StackPanel>
         </Grid>
 
 
-        <GridView Grid.Row="1"
+        <GridView Name="_GridView_WishlogPanel"
+                  Grid.Row="1"
                   Padding="48,24,48,24"
+                  AllowDrop="True"
+                  DragLeave="_GridView_WishlogPanel_DragLeave"
+                  DragOver="_GridView_WishlogPanel_DragOver"
+                  Drop="_GridView_WishlogPanel_Drop"
                   ItemsSource="{x:Bind vm.WishlogPanelList}"
                   SelectionMode="None">
+            <GridView.ItemContainerTransitions>
+                <EntranceThemeTransition />
+            </GridView.ItemContainerTransitions>
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="models:WishlogPanelModel">
                     <Grid Width="444"
@@ -299,6 +308,32 @@
             </GridView.ItemTemplate>
         </GridView>
 
+
+        <Grid Name="_Grid_ImportTip"
+              Grid.Row="1"
+              Background="{ThemeResource CustomControlBackgroundAcrylicBrush}"
+              IsHitTestVisible="False"
+              Visibility="Collapsed">
+            <Rectangle Margin="100"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Stretch"
+                       Stroke="{ThemeResource TextFillColorTertiaryBrush}"
+                       StrokeDashArray="4"
+                       StrokeDashCap="Flat"
+                       StrokeThickness="4" />
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="16">
+                <TextBlock HorizontalAlignment="Center"
+                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                           FontSize="40"
+                           Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                           Text="&#xE896;" />
+                <TextBlock HorizontalAlignment="Center"
+                           Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                           Text="拖入 Excel 或 Json 文件" />
+            </StackPanel>
+        </Grid>
 
 
         <controls:GenshinElementLoading Grid.Row="1"

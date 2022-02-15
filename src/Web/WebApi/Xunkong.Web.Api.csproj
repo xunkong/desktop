@@ -42,6 +42,12 @@
 		<ProjectReference Include="..\..\Core\Xunkong.Core.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="template.appinstaller">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 	<ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

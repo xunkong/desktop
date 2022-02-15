@@ -24,10 +24,10 @@ namespace Xunkong.Core.Wish
         public int WishlogCount { get; set; }
 
 
-        public DateTimeOffset FirstItemTime { get; set; }
+        public DateTimeOffset? FirstItemTime { get; set; }
 
 
-        public DateTimeOffset LastItemTime { get; set; }
+        public DateTimeOffset? LastItemTime { get; set; }
 
 
         public List<WishlogItem> WishlogList { get; set; }

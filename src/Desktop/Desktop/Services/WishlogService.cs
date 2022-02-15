@@ -305,8 +305,67 @@ namespace Xunkong.Desktop.Services
 
 
 
+        public async Task<string> ImportFromJsonFile(string file)
+        {
+            var str = await File.ReadAllTextAsync(file);
+            var importer = new JsonImporter();
+            var list = importer.Deserialize(str);
+            if (!list.Any())
+            {
+                throw new XunkongException(ErrorCode.InternalException, "No wishlogs in the imported file.");
+            }
+            if (list.Any(x => x.Uid == 0))
+            {
+                throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have none uid item.");
+            }
+            if (list.DistinctBy(x => x.Uid).Count() > 1)
+            {
+                throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have more than one uid.");
+            }
+            var uid = list.FirstOrDefault()!.Uid;
+            using var ctx = _dbContextFactory.CreateDbContext();
+            if (await ctx.WishlogItems.AnyAsync(x => x.Uid == uid))
+            {
+                await _backupService.BackupWishlogItemsAsync(uid);
+            }
+            var existing = await ctx.WishlogItems.Where(x => x.Uid == uid).Select(x => x.Id).ToListAsync();
+            var adding = list.ExceptBy(existing, x => x.Id).ToList();
+            ctx.AddRange(adding);
+            await ctx.SaveChangesAsync();
+            var addCount = adding.Count;
+            var totalCount = await ctx.WishlogItems.Where(x => x.Uid == uid).CountAsync();
+            return $"账号 {uid} 此次导入新增 {addCount} 条记录，导入后总计 {totalCount} 条";
+        }
 
 
+
+
+        public async Task<string> ImportFromExcelFile(string file)
+        {
+            var items = await MiniExcelLibs.MiniExcel.QueryAsync<WishlogItemExcelModel>(file, "原始数据");
+            var list = items.Adapt<List<WishlogItem>>().Where(x => x.Uid != 0).ToList();
+            if (!list.Any())
+            {
+                throw new XunkongException(ErrorCode.InternalException, "No wishlogs in the imported file.");
+            }
+            if (list.DistinctBy(x => x.Uid).Count() > 1)
+            {
+                throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have more than one uid.");
+            }
+            var uid = list.FirstOrDefault()!.Uid;
+            using var ctx = _dbContextFactory.CreateDbContext();
+            if (await ctx.WishlogItems.AnyAsync(x => x.Uid == uid))
+            {
+                await _backupService.BackupWishlogItemsAsync(uid);
+            }
+            var existing = await ctx.WishlogItems.Where(x => x.Uid == uid).Select(x => x.Id).ToListAsync();
+            var adding = list.ExceptBy(existing, x => x.Id).ToList();
+            ctx.AddRange(adding);
+            await ctx.SaveChangesAsync();
+            var addCount = adding.Count;
+            var totalCount = await ctx.WishlogItems.Where(x => x.Uid == uid).CountAsync();
+            return $"账号 {uid} 此次导入新增 {addCount} 条记录，导入后总计 {totalCount} 条";
+        }
 
 
 
@@ -369,7 +428,11 @@ namespace Xunkong.Desktop.Services
         }
 
 
-        // 获取按照卡池统计的数据，待修改
+        /// <summary>
+        /// 获取角色活动卡池统计的数据
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
         public async Task<List<WishEventStatsModel>> GetCharacterWishEventStatsModelsByUidAsync(int uid)
         {
             WishEventInfo.RegionType = UidToRegionType(uid);
@@ -429,7 +492,12 @@ namespace Xunkong.Desktop.Services
             return eventModels.OrderByDescending(x => x.StartTime).ToList();
         }
 
-        // 同上，未完成
+
+        /// <summary>
+        /// 获取武器活动卡池统计的数据
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
         public async Task<List<WishEventStatsModel>> GetWeaponWishEventStatsModelsByUidAsync(int uid)
         {
             WishEventInfo.RegionType = UidToRegionType(uid);
@@ -460,6 +528,26 @@ namespace Xunkong.Desktop.Services
                 {
                     item.Count = model.Wishlogs.Count(x => x.Name == item.Name);
                 }
+                var noneUpCharacters = model.Wishlogs.Where(x => x.RankType > 3 && x.ItemType == "角色")
+                                                     .ExceptBy(model.UpItems.Select(x => x.Name), x => x.Name)
+                                                     .GroupBy(x => x.Name)
+                                                     .Join(dics, g => g.Key, d => d.Key, (g, d) =>
+                                                     {
+                                                         var model = d.Value.Adapt<WishEventStatsItemInfoModel>();
+                                                         model.Count = g.Count();
+                                                         return model;
+                                                     });
+                var dics_weapon = await ctx.WeaponInfos.ToDictionaryAsync(x => x.Name!);
+                var noneUpWeapons = model.Wishlogs.Where(x => x.RankType > 3 && x.ItemType == "武器")
+                                                     .ExceptBy(model.UpItems.Select(x => x.Name), x => x.Name)
+                                                     .GroupBy(x => x.Name)
+                                                     .Join(dics_weapon, g => g.Key, d => d.Key, (g, d) =>
+                                                     {
+                                                         var model = d.Value.Adapt<WishEventStatsItemInfoModel>();
+                                                         model.Count = g.Count();
+                                                         return model;
+                                                     });
+                model.NoneUpItems = noneUpCharacters.Concat(noneUpWeapons).OrderByDescending(x => x.Rarity).OrderByDescending(x => x.Count).ToList();
                 model.Rarity5Items = model.Wishlogs.Where(x => x.RankType == 5)
                                                    .Join(dics, item => item.Name, dic => dic.Key, (item, dic) => new WishEventStatsRarity5Item(item.Name, item.Time, item.GuaranteeIndex, dic.Value.Icon!, item.Id))
                                                    .OrderBy(x => x.Id)

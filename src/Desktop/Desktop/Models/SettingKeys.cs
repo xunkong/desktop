@@ -26,6 +26,8 @@
 
         public const string NavigationViewPaneClose = nameof(NavigationViewPaneClose);
 
+        public const string DisableBackgroundWallpaper = nameof(DisableBackgroundWallpaper);
+
         public const string HasShownWelcomePage = nameof(HasShownWelcomePage);
 
         public const string EnableDailyNoteNotification = nameof(EnableDailyNoteNotification);

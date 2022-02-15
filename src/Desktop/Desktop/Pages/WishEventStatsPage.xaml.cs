@@ -48,6 +48,14 @@ namespace Xunkong.Desktop.Pages
             _TextBlock_Uid.Text = $"Uid {_uid}";
         }
 
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            base.OnNavigatingFrom(e);
+            vm.WishEventStatsList?.Clear();
+        }
+
+
         private async void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.FirstOrDefault() is PivotItem item)
@@ -64,7 +72,7 @@ namespace Xunkong.Desktop.Pages
                 {
                     _SemanticZoom.ToggleActiveView();
                 }
-                if (vm.CharacterEventStatsList?.Any(x => x.TotalCount > 0) ?? false)
+                if (vm.WishEventStatsList?.Any(x => x.TotalCount > 0) ?? false)
                 {
                     _SemanticZoom.CanChangeViews = true;
                 }

@@ -65,11 +65,15 @@ namespace Xunkong.Desktop.Views
             });
         }
 
-        private void WindowRootView_Loading(FrameworkElement sender, object args)
+        private async void WindowRootView_Loading(FrameworkElement sender, object args)
         {
             if (LocalSettingHelper.GetSetting<bool>(SettingKeys.NavigationViewPaneClose))
             {
                 _NavigationView.IsPaneOpen = false;
+            }
+            if (!LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundWallpaper))
+            {
+                await vm.ChangeBackgroundWallpaperAsync("random");
             }
         }
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AppInstaller
+	Uri="https://api.xunkong.cc/v0.1/desktop/appinstaller?version={AppVersion}"
+	Version="{AppVersion}" xmlns="http://schemas.microsoft.com/appx/appinstaller/2017/2">
+	<MainBundle
+		Name="Xunkong.Desktop"
+		Version="{AppVersion}"
+		Publisher="CN=Xunkong by Scighost"
+		Uri="{PackageUrl}" />
+	<Dependencies>
+		<Package
+			Name="Microsoft.WindowsAppRuntime.1.0"
+			Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+			ProcessorArchitecture="x64"
+			Uri="https://scighost-generic.pkg.coding.net/xunkong/releases/Microsoft.WindowsAppRuntime.1.0.msix"
+			Version="0.319.455.0" />
+		<Package
+			Name="Microsoft.VCLibs.140.00.UWPDesktop"
+			Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+			ProcessorArchitecture="x64"
+			Uri="https://scighost-generic.pkg.coding.net/xunkong/releases/Microsoft.VCLibs.x64.14.00.Desktop.appx"
+			Version="14.0.30035.0" />
+		<Package
+			Name="Microsoft.VCLibs.140.00"
+			Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US"
+			ProcessorArchitecture="x64"
+			Uri="https://scighost-generic.pkg.coding.net/xunkong/releases/Microsoft.VCLibs.x64.14.00.appx"
+			Version="14.0.30035.0" />
+	</Dependencies>
+</AppInstaller>

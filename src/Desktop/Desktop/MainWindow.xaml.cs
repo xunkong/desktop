@@ -44,13 +44,12 @@ namespace Xunkong.Desktop
             Closed += MainWindow_Closed;
             _logger = App.Current.Services.GetService<ILogger<MainWindow>>()!;
             this.InitializeComponent();
-            RefreshBackgroundWallpaper();
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(_rootView.AppTitleBar);
             InfoBarHelper.Initialize(_InfoBarContainer);
             Hwnd = WindowNative.GetWindowHandle(this);
             InitializeWindowSize();
-            WeakReferenceMessenger.Default.Register<ChangeBackgroundWallpaperMessage>(this, (_, e) => RefreshBackgroundWallpaper(e.RandomOrNext, true));
+            WeakReferenceMessenger.Default.Register<WallpaperInfo>(this, (_, e) => ChangeBackgroundWallpaper(e));
         }
 
 
@@ -134,37 +133,16 @@ namespace Xunkong.Desktop
 
 
 
-        private void RefreshBackgroundWallpaper(int randomOrNext = 0, bool showError = false)
+        private void ChangeBackgroundWallpaper(WallpaperInfo image)
         {
-            Task.Run(async () =>
+            DispatcherQueue.TryEnqueue(() =>
             {
-                try
-                {
-                    var client = App.Current.Services.GetService<XunkongApiService>()!;
-                    var image = await client.GetWallpaperInfoAsync(randomOrNext, _wallpaperInfo?.Id ?? 0);
-                    if (!string.IsNullOrWhiteSpace(image?.Url))
-                    {
-                        DispatcherQueue.TryEnqueue(() =>
-                        {
-                            _Image_Background.Source = image.Url; ;
-                            WeakReferenceMessenger.Default.Send(image);
-                        });
-                        _wallpaperInfo = image;
-                        _logger.LogInformation($"Select background image:\n{image.Url}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Refresh app background image.");
-                    if (showError)
-                    {
-                        InfoBarHelper.Error(ex);
-                    }
-                }
+                _Image_Background.Source = image.Url;
             });
+            _logger.LogInformation($"Change background image:\n{image.Url}");
         }
 
 
-
     }
+
 }

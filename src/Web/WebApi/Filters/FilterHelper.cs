@@ -13,7 +13,7 @@ namespace Xunkong.Web.Api.Filters
         {
             var requestId = context.HttpContext.Request.Headers["X-Fc-Request-Id"];
             var method = context.HttpContext.Request.Method;
-            var path = context.HttpContext.Request.Path.Value;
+            var path = context.HttpContext.Request.Path + context.HttpContext.Request.QueryString.Value;
             var ua = context.HttpContext.Request.Headers["User-Agent"];
             var ip = context.HttpContext.Request.Headers["X-Forwarded-For"];
             var deviceId = context.HttpContext.Request.Headers["X-Device-Id"];

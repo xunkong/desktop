@@ -19,7 +19,7 @@
         <CollectionViewSource x:Name="WishlogGroups"
                               IsSourceGrouped="True"
                               ItemsPath="Wishlogs"
-                              Source="{x:Bind vm.CharacterEventStatsList}" />
+                              Source="{x:Bind vm.WishEventStatsList}" />
     </Page.Resources>
 
 

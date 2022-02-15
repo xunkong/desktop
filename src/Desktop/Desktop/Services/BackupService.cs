@@ -7,6 +7,7 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Xunkong.Core.Wish;
+using Xunkong.Core.XunkongApi;
 
 namespace Xunkong.Desktop.Services
 {
@@ -39,7 +40,7 @@ namespace Xunkong.Desktop.Services
             {
                 throw new ArgumentNullException(nameof(wishlogItems), "Input wishlog items is null.");
             }
-            _logger.LogInformation("Start to backup wishlog items.");
+            _logger.LogInformation($"Start to backup wishlog items of uid {uid}.");
             if (wishlogItems.Any(x => x.Uid != uid))
             {
                 _logger.LogWarning($"Input wishlog items has one that do not match the uid {uid}.");
@@ -55,6 +56,32 @@ namespace Xunkong.Desktop.Services
                 WishlogCount = wishlogItems.Count,
                 FirstItemTime = wishlogItems.First().Time,
                 LastItemTime = wishlogItems.Last().Time,
+                WishlogList = orderedItems,
+            };
+            var dir = Path.Combine(XunkongEnvironment.UserDataPath, @"Backup\Wishlog");
+            var file = Path.Combine(dir, $"wishlog_{uid}_{DateTime.Now:yyyyMMddHHmmss}.json");
+            Directory.CreateDirectory(dir);
+            _logger.LogInformation($"Backup file path: {file}");
+            using var stream = File.Create(file);
+            await JsonSerializer.SerializeAsync(stream, model, _jsonSerializerOptions);
+            return file;
+        }
+
+
+        public async Task<string> BackupWishlogItemsAsync(int uid, bool throwError = false)
+        {
+            _logger.LogInformation($"Start to backup wishlog items of uid {uid}.");
+            using var ctx = _dbContextFactory.CreateDbContext();
+            var orderedItems = await ctx.WishlogItems.Where(x => x.Uid == uid).OrderBy(x => x.Id).ToListAsync();
+            var model = new WishlogBackupModel
+            {
+                ExportApp = XunkongEnvironment.AppName,
+                AppVersion = XunkongEnvironment.AppVersion.ToString(),
+                ExportTime = DateTimeOffset.Now,
+                Uid = uid,
+                WishlogCount = orderedItems.Count,
+                FirstItemTime = orderedItems.FirstOrDefault()?.Time,
+                LastItemTime = orderedItems.LastOrDefault()?.Time,
                 WishlogList = orderedItems,
             };
             var dir = Path.Combine(XunkongEnvironment.UserDataPath, @"Backup\Wishlog");
