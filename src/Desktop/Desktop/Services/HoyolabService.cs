@@ -314,7 +314,7 @@ namespace Xunkong.Desktop.Services
             using var t = await ctx.Database.BeginTransactionAsync();
             try
             {
-                await ctx.Database.ExecuteSqlRawAsync($"DELETE FROM TravelRecord_AwardItems WHERE Uid={detail.Uid} AND Year={dataYear} AND Month={dataMonth};");
+                await ctx.Database.ExecuteSqlRawAsync($"DELETE FROM TravelRecord_AwardItems WHERE Uid={detail.Uid} AND Year={dataYear} AND Month={dataMonth} AND Type={(int)type};");
                 ctx.AddRange(list);
                 await ctx.SaveChangesAsync();
                 await t.CommitAsync();

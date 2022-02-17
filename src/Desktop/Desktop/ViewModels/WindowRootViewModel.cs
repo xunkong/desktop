@@ -32,7 +32,11 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
-        public WindowRootViewModel(ILogger<WindowRootViewModel> logger, IDbContextFactory<XunkongDbContext> dbFactory, UserSettingService userSettingService, HoyolabService hoyolabService, XunkongApiService xunkongApiService)
+        public WindowRootViewModel(ILogger<WindowRootViewModel> logger,
+                                   IDbContextFactory<XunkongDbContext> dbFactory,
+                                   UserSettingService userSettingService,
+                                   HoyolabService hoyolabService,
+                                   XunkongApiService xunkongApiService)
         {
             _logger = logger;
             _dbFactory = dbFactory;
@@ -75,7 +79,7 @@ namespace Xunkong.Desktop.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error when check version update startup in {MethodName}", nameof(CheckVersionUpdateAsync));
+                    _logger.LogError(ex, $"Error when check version update startup in {nameof(CheckVersionUpdateAsync)}");
                 }
             }
         }

@@ -69,7 +69,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception in method {MethodName}.", nameof(SaveLastSelectSetting));
+                _logger.LogError(ex, $"Exception in method {nameof(SaveLastSelectSetting)}.");
             }
         }
 
@@ -124,7 +124,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception in method {MethodName}.", nameof(InitializeDataAsync));
+                _logger.LogError(ex, $"Exception in method {nameof(InitializeDataAsync)}.");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -160,7 +160,7 @@ namespace Xunkong.Desktop.ViewModels
                     }
                     catch (HoyolabException ex)
                     {
-                        _logger.LogError(ex, "Catch HoyolabException when get hoyolab user info (Nickname {Nickname}, Uid {Uid}).", x.Nickname, x.Uid);
+                        _logger.LogError(ex, $"Catch HoyolabException when get hoyolab user info (Nickname {x.Nickname}, Uid {x.Uid}).");
                         InfoBarHelper.Error(ex, $"获取米游社账号信息 (Nickname {x.Nickname}, Uid {x.Uid})");
                     }
                 });
@@ -183,7 +183,7 @@ namespace Xunkong.Desktop.ViewModels
                     }
                     catch (HoyolabException ex)
                     {
-                        _logger.LogError(ex, "Catch HoyolabException when get genshin user info (Nickname {Nickname}, Uid {Uid}).", x.Nickname, x.Uid);
+                        _logger.LogError(ex, $"Catch HoyolabException when get genshin user info (Nickname {x.Nickname}, Uid {x.Uid}).");
                         InfoBarHelper.Error(ex, $"获取原神账号信息 (Nickname {x.Nickname}, Uid {x.Uid})");
                     }
                 });
@@ -202,7 +202,7 @@ namespace Xunkong.Desktop.ViewModels
                     }
                     catch (HoyolabException ex)
                     {
-                        _logger.LogError(ex, "Catch HoyolabException when get daily note info (Nickname {Nickname}, Uid {Uid}).", x.Nickname, x.Uid);
+                        _logger.LogError(ex, $"Catch HoyolabException when get daily note info (Nickname {x.Nickname}, Uid {x.Uid}).");
                         InfoBarHelper.Error(ex, $"获取实时便笺 (Nickname {x.Nickname}, Uid {x.Uid})");
                     }
                 });
@@ -325,7 +325,7 @@ namespace Xunkong.Desktop.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error in {MethodName}", nameof(HoyolabLogin_InputCookieAsync));
+                    _logger.LogError(ex, $"Error in {nameof(HoyolabLogin_InputCookieAsync)}");
                     InfoBarHelper.Error(ex);
                 }
                 finally
@@ -351,7 +351,7 @@ namespace Xunkong.Desktop.ViewModels
             try
             {
                 ShowGenshinElementLoading();
-                _logger.LogDebug("Refresh daily note with genshin nickname {Nickname} uid {Uid}", model.GameRoleInfo.Nickname, model.GameRoleInfo.Uid);
+                _logger.LogDebug($"Refresh daily note with genshin nickname {model.GameRoleInfo.Nickname} uid { model.GameRoleInfo.Uid}");
                 var info = await _hoyolabService.GetDailyNoteInfoAsync(model.GameRoleInfo);
                 model.DailyNoteInfo = info;
                 if (info is not null && model.IsPinned)
@@ -361,7 +361,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in {MethodName}", nameof(RefreshDailyNoteAsync));
+                _logger.LogError(ex, $"Error in {nameof(RefreshDailyNoteAsync)}");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -389,7 +389,7 @@ namespace Xunkong.Desktop.ViewModels
             if (models.Any())
             {
                 var hoyolabUser = models.FirstOrDefault()?.UserInfo;
-                _logger.LogDebug("Delete hoyolab user info with nickname {Nickname} uid {Uid}", hoyolabUser?.Nickname, hoyolabUser?.Uid);
+                _logger.LogDebug($"Delete hoyolab user info with nickname {hoyolabUser?.Nickname} uid {hoyolabUser?.Uid}");
             }
             try
             {
@@ -401,7 +401,7 @@ namespace Xunkong.Desktop.ViewModels
                     }
                     if (model.GameRoleInfo is not null)
                     {
-                        _logger.LogDebug("Delete genshin user info with nickname {Nickname} uid {Uid}", model.GameRoleInfo.Nickname, model.GameRoleInfo.Uid);
+                        _logger.LogDebug($"Delete genshin user info with nickname {model.GameRoleInfo.Nickname} uid {model.GameRoleInfo.Uid}");
                         await _hoyolabService.DeleteUserGameRoleInfoAsync(model.GameRoleInfo.Uid);
                         if (model.IsPinned)
                         {
@@ -433,7 +433,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in {MethodName}", nameof(DeleteUserInfoAsync));
+                _logger.LogError(ex, $"Error in {nameof(DeleteUserInfoAsync)}");
                 InfoBarHelper.Error(ex);
             }
         }

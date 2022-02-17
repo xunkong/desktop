@@ -58,6 +58,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Init character wish event stats.");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -80,6 +81,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Init weapon wish event stats.");
                 InfoBarHelper.Error(ex);
             }
             finally

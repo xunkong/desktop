@@ -71,7 +71,11 @@ namespace Xunkong.Desktop.Views
             {
                 _NavigationView.IsPaneOpen = false;
             }
-            if (!LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundWallpaper))
+            if (LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundWallpaper))
+            {
+                _PaneFooter_BackgroundWallpaper.Visibility = Visibility.Collapsed;
+            }
+            else
             {
                 await vm.ChangeBackgroundWallpaperAsync("random");
             }

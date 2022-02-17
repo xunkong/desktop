@@ -35,9 +35,13 @@ namespace Xunkong.Web.Api.Controllers
         [HttpGet("random")]
         public async Task<ResponseBaseWrapper> GetRandomWallpaperAsJsonResultAsync(int excludeId = 0)
         {
-            var count = await _dbContext.WallpaperInfos.CountAsync() - (excludeId == 0 ? 0 : 1);
+            var count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync() - (excludeId == 0 ? 0 : 1);
             var index = Random.Shared.Next(count);
-            var info = await _dbContext.WallpaperInfos.Where(x => x.Id != excludeId).Skip(index).FirstOrDefaultAsync();
+            var info = await _dbContext.WallpaperInfos.Where(x => x.Enable && x.Id != excludeId).Skip(index).FirstOrDefaultAsync();
+            if (info == null)
+            {
+                info = await _dbContext.WallpaperInfos.Where(x => x.Enable).FirstOrDefaultAsync();
+            }
             return ResponseBaseWrapper.Ok(info!);
         }
 
@@ -46,10 +50,10 @@ namespace Xunkong.Web.Api.Controllers
         [HttpGet("next")]
         public async Task<ResponseBaseWrapper> GetNextWallpaperAsJsonResultAsync(int excludeId = 0)
         {
-            var info = await _dbContext.WallpaperInfos.Where(x => x.Id > excludeId).OrderBy(x => x.Id).FirstOrDefaultAsync();
+            var info = await _dbContext.WallpaperInfos.Where(x => x.Enable && x.Id > excludeId).OrderBy(x => x.Id).FirstOrDefaultAsync();
             if (info == null)
             {
-                info = await _dbContext.WallpaperInfos.OrderBy(x => x.Id).FirstOrDefaultAsync();
+                info = await _dbContext.WallpaperInfos.Where(x => x.Enable).FirstOrDefaultAsync();
             }
             return ResponseBaseWrapper.Ok(info!);
         }

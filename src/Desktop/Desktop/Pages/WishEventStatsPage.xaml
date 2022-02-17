@@ -317,9 +317,9 @@
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="models:WishlogItemEditableModel">
                             <StackPanel Orientation="Horizontal" Spacing="16">
-                                <TextBlock Width="50"
+                                <TextBlock Width="60"
                                            Foreground="{Binding RankType, Converter={StaticResource RankToColorConverter}}"
-                                           Text="{x:Bind Index}" />
+                                           Text="{x:Bind GuaranteeIndex}" />
                                 <TextBlock Width="120"
                                            Foreground="{Binding RankType, Converter={StaticResource RankToColorConverter}}"
                                            Text="{x:Bind Name}" />
@@ -329,12 +329,6 @@
                                 <TextBlock Width="80"
                                            Foreground="{Binding RankType, Converter={StaticResource RankToColorConverter}}"
                                            Text="{x:Bind ItemType}" />
-                                <TextBlock Width="60"
-                                           Foreground="{Binding RankType, Converter={StaticResource RankToColorConverter}}"
-                                           Text="{x:Bind RankType}" />
-                                <TextBlock Width="60"
-                                           Foreground="{Binding RankType, Converter={StaticResource RankToColorConverter}}"
-                                           Text="{x:Bind GuaranteeIndex}" />
                                 <TextBlock Width="140"
                                            Foreground="{Binding RankType, Converter={StaticResource RankToColorConverter}}"
                                            Text="{x:Bind WishType, Converter={StaticResource EnumToDescriptionOrStringConverter}}" />

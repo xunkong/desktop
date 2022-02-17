@@ -147,6 +147,34 @@
                         </ComboBox>
                     </Grid>
 
+                    <!--  不显示背景图  -->
+                    <Grid Padding="16,12,60,12"
+                          Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                          BorderThickness="1"
+                          ColumnSpacing="16"
+                          CornerRadius="4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Path Width="20"
+                              Data="M128.299 128C92.788 128 64 156.788 64 192.299v639.4C64 867.212 92.788 896 128.299 896H895.7c35.512 0 64.3-28.788 64.3-64.299V192.299C960 156.788 931.212 128 895.701 128H128.299zM128 588.313l178.162-178.162c24.795-24.795 64.996-24.795 89.792 0L817.803 832H128V588.313z m768 231.375L666.385 590.073l64.718-64.718c25.153-25.152 65.933-25.152 91.085 0L896 599.167v220.521zM694.65 471.299l-73.519 73.519L432.653 356.34c-45.064-45.064-118.127-45.064-163.19 0L128 497.803V192h768v316.657l-37.358-37.358c-45.286-45.285-118.707-45.285-163.992 0z"
+                              Fill="{ThemeResource TextFillColorPrimaryBrush}"
+                              Stretch="Uniform" />
+                        <TextBlock Grid.Column="1" VerticalAlignment="Center">
+                            <Run Text="不显示背景图" />
+                            <LineBreak />
+                            <Run FontSize="12"
+                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                 Text="修改后需要重启应用才能生效" />
+                        </TextBlock>
+                        <ToggleSwitch Grid.Column="2"
+                                      Margin="0 0 -48 0"
+                                      IsOn="{x:Bind vm.DisableBackgroundWallpaper, Mode=TwoWay}" />
+                    </Grid>
+
                     <!--  小工具  -->
                     <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="小工具" />
                     <Expander Name="_Expander_WebTool"

@@ -307,9 +307,11 @@ namespace Xunkong.Desktop.Services
 
         public async Task<string> ImportFromJsonFile(string file)
         {
+            _logger.LogInformation($"Start to import wishlog from json file: {file}");
             var str = await File.ReadAllTextAsync(file);
             var importer = new JsonImporter();
             var list = importer.Deserialize(str);
+            _logger.LogInformation($"Total deserialozed wishlog count: {list.Count}");
             if (!list.Any())
             {
                 throw new XunkongException(ErrorCode.InternalException, "No wishlogs in the imported file.");
@@ -323,15 +325,19 @@ namespace Xunkong.Desktop.Services
                 throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have more than one uid.");
             }
             var uid = list.FirstOrDefault()!.Uid;
+            _logger.LogInformation($"Imported uid of wishlog is {uid}");
             using var ctx = _dbContextFactory.CreateDbContext();
             if (await ctx.WishlogItems.AnyAsync(x => x.Uid == uid))
             {
                 await _backupService.BackupWishlogItemsAsync(uid);
             }
             var existing = await ctx.WishlogItems.Where(x => x.Uid == uid).Select(x => x.Id).ToListAsync();
+            _logger.LogInformation($"Uid {uid} has existed wishlog count {existing.Count}");
             var adding = list.ExceptBy(existing, x => x.Id).ToList();
+            _logger.LogInformation($"This import action need to add wishlog count {adding.Count}");
             ctx.AddRange(adding);
             await ctx.SaveChangesAsync();
+            _logger.LogInformation("Import action and operation database is finished.");
             var addCount = adding.Count;
             var totalCount = await ctx.WishlogItems.Where(x => x.Uid == uid).CountAsync();
             return $"账号 {uid} 此次导入新增 {addCount} 条记录，导入后总计 {totalCount} 条";
@@ -342,8 +348,10 @@ namespace Xunkong.Desktop.Services
 
         public async Task<string> ImportFromExcelFile(string file)
         {
+            _logger.LogInformation($"Start to import wishlog from excel file: {file}");
             var items = await MiniExcelLibs.MiniExcel.QueryAsync<WishlogItemExcelModel>(file, "原始数据");
             var list = items.Adapt<List<WishlogItem>>().Where(x => x.Uid != 0).ToList();
+            _logger.LogInformation($"Total deserialozed wishlog count: {list.Count}");
             if (!list.Any())
             {
                 throw new XunkongException(ErrorCode.InternalException, "No wishlogs in the imported file.");
@@ -353,15 +361,19 @@ namespace Xunkong.Desktop.Services
                 throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have more than one uid.");
             }
             var uid = list.FirstOrDefault()!.Uid;
+            _logger.LogInformation($"Imported uid of wishlog is {uid}");
             using var ctx = _dbContextFactory.CreateDbContext();
             if (await ctx.WishlogItems.AnyAsync(x => x.Uid == uid))
             {
                 await _backupService.BackupWishlogItemsAsync(uid);
             }
             var existing = await ctx.WishlogItems.Where(x => x.Uid == uid).Select(x => x.Id).ToListAsync();
+            _logger.LogInformation($"Uid {uid} has existed wishlog count {existing.Count}");
             var adding = list.ExceptBy(existing, x => x.Id).ToList();
+            _logger.LogInformation($"This import action need to add wishlog count {adding.Count}");
             ctx.AddRange(adding);
             await ctx.SaveChangesAsync();
+            _logger.LogInformation("Import action and operation database is finished.");
             var addCount = adding.Count;
             var totalCount = await ctx.WishlogItems.Where(x => x.Uid == uid).CountAsync();
             return $"账号 {uid} 此次导入新增 {addCount} 条记录，导入后总计 {totalCount} 条";
@@ -448,22 +460,22 @@ namespace Xunkong.Desktop.Services
                 model.Name = string.Join(" ", group.Select(x => x.Name));
                 model.UpItems = group.SelectMany(x => x.Rank5UpItems).Join(dics, str => str, dic => dic.Key, (str, dic) => dic.Value).ToList().Adapt<List<WishEventStatsItemInfoModel>>();
                 model.UpItems.AddRange(group.FirstOrDefault()!.Rank4UpItems.Join(dics, str => str, dic => dic.Key, (str, dic) => dic.Value).Adapt<IEnumerable<WishEventStatsItemInfoModel>>());
-                model.Wishlogs = wishlogModels.Where(x => x.Time >= model.StartTime && x.Time <= model.EndTime).OrderByDescending(x => x.Id).ToList();
-                model.TotalCount = model.Wishlogs.Count;
-                model.Rarity3Count = model.Wishlogs.Count(x => x.RankType == 3);
-                model.Rarity4Count = model.Wishlogs.Count(x => x.RankType == 4);
-                model.Rarity5Count = model.Wishlogs.Count(x => x.RankType == 5);
+                var wishlogItems = wishlogModels.Where(x => x.Time >= model.StartTime && x.Time <= model.EndTime).OrderByDescending(x => x.Id).ToList();
+                model.TotalCount = wishlogItems.Count;
+                model.Rarity3Count = wishlogItems.Count(x => x.RankType == 3);
+                model.Rarity4Count = wishlogItems.Count(x => x.RankType == 4);
+                model.Rarity5Count = wishlogItems.Count(x => x.RankType == 5);
                 int index = 0;
-                foreach (var item in model.Wishlogs)
+                foreach (var item in wishlogItems)
                 {
                     index++;
                     item.Index = index;
                 }
                 foreach (var item in model.UpItems)
                 {
-                    item.Count = model.Wishlogs.Count(x => x.Name == item.Name);
+                    item.Count = wishlogItems.Count(x => x.Name == item.Name);
                 }
-                var noneUpCharacters = model.Wishlogs.Where(x => x.RankType > 3 && x.ItemType == "角色")
+                var noneUpCharacters = wishlogItems.Where(x => x.RankType > 3 && x.ItemType == "角色")
                                                      .ExceptBy(model.UpItems.Select(x => x.Name), x => x.Name)
                                                      .GroupBy(x => x.Name)
                                                      .Join(dics, g => g.Key, d => d.Key, (g, d) =>
@@ -473,7 +485,7 @@ namespace Xunkong.Desktop.Services
                                                          return model;
                                                      });
                 var dics_weapon = await ctx.WeaponInfos.ToDictionaryAsync(x => x.Name!);
-                var noneUpWeapons = model.Wishlogs.Where(x => x.RankType > 3 && x.ItemType == "武器")
+                var noneUpWeapons = wishlogItems.Where(x => x.RankType > 3 && x.ItemType == "武器")
                                                      .ExceptBy(model.UpItems.Select(x => x.Name), x => x.Name)
                                                      .GroupBy(x => x.Name)
                                                      .Join(dics_weapon, g => g.Key, d => d.Key, (g, d) =>
@@ -483,10 +495,11 @@ namespace Xunkong.Desktop.Services
                                                          return model;
                                                      });
                 model.NoneUpItems = noneUpCharacters.Concat(noneUpWeapons).OrderByDescending(x => x.Rarity).OrderByDescending(x => x.Count).ToList();
-                model.Rarity5Items = model.Wishlogs.Where(x => x.RankType == 5)
+                model.Rarity5Items = wishlogItems.Where(x => x.RankType == 5)
                                                    .Join(dics, item => item.Name, dic => dic.Key, (item, dic) => new WishEventStatsRarity5Item(item.Name, item.Time, item.GuaranteeIndex, dic.Value.SideIcon!, item.Id))
                                                    .OrderBy(x => x.Id)
                                                    .ToList();
+                model.Wishlogs = wishlogItems.Where(x => x.RankType > 3).OrderByDescending(x => x.Id).ToList();
                 eventModels.Add(model);
             }
             return eventModels.OrderByDescending(x => x.StartTime).ToList();
@@ -513,22 +526,22 @@ namespace Xunkong.Desktop.Services
                 model.Name = string.Join(" ", group.Select(x => x.Name));
                 model.UpItems = group.SelectMany(x => x.Rank5UpItems).Join(dics, str => str, dic => dic.Key, (str, dic) => dic.Value).ToList().Adapt<List<WishEventStatsItemInfoModel>>();
                 model.UpItems.AddRange(group.FirstOrDefault()!.Rank4UpItems.Join(dics, str => str, dic => dic.Key, (str, dic) => dic.Value).Adapt<IEnumerable<WishEventStatsItemInfoModel>>());
-                model.Wishlogs = wishlogModels.Where(x => x.Time >= model.StartTime && x.Time <= model.EndTime).OrderByDescending(x => x.Id).ToList();
-                model.TotalCount = model.Wishlogs.Count;
-                model.Rarity3Count = model.Wishlogs.Count(x => x.RankType == 3);
-                model.Rarity4Count = model.Wishlogs.Count(x => x.RankType == 4);
-                model.Rarity5Count = model.Wishlogs.Count(x => x.RankType == 5);
+                var wishlogItems = wishlogModels.Where(x => x.Time >= model.StartTime && x.Time <= model.EndTime).OrderByDescending(x => x.Id).ToList();
+                model.TotalCount = wishlogItems.Count;
+                model.Rarity3Count = wishlogItems.Count(x => x.RankType == 3);
+                model.Rarity4Count = wishlogItems.Count(x => x.RankType == 4);
+                model.Rarity5Count = wishlogItems.Count(x => x.RankType == 5);
                 int index = 0;
-                foreach (var item in model.Wishlogs)
+                foreach (var item in wishlogItems)
                 {
                     index++;
                     item.Index = index;
                 }
                 foreach (var item in model.UpItems)
                 {
-                    item.Count = model.Wishlogs.Count(x => x.Name == item.Name);
+                    item.Count = wishlogItems.Count(x => x.Name == item.Name);
                 }
-                var noneUpCharacters = model.Wishlogs.Where(x => x.RankType > 3 && x.ItemType == "角色")
+                var noneUpCharacters = wishlogItems.Where(x => x.RankType > 3 && x.ItemType == "角色")
                                                      .ExceptBy(model.UpItems.Select(x => x.Name), x => x.Name)
                                                      .GroupBy(x => x.Name)
                                                      .Join(dics, g => g.Key, d => d.Key, (g, d) =>
@@ -538,7 +551,7 @@ namespace Xunkong.Desktop.Services
                                                          return model;
                                                      });
                 var dics_weapon = await ctx.WeaponInfos.ToDictionaryAsync(x => x.Name!);
-                var noneUpWeapons = model.Wishlogs.Where(x => x.RankType > 3 && x.ItemType == "武器")
+                var noneUpWeapons = wishlogItems.Where(x => x.RankType > 3 && x.ItemType == "武器")
                                                      .ExceptBy(model.UpItems.Select(x => x.Name), x => x.Name)
                                                      .GroupBy(x => x.Name)
                                                      .Join(dics_weapon, g => g.Key, d => d.Key, (g, d) =>
@@ -548,10 +561,11 @@ namespace Xunkong.Desktop.Services
                                                          return model;
                                                      });
                 model.NoneUpItems = noneUpCharacters.Concat(noneUpWeapons).OrderByDescending(x => x.Rarity).OrderByDescending(x => x.Count).ToList();
-                model.Rarity5Items = model.Wishlogs.Where(x => x.RankType == 5)
+                model.Rarity5Items = wishlogItems.Where(x => x.RankType == 5)
                                                    .Join(dics, item => item.Name, dic => dic.Key, (item, dic) => new WishEventStatsRarity5Item(item.Name, item.Time, item.GuaranteeIndex, dic.Value.Icon!, item.Id))
                                                    .OrderBy(x => x.Id)
                                                    .ToList();
+                model.Wishlogs = wishlogItems.Where(x => x.RankType > 3).OrderByDescending(x => x.Id).ToList();
                 eventModels.Add(model);
             }
             return eventModels.OrderByDescending(x => x.StartTime).ToList();

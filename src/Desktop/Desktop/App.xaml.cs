@@ -190,6 +190,7 @@ namespace Xunkong.Desktop
             sc.AddTransient<WindowRootViewModel>();
             sc.AddTransient<WishlogManageViewModel>();
             sc.AddTransient<WishEventStatsViewModel>();
+            sc.AddSingleton<AlbumViewModel>();
 
             sc.AddSingleton<HoyolabService>();
             sc.AddSingleton<UserSettingService>();

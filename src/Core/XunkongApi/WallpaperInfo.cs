@@ -12,6 +12,8 @@ namespace Xunkong.Core.XunkongApi
 
         public int Id { get; set; }
 
+        public bool Enable { get; set; }
+
         [MaxLength(255)]
         public string? Title { get; set; }
 

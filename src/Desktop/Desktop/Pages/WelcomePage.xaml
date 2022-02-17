@@ -20,9 +20,9 @@
 
         <ScrollViewer Grid.Row="1">
 
-            <StackPanel Margin="48,0,48,0"
+            <StackPanel Margin="48,0,48,48"
                         RequestedTheme="Default"
-                        Spacing="16">
+                        Spacing="8">
                 <TextBlock Text="您需要了解以下几项内容" />
 
                 <TextBlock />
@@ -63,6 +63,15 @@
                 <Button Name="_Button_OpenDataFolder"
                         Click="_Button_OpenDataFolder_Click"
                         Content="打开文件夹" />
+
+                <TextBlock />
+                <TextBlock FontSize="24" Text="图标缺失问题" />
+                <TextBlock Text="应用使用了 Windows 11 系统上的图标字体，在 Windows 10 系统上可能会出现乱码问题。" />
+                <TextBlock Text="下一行左侧是一个点赞图标，如果不是，需要安装缺失字体。缺失字体可在安装包内找到，或点击链接下载。" />
+                <StackPanel Spacing="8" Orientation="Horizontal">
+                    <SymbolIcon HorizontalAlignment="Left" Symbol="Like" />
+                    <HyperlinkButton Content="下载 Segoe Fluent Icons" NavigateUri="https://xunkong-1306705684.file.myqcloud.com/download/Segoe%20Fluent%20Icons.ttf" />
+                </StackPanel>
 
                 <TextBlock />
                 <TextBlock Text="点击下方按钮不再显示欢迎界面" />

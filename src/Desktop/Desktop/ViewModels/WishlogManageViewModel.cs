@@ -91,6 +91,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Refresh wishlog panel.");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -113,6 +114,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Get metadata.");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -176,6 +178,7 @@ namespace Xunkong.Desktop.ViewModels
             catch (Exception ex)
             {
                 model.RunningStep = "";
+                _logger.LogError(ex, "Refresh wishlog from mihoyo server.");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -211,6 +214,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Get wishlog from log file.");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -244,6 +248,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Get wishlog from url.");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -289,6 +294,7 @@ namespace Xunkong.Desktop.ViewModels
             catch (Exception ex)
             {
                 model.RunningStep = "";
+                _logger.LogError(ex, "Query wishlog in cloud.");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -321,6 +327,7 @@ namespace Xunkong.Desktop.ViewModels
             catch (Exception ex)
             {
                 model.RunningStep = "";
+                _logger.LogError(ex, "Update wishlog to cloud.");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -373,6 +380,7 @@ namespace Xunkong.Desktop.ViewModels
             catch (Exception ex)
             {
                 model.RunningStep = "";
+                _logger.LogError(ex, "Download wishlog in cloud completely.");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -399,15 +407,18 @@ namespace Xunkong.Desktop.ViewModels
             {
                 model.IsRunning = true;
                 model.RandomId = randomId;
+                _logger.LogInformation($"Start to delete wishlog in cloud with uid {model.Uid}.");
                 Action<string> handler = str => model.RunningStep = str;
                 var result = await _xunkongApiService.GetWishlogBackupLastItemAsync(model.Uid, handler);
                 if (result.CurrentCount == 0)
                 {
                     model.RunningStep = "云端没有记录";
+                    _logger.LogInformation($"No wishlog in cloud with uid {model.Uid}.");
                     return;
                 }
                 if (result.CurrentCount > model.WishlogCount)
                 {
+                    _logger.LogInformation($"Count of wishlog in cloud is more than local with uid {model.Uid}, show warning dialog.");
                     var dialog = new ContentDialog
                     {
                         Title = "警告",
@@ -423,6 +434,7 @@ namespace Xunkong.Desktop.ViewModels
                         return;
                     }
                 }
+                _logger.LogInformation($"Start to download wishlog in cloud and backup to loacal with uid {model.Uid}.");
                 var file = await _xunkongApiService.GetWishlogAndBackupToLoalAsync(model.Uid, handler);
                 RoutedEventHandler eventHandler = (_, _) => Process.Start(new ProcessStartInfo { FileName = Path.GetDirectoryName(file), UseShellExecute = true, });
                 InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, null, "云端祈愿记录已备份到本地", "打开文件夹", eventHandler, 3000);
@@ -431,6 +443,7 @@ namespace Xunkong.Desktop.ViewModels
             catch (Exception ex)
             {
                 model.RunningStep = "";
+                _logger.LogError(ex, "Delete wishlog in cloud.");
                 InfoBarHelper.Error(ex);
             }
             finally
@@ -460,6 +473,7 @@ namespace Xunkong.Desktop.ViewModels
             int count = 0;
             foreach (var file in files)
             {
+                _logger.LogInformation($"Imported file path: {file}.");
                 try
                 {
                     if (Path.GetExtension(file).ToLower() == ".json")

@@ -145,7 +145,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in {MethodName}", nameof(CheckUpdateAsync));
+                _logger.LogError(ex, $"Error in {nameof(CheckUpdateAsync)}");
                 InfoBarHelper.Error(ex);
             }
         }
@@ -171,6 +171,18 @@ namespace Xunkong.Desktop.ViewModels
             }
         }
 
+
+
+        private bool _DisableBackgroundWallpaper = LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundWallpaper);
+        public bool DisableBackgroundWallpaper
+        {
+            get => _DisableBackgroundWallpaper;
+            set
+            {
+                LocalSettingHelper.SaveSetting(SettingKeys.DisableBackgroundWallpaper, value);
+                SetProperty(ref _DisableBackgroundWallpaper, value);
+            }
+        }
 
 
 
@@ -237,7 +249,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in {MethodName}", nameof(DeleteSelectedWebToolItem));
+                _logger.LogError(ex, $"Error in {nameof(DeleteSelectedWebToolItem)}");
                 InfoBarHelper.Error(ex);
             }
 
@@ -261,7 +273,7 @@ namespace Xunkong.Desktop.ViewModels
                 return;
             }
             var url = SelectedWebToolItem.Url;
-            _logger.LogDebug("Get WebToolItem title and icon by url {Url}", url);
+            _logger.LogDebug($"Get WebToolItem title and icon by url {url}");
             try
             {
                 var uri = new Uri(url);
@@ -283,7 +295,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in {MethodName}", nameof(GetTitleAndIconByUrlAsync));
+                _logger.LogError(ex, $"Error in {nameof(GetTitleAndIconByUrlAsync)}");
                 InfoBarHelper.Error(ex);
             }
         }
@@ -311,7 +323,7 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in {MethodName}", nameof(SaveWebToolItemAsync));
+                _logger.LogError(ex, $"Error in {nameof(SaveWebToolItemAsync)}");
                 InfoBarHelper.Error(ex);
             }
         }
