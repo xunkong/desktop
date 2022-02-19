@@ -34,7 +34,7 @@ namespace Xunkong.Desktop.Controls
         {
             ImageCache.Instance.CacheDuration = TimeSpan.FromDays(7);
             ImageCache.Instance.RetryCount = 3;
-            ImageCache.Instance.MaxMemoryCacheCount = 100;
+            ImageCache.Instance.MaxMemoryCacheCount = 0;
         }
 
 

@@ -92,7 +92,24 @@ namespace Xunkong.Desktop.Controls
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
                 var address = _TextBox_Address.Text;
-                _WebView2.Source = new Uri(address);
+                if (!(address.StartsWith("https://") || address.StartsWith("http://")))
+                {
+                    address = $"https://{address}";
+                }
+                if (Uri.TryCreate(address, UriKind.RelativeOrAbsolute, out var uri))
+                {
+                    try
+                    {
+                        if (uri.Scheme == Uri.UriSchemeHttps)
+                        {
+                            _WebView2.Source = uri;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        InfoBarHelper.Error(ex);
+                    }
+                }
             }
         }
     }

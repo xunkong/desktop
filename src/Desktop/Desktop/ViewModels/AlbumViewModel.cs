@@ -24,17 +24,14 @@ namespace Xunkong.Desktop.ViewModels
 
         private readonly ILogger<AlbumViewModel> _logger;
 
-        private readonly BackupService _backupService;
-
         private string? albumFolder;
 
         private FileSystemWatcher _watcher;
 
 
-        public AlbumViewModel(ILogger<AlbumViewModel> logger, BackupService backupService)
+        public AlbumViewModel(ILogger<AlbumViewModel> logger)
         {
             _logger = logger;
-            _backupService = backupService;
             _watcher = new();
             _watcher.Filter = "*.png";
             _watcher.Created += FileSystemWatcher_Created;
