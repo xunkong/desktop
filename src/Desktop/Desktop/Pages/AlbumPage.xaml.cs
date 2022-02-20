@@ -94,14 +94,14 @@ namespace Xunkong.Desktop.Pages
 
             _Grid_DetailImage.Visibility = Visibility.Visible;
 
-            animation?.TryStart(_Grid_DetailImage);
+            animation?.TryStart(_FlipView_DetailImage);
         }
 
 
 
         private async void _Button_CloseDetailImage_Click(object sender, RoutedEventArgs e)
         {
-            ConnectedAnimation animation = ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("closeImageAnimation", _Grid_DetailImage);
+            ConnectedAnimation animation = ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("closeImageAnimation", _FlipView_DetailImage);
 
             _selectedItem = _FlipView_DetailImage.SelectedItem as FileInfo;
             // Collapse the smoke when the animation completes.
@@ -120,6 +120,6 @@ namespace Xunkong.Desktop.Pages
             await _GridView_Images.TryStartConnectedAnimationAsync(animation, _selectedItem, "_Image_Thumb");
         }
 
-
+     
     }
 }

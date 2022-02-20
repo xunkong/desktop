@@ -139,6 +139,7 @@
                                     VerticalAlignment="Top"
                                     Click="_Button_CopyImage_Click"
                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    RequestedTheme="Dark"
                                     Style="{ThemeResource DateTimePickerFlyoutButtonStyle}">
                                 <Button.ContentTransitions>
                                     <ContentThemeTransition />
@@ -190,7 +191,7 @@
         <Grid x:Name="_Grid_DetailImage"
               Grid.RowSpan="2"
               Padding="24"
-              Background="{ThemeResource CustomAcrylicBrush}"
+              Background="{ThemeResource ControlOnImageFillColorDefaultBrush}"
               RowSpacing="16"
               Visibility="Collapsed">
             <Grid.RowDefinitions>
@@ -201,7 +202,8 @@
             <Button x:Name="_Button_CloseDetailImage"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Click="_Button_CloseDetailImage_Click">
+                    Click="_Button_CloseDetailImage_Click"
+                    Style="{ThemeResource DateTimePickerFlyoutButtonStyle}">
                 <SymbolIcon Symbol="Clear" />
             </Button>
             <FlipView x:Name="_FlipView_DetailImage"

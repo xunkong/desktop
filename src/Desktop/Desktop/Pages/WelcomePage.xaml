@@ -67,10 +67,12 @@
                 <TextBlock />
                 <TextBlock FontSize="24" Text="图标缺失问题" />
                 <TextBlock Text="应用使用了 Windows 11 系统上的图标字体，在 Windows 10 系统上可能会出现乱码问题。" />
-                <TextBlock Text="下一行左侧是一个点赞图标，如果不是，需要安装缺失字体。缺失字体可在安装包内找到，或点击链接下载。" />
-                <StackPanel Spacing="8" Orientation="Horizontal">
+                <TextBlock Text="下行左侧是一个点赞图标，如果不是，您需要安装缺失的字体。" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
                     <SymbolIcon HorizontalAlignment="Left" Symbol="Like" />
-                    <HyperlinkButton Content="下载 Segoe Fluent Icons" NavigateUri="https://xunkong-1306705684.file.myqcloud.com/download/Segoe%20Fluent%20Icons.ttf" />
+                    <Button Name="_Button_InstallFont"
+                            Click="_Button_InstallFont_Click"
+                            Content="安装 Segoe Fluent Icons" />
                 </StackPanel>
 
                 <TextBlock />

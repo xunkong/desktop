@@ -18,6 +18,7 @@ using System.Text.Json.Nodes;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.Web.WebView2.Core;
+using Windows.Storage;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -145,6 +146,24 @@ namespace Xunkong.Desktop.Pages
         {
             LocalSettingHelper.SaveSetting(SettingKeys.HasShownWelcomePage, true);
             InfoBarHelper.Information("不再显示欢迎界面");
+        }
+
+        private async void _Button_InstallFont_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/Fonts/Segoe Fluent Icons.ttf"));
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = file.Path,
+                    UseShellExecute = true,
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Install font Segoe Fluent Icons");
+                InfoBarHelper.Error(ex);
+            }
         }
     }
 }
