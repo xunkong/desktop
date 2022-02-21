@@ -50,7 +50,9 @@
         </Grid.ColumnDefinitions>
 
 
-        <Grid Padding="48,0,48,0" Background="{ThemeResource CustomControlBackgroundAcrylicBrush}">
+        <Grid Padding="48,0,48,0"
+              Background="{ThemeResource CustomControlBackgroundAcrylicBrush}"
+              CornerRadius="4,0,0,4">
             <TextBlock HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        Style="{ThemeResource SubtitleTextBlockStyle}"

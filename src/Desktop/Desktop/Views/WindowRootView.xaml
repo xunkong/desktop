@@ -106,8 +106,21 @@
             </NavigationView.MenuItems>
 
 
+
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem AnimatedIcon.State=""
+                                    Content="工具箱"
+                                    Icon="Repair"
+                                    Tag="ToolboxPage" />
+            </NavigationView.FooterMenuItems>
+
+
             <NavigationView.PaneFooter>
-                <cc:SwitchPresenter Name="_PaneFooter_BackgroundWallpaper" Value="{x:Bind _NavigationView.IsPaneOpen}">
+                <cc:SwitchPresenter Name="_PaneFooter_BackgroundWallpaper"
+                                    AllowDrop="True"
+                                    DragOver="_PaneFooter_BackgroundWallpaper_DragOver"
+                                    Drop="_PaneFooter_BackgroundWallpaper_Drop"
+                                    Value="{x:Bind _NavigationView.IsPaneOpen}">
                     <cc:Case Value="{StaticResource True}">
                         <Grid Height="48"
                               Margin="4,0,4,0"
@@ -168,7 +181,10 @@
             </NavigationView.PaneFooter>
 
 
-            <Frame Name="_rootFrame" Visibility="Visible" />
+
+            <Frame Name="_rootFrame"
+                   Navigating="_rootFrame_Navigating"
+                   Visibility="Visible" />
 
         </NavigationView>
 

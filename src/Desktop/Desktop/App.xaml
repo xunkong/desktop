@@ -16,14 +16,13 @@
             <!--  Other app resources here  -->
 
 
-            <StaticResource x:Key="WindowCaptionBackground" ResourceKey="SystemControlCustomBackgroundBrush" />
-            <StaticResource x:Key="WindowCaptionBackgroundDisabled" ResourceKey="SystemControlCustomBackgroundBrush" />
+            <StaticResource x:Key="WindowCaptionBackground" ResourceKey="ControlFillColorTransparentBrush" />
+            <StaticResource x:Key="WindowCaptionBackgroundDisabled" ResourceKey="ControlFillColorTransparentBrush" />
             <StaticResource x:Key="WindowCaptionForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
             <StaticResource x:Key="WindowCaptionForegroundDisabled" ResourceKey="SystemControlForegroundBaseHighBrush" />
-            <SolidColorBrush x:Key="SystemControlCustomBackgroundBrush" Color="Transparent" />
 
             <StaticResource x:Key="ApplicationPageBackgroundThemeBrush" ResourceKey="ControlFillColorTransparentBrush" />
-            
+
             <AcrylicBrush x:Key="CustomAcrylicBrush"
                           FallbackColor="{ThemeResource SystemBaseHighColor}"
                           Opacity="0.7"
@@ -43,7 +42,7 @@
             <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
 
 
-            <StaticResource x:Key="MenuFlyoutSubItemChevron" ResourceKey="SystemControlDisabledTransparentBrush" />
+            <StaticResource x:Key="MenuFlyoutSubItemChevron" ResourceKey="ControlFillColorTransparentBrush" />
 
             <ctc:EmptyObjectToObjectConverter x:Key="ObjectToBoolConverter"
                                               EmptyValue="False"

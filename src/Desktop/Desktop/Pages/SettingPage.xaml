@@ -17,9 +17,9 @@
 
 
 
-    <Grid RowSpacing="24">
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="60" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -29,18 +29,26 @@
         </Grid.ColumnDefinitions>
 
 
-        <TextBlock Margin="48,24,0,0"
-                   Style="{ThemeResource TitleTextBlockStyle}"
-                   Text="设置" />
+        <Grid Grid.ColumnSpan="2"
+              Padding="48,0,48,0"
+              Background="{ThemeResource CustomControlBackgroundAcrylicBrush}"
+              CornerRadius="4,0,0,4">
+            <TextBlock HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Style="{ThemeResource SubtitleTextBlockStyle}"
+                       Text="设置" />
+        </Grid>
 
-        <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2">
+        <ScrollViewer Grid.Row="1"
+                      Grid.ColumnSpan="2"
+                      Padding="48,24,48,24">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MaxWidth="1200" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Margin="48,0,48,24" Spacing="16">
+                <StackPanel Spacing="16">
                     <!--  关于  -->
                     <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="关于" />
                     <!--<Grid Padding="16,12,16,12"
@@ -171,7 +179,7 @@
                                  Text="修改后需要重启应用才能生效" />
                         </TextBlock>
                         <ToggleSwitch Grid.Column="2"
-                                      Margin="0 0 -48 0"
+                                      Margin="0,0,-48,0"
                                       IsOn="{x:Bind vm.DisableBackgroundWallpaper, Mode=TwoWay}" />
                     </Grid>
 

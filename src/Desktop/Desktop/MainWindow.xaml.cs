@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
+using CommunityToolkit.WinUI.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net.Http.Json;
@@ -27,7 +29,6 @@ namespace Xunkong.Desktop
 
         private readonly ILogger<MainWindow> _logger;
 
-        private WallpaperInfo? _wallpaperInfo;
 
 
         public static new Window Current { get; private set; }
@@ -137,7 +138,16 @@ namespace Xunkong.Desktop
         {
             DispatcherQueue.TryEnqueue(() =>
             {
-                _Image_Background.Source = image.Url;
+                var uri = new Uri(image.Url);
+                if (uri.Scheme == Uri.UriSchemeFile)
+                {
+                    var source = new BitmapImage { UriSource = uri };
+                    _Image_Background.Source = source;
+                }
+                else
+                {
+                    _Image_Background.Source = image.Url;
+                }
             });
             _logger.LogInformation($"Change background image:\n{image.Url}");
         }

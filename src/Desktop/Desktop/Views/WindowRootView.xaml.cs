@@ -17,10 +17,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
+using Xunkong.Core.XunkongApi;
 using Xunkong.Desktop.Pages;
 using Xunkong.Desktop.Services;
 using Xunkong.Desktop.ViewModels;
@@ -324,11 +326,48 @@ namespace Xunkong.Desktop.Views
             _Badge_Notification.Visibility = Visibility.Collapsed;
         }
 
+        private void _rootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            if (_rootFrame.Background is null)
+            {
+                _rootFrame.Background = Application.Current.Resources["CustomAcrylicBrush"] as Brush;
+            }
+        }
 
+        private void _PaneFooter_BackgroundWallpaper_DragOver(object sender, DragEventArgs e)
+        {
+            e.AcceptedOperation = DataPackageOperation.Copy;
+            e.DragUIOverride.IsCaptionVisible = false;
+            e.DragUIOverride.IsGlyphVisible = false;
+        }
 
-
-
-
+        private async void _PaneFooter_BackgroundWallpaper_Drop(object sender, DragEventArgs e)
+        {
+            if (e.DataView.Contains(StandardDataFormats.StorageItems))
+            {
+                var items = await e.DataView.GetStorageItemsAsync();
+                if (items.Any())
+                {
+                    var file = items.FirstOrDefault()?.Path;
+                    if (!string.IsNullOrWhiteSpace(file))
+                    {
+                        try
+                        {
+                            using var stream = File.OpenRead(file);
+                            var format = SixLabors.ImageSharp.Image.DetectFormatAsync(stream);
+                            if (format.Result is not null)
+                            {
+                                WeakReferenceMessenger.Default.Send(new WallpaperInfo { Url = file });
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError(ex, "Change background wallpaper from local file.");
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
