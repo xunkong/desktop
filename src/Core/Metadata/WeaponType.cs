@@ -23,17 +23,17 @@
         /// <summary>
         /// 双手剑
         /// </summary>
-        Catalyst = 2,
+        Claymore = 2,
 
         /// <summary>
         /// 长柄武器
         /// </summary>
-        Claymore = 4,
+        Polearm = 4,
 
         /// <summary>
         /// 法器
         /// </summary>
-        Polearm = 8,
+        Catalyst = 8,
 
         /// <summary>
         /// 弓箭

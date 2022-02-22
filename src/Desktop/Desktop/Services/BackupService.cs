@@ -25,12 +25,12 @@ namespace Xunkong.Desktop.Services
 
 
 
-        public BackupService(ILogger<BackupService> logger, DbConnectionFactory<SqliteConnection> dbConnectionFactory, IDbContextFactory<XunkongDbContext> dbContextFactory)
+        public BackupService(ILogger<BackupService> logger, DbConnectionFactory<SqliteConnection> dbConnectionFactory, IDbContextFactory<XunkongDbContext> dbContextFactory, JsonSerializerOptions jsonSerializerOptions)
         {
             _logger = logger;
             _dbConnectionFactory = dbConnectionFactory;
             _dbContextFactory = dbContextFactory;
-            _jsonSerializerOptions = new JsonSerializerOptions { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true };
+            _jsonSerializerOptions = jsonSerializerOptions;
         }
 
 

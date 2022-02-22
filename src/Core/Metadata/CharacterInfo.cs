@@ -18,8 +18,9 @@ namespace Xunkong.Core.Metadata
 
         public bool Enable { get; set; }
 
-        [JsonIgnore]
         public long? NameTextMapHash { get; set; }
+
+        public long? DescTextMapHash { get; set; }
 
         [MaxLength(255)]
         public string? Title { get; set; }

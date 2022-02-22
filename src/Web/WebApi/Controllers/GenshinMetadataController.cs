@@ -66,5 +66,19 @@ namespace Xunkong.Web.Api.Controllers
             return result;
         }
 
+
+        [HttpGet("i18n")]
+        public async Task<ResponseBaseWrapper> GetI18nModelsAsync()
+        {
+            if (_cache.TryGetValue("i18n", out ResponseBaseWrapper result))
+            {
+                return result;
+            }
+            var list = await _dbContext.I18nModels.AsNoTracking().Where(x => !string.IsNullOrWhiteSpace(x.zh_cn) && !string.IsNullOrWhiteSpace(x.en_us)).ToListAsync();
+            result = ResponseBaseWrapper.Ok(new { Count = list.Count, List = list });
+            _cache.Set("i18n", result);
+            return result;
+        }
+
     }
 }

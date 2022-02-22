@@ -26,6 +26,8 @@ namespace Xunkong.Desktop.Services
 
         public DbSet<WishEventInfo> WishEventInfos { get; set; }
 
+        public DbSet<I18nModel> I18nModels { get; set; }
+
         public DbSet<TravelRecordMonthData> TravelRecordMonthDatas { get; set; }
 
         public DbSet<TravelRecordAwardItem> TravelRecordAwardItems { get; set; }

@@ -110,6 +110,7 @@ namespace Xunkong.Desktop.ViewModels
                 await _xunkongApiService.GetCharacterInfosFromServerAsync();
                 await _xunkongApiService.GetWeaponInfosFromServerAsync();
                 await _xunkongApiService.GetWishEventInfosFromServerAsync();
+                await _xunkongApiService.GetI18nModelsFromServerAsync();
                 InfoBarHelper.Success("完成");
             }
             catch (Exception ex)

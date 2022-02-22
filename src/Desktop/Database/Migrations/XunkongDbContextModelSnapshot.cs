@@ -15,7 +15,7 @@ namespace Xunkong.Desktop.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
 
             modelBuilder.Entity("Xunkong.Core.Hoyolab.DailyNoteInfo", b =>
                 {
@@ -164,6 +164,9 @@ namespace Xunkong.Desktop.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
+                    b.Property<long?>("DescTextMapHash")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
@@ -252,6 +255,56 @@ namespace Xunkong.Desktop.Migrations
                     b.ToTable("Info_Character_Constellation");
                 });
 
+            modelBuilder.Entity("Xunkong.Core.Metadata.I18nModel", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("de_de")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("en_us")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("es_es")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("fr_fr")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("id_id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ja_jp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ko_kr")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("pt_pt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ru_ru")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("th_th")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("vi_vn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("zh_cn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("zh_tw")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("i18n");
+                });
+
             modelBuilder.Entity("Xunkong.Core.Metadata.WeaponInfo", b =>
                 {
                     b.Property<int>("Id")
@@ -260,6 +313,9 @@ namespace Xunkong.Desktop.Migrations
 
                     b.Property<string>("AwakenIcon")
                         .HasColumnType("TEXT");
+
+                    b.Property<long?>("DescTextMapHash")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");

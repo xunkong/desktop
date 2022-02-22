@@ -13,6 +13,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Xunkong.Desktop.Toolbox;
+using Microsoft.UI.Xaml.Media.Animation;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -59,7 +60,7 @@ namespace Xunkong.Desktop.Pages
             {
                 if (tool.PageType is not null)
                 {
-                    NavigationHelper.NavigateTo(tool.PageType);
+                    NavigationHelper.NavigateTo(tool.PageType, null, new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromRight });
                 }
             }
         }

@@ -316,6 +316,28 @@ namespace Xunkong.Desktop.Services
         }
 
 
+        public async Task<IEnumerable<I18nModel>> GetI18nModelsFromServerAsync()
+        {
+            var i18ns = await _xunkongClient.GetI18nModelsAsync();
+            using var ctx = _dbContextFactory.CreateDbContext();
+            var ids = i18ns.Select(x => x.Id).ToList();
+            using var t = ctx.Database.BeginTransaction();
+            try
+            {
+                await ctx.Database.ExecuteSqlRawAsync($"DELETE FROM i18n WHERE Id IN ({string.Join(",", ids)});");
+                ctx.AddRange(i18ns);
+                await ctx.SaveChangesAsync();
+                await t.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await t.RollbackAsync();
+                throw;
+            }
+            return i18ns;
+        }
+
+
 
         #endregion
 

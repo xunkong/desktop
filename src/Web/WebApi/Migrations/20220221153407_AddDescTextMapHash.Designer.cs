@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Xunkong.Web.Api.Services;
 
@@ -10,9 +11,10 @@ using Xunkong.Web.Api.Services;
 namespace Xunkong.Web.Api.Migrations
 {
     [DbContext(typeof(XunkongDbContext))]
-    partial class XunkongDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220221153407_AddDescTextMapHash")]
+    partial class AddDescTextMapHash
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -899,45 +901,84 @@ namespace Xunkong.Web.Api.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("de_de")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("en_us")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("es_es")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("fr_fr")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("id_id")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ja_jp")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ko_kr")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("pt_pt")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ru_ru")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("th_th")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("vi_vn")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("zh_cn")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("zh_tw")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("de_de");
+
+                    b.HasIndex("en_us");
+
+                    b.HasIndex("es_es");
+
+                    b.HasIndex("fr_fr");
+
+                    b.HasIndex("id_id");
+
+                    b.HasIndex("ja_jp");
+
+                    b.HasIndex("ko_kr");
+
+                    b.HasIndex("pt_pt");
+
+                    b.HasIndex("ru_ru");
+
+                    b.HasIndex("th_th");
+
+                    b.HasIndex("vi_vn");
+
+                    b.HasIndex("zh_cn");
+
+                    b.HasIndex("zh_tw");
 
                     b.ToTable("i18n");
                 });

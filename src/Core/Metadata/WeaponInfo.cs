@@ -13,8 +13,9 @@
 
         public string? Description { get; set; }
 
-        [JsonIgnore]
         public long NameTextMapHash { get; set; }
+
+        public long? DescTextMapHash { get; set; }
 
         public int Rarity { get; set; }
 

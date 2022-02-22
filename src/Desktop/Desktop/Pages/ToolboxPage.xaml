@@ -37,6 +37,12 @@
                   IsItemClickEnabled="True"
                   ItemClick="_GridView_ToolItem_ItemClick"
                   ItemsSource="{x:Bind Tools}">
+            <GridView.ItemContainerStyle>
+                <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                    <Setter Property="Margin" Value="0,0,16,24" />
+                    <Setter Property="CornerRadius" Value="4" />
+                </Style>
+            </GridView.ItemContainerStyle>
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="pages:ToolItem">
                     <Grid Width="200"

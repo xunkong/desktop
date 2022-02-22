@@ -22,6 +22,7 @@
 	  <None Remove="Pages\WelcomePage.xaml" />
 	  <None Remove="Pages\WishEventStatsPage.xaml" />
 	  <None Remove="Pages\WishlogManagePage.xaml" />
+	  <None Remove="Toolbox\KeqingNiuzaMetadataTool.xaml" />
 	  <None Remove="Toolbox\PixivMetadataTool.xaml" />
 	</ItemGroup>
 	<ItemGroup>
@@ -41,6 +42,7 @@
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Behaviors" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
 		<PackageReference Include="Dapper" Version="2.0.123" />
+		<PackageReference Include="Mapster" Version="7.3.0" />
 		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.5.0" />
 		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.5.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.2" />
@@ -64,6 +66,12 @@
 		<ProjectReference Include="..\BackgroundTask\Xunkong.Desktop.BackgroundTask.csproj" />
 		<ProjectReference Include="..\Database\Xunkong.Desktop.Database.csproj" />
 		<ProjectReference Include="..\Extension\Xunkong.Desktop.Extension.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Toolbox\KeqingNiuzaMetadataTool.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 
 	<ItemGroup>

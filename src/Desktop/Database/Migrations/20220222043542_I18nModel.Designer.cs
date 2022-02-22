@@ -2,150 +2,214 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Xunkong.Web.Api.Services;
+using Xunkong.Desktop.Services;
 
 #nullable disable
 
-namespace Xunkong.Web.Api.Migrations
+namespace Xunkong.Desktop.Migrations
 {
     [DbContext(typeof(XunkongDbContext))]
-    partial class XunkongDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220222043542_I18nModel")]
+    partial class I18nModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.2")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.2");
 
             modelBuilder.Entity("Xunkong.Core.Hoyolab.DailyNoteInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CurrentExpeditionNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CurrentHomeCoin")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CurrentResin")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("FinishedTaskNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<TimeSpan>("HomeCoinRecoveryTime")
-                        .HasColumnType("time(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("IsExtraTaskRewardReceived")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("MaxExpeditionNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("MaxHomeCoin")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("MaxResin")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("RemainResinDiscountNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ResinDiscountLimitedNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<TimeSpan>("ResinRecoveryTime")
-                        .HasColumnType("time(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTimeOffset>("Time")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("TotalTaskNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Uid")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.ToTable("DailyNote_Items");
                 });
 
+            modelBuilder.Entity("Xunkong.Core.Hoyolab.UserGameRoleInfo", b =>
+                {
+                    b.Property<int>("Uid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Cookie")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GameBiz")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsChosen")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsOfficial")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Nickname")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Region")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("RegionName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Uid");
+
+                    b.ToTable("Genshin_Users");
+                });
+
+            modelBuilder.Entity("Xunkong.Core.Hoyolab.UserInfo", b =>
+                {
+                    b.Property<int>("Uid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AvatarUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Cookie")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Gender")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Introduce")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nickname")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Pendant")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Uid");
+
+                    b.ToTable("Hoyolab_Users");
+                });
+
             modelBuilder.Entity("Xunkong.Core.Metadata.CharacterInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Affiliation")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("AvatarIcon")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Birthday")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Card")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("ConstllationName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<long?>("DescTextMapHash")
-                        .HasColumnType("bigint");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Element")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Enable")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("FaceIcon")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("GachaCard")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("GachaSplash")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Gender")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<long?>("NameTextMapHash")
-                        .HasColumnType("bigint");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Portrait")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Rarity")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("SideIcon")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("WeaponType")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -168,23 +232,23 @@ namespace Xunkong.Web.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CharacterInfoId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Effect")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Position")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -193,42 +257,89 @@ namespace Xunkong.Web.Api.Migrations
                     b.ToTable("Info_Character_Constellation");
                 });
 
+            modelBuilder.Entity("Xunkong.Core.Metadata.I18nModel", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("de_de")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("en_us")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("es_es")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("fr_fr")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("id_id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ja_jp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ko_kr")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("pt_pt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ru_ru")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("th_th")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("vi_vn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("zh_cn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("zh_tw")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("i18n");
+                });
+
             modelBuilder.Entity("Xunkong.Core.Metadata.WeaponInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("AwakenIcon")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<long?>("DescTextMapHash")
-                        .HasColumnType("bigint");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("Enable")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("GachaIcon")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Icon")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<long>("NameTextMapHash")
-                        .HasColumnType("bigint");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Rarity")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("WeaponType")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -239,23 +350,23 @@ namespace Xunkong.Web.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("AvatarId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Icon")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Level")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Rarity")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("SpiralAbyssBattleId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -274,16 +385,16 @@ namespace Xunkong.Web.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Index")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("SpiralAbyssLevelId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset>("Time")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -298,31 +409,31 @@ namespace Xunkong.Web.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Icon")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Index")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("IsUnlock")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("MaxStar")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("SettleTime")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("SpiralAbyssInfoId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Star")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -339,35 +450,35 @@ namespace Xunkong.Web.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset>("EndTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("IsUnlock")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("MaxFloor")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("ScheduleId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset>("StartTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("TotalBattleCount")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TotalStar")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TotalWinCount")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Uid")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -391,19 +502,19 @@ namespace Xunkong.Web.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Index")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("MaxStar")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("SpiralAbyssFloorId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Star")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -416,41 +527,41 @@ namespace Xunkong.Web.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("AvatarIcon")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("AvatarId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Rarity")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("SpiralAbyssInfo_DamageRank")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("SpiralAbyssInfo_DefeatRank")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("SpiralAbyssInfo_EnergySkillRank")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("SpiralAbyssInfo_NormalSkillRank")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("SpiralAbyssInfo_RevealRank")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("SpiralAbyssInfo_TakeDamageRank")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Type")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Value")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -475,32 +586,32 @@ namespace Xunkong.Web.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ActionId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ActionName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Month")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Number")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("Time")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Type")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Uid")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Year")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -523,37 +634,37 @@ namespace Xunkong.Web.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CurrentMora")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CurrentPrimogems")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("CurrentPrimogemsLevel")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("LastMora")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("LastPrimogems")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Month")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("MoraChangeRate")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("PrimogemsChangeRate")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Uid")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Year")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -569,32 +680,32 @@ namespace Xunkong.Web.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ActionId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ActionName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("Month")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Number")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Percent")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("TravelRecordMonthDataId")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Uid")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Year")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -607,39 +718,39 @@ namespace Xunkong.Web.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Rank4UpItems")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Rank5UpItems")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Version")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("WishType")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("_EndTimeString")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("EndTime");
 
                     b.Property<string>("_StartTimeString")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("TEXT")
                         .HasColumnName("StartTime");
 
                     b.HasKey("Id");
@@ -654,17 +765,18 @@ namespace Xunkong.Web.Api.Migrations
 
             modelBuilder.Entity("Xunkong.Core.Wish.WishlogAuthkeyItem", b =>
                 {
-                    b.Property<string>("Url")
-                        .HasMaxLength(4096)
-                        .HasColumnType("varchar(4096)");
+                    b.Property<int>("Uid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset>("DateTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("Uid")
-                        .HasColumnType("int");
+                    b.Property<string>("Url")
+                        .HasMaxLength(4096)
+                        .HasColumnType("TEXT");
 
-                    b.HasKey("Url");
+                    b.HasKey("Uid");
 
                     b.ToTable("Wishlog_Authkeys");
                 });
@@ -672,37 +784,37 @@ namespace Xunkong.Web.Api.Migrations
             modelBuilder.Entity("Xunkong.Core.Wish.WishlogItem", b =>
                 {
                     b.Property<int>("Uid")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<long>("Id")
-                        .HasColumnType("bigint");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("ItemType")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Language")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("QueryType")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("RankType")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset>("Time")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("WishType")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Uid", "Id");
 
@@ -721,315 +833,81 @@ namespace Xunkong.Web.Api.Migrations
                     b.ToTable("Wishlog_Items");
                 });
 
-            modelBuilder.Entity("Xunkong.Core.XunkongApi.DesktopChangelog", b =>
+            modelBuilder.Entity("Xunkong.Desktop.Models.NotificationDesktopModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("Channel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("ContentType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTimeOffset>("Time")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Version")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Channel");
-
-                    b.HasIndex("Version");
-
-                    b.ToTable("Desktop_Changelogs");
-                });
-
-            modelBuilder.Entity("Xunkong.Core.XunkongApi.DesktopUpdateVersion", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Abstract")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Channel")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PackageUrl")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTimeOffset>("Time")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Version")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Channel");
-
-                    b.HasIndex("Version");
-
-                    b.ToTable("Desktop_UpdateVersions");
-                });
-
-            modelBuilder.Entity("Xunkong.Core.XunkongApi.WallpaperInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Author")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<bool>("Enable")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("FileName")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Source")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Wallpapers");
-                });
-
-            modelBuilder.Entity("Xunkong.Web.Api.Models.BaseRecordModel", b =>
-                {
-                    b.Property<string>("RequestId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Channel")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTimeOffset>("DateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("DeviceId")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Ip")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Message")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Method")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Path")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Platform")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int?>("ReturnCode")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StatusCode")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserAgent")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Version")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("RequestId");
-
-                    b.HasIndex("Channel");
-
-                    b.HasIndex("DateTime");
-
-                    b.HasIndex("DeviceId");
-
-                    b.HasIndex("Ip");
-
-                    b.HasIndex("Path");
-
-                    b.HasIndex("Platform");
-
-                    b.HasIndex("ReturnCode");
-
-                    b.HasIndex("StatusCode");
-
-                    b.HasIndex("Version");
-
-                    b.ToTable("Record_All");
-                });
-
-            modelBuilder.Entity("Xunkong.Web.Api.Models.I18nModel", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("de_de")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("en_us")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("es_es")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("fr_fr")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("id_id")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ja_jp")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ko_kr")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("pt_pt")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ru_ru")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("th_th")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("vi_vn")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("zh_cn")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("zh_tw")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("i18n");
-                });
-
-            modelBuilder.Entity("Xunkong.Web.Api.Models.NotificationServerModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Category")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int>("Channel")
-                        .HasColumnType("int");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("ContentType")
-                        .HasColumnType("int");
+                        .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Enable")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("MaxVersion")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("MinVersion")
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int>("Platform")
-                        .HasColumnType("int");
+                    b.Property<bool>("HasRead")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTimeOffset>("Time")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Category");
 
-                    b.HasIndex("Channel");
-
-                    b.HasIndex("Enable");
-
-                    b.HasIndex("MaxVersion");
-
-                    b.HasIndex("MinVersion");
-
-                    b.HasIndex("Platform");
-
-                    b.HasIndex("Time");
+                    b.HasIndex("HasRead");
 
                     b.ToTable("Notifications");
                 });
 
-            modelBuilder.Entity("Xunkong.Web.Api.Models.WishlogRecordModel", b =>
+            modelBuilder.Entity("Xunkong.Desktop.Models.UserSettingModel", b =>
                 {
-                    b.HasBaseType("Xunkong.Web.Api.Models.BaseRecordModel");
+                    b.Property<string>("Key")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("CurrentCount")
-                        .HasColumnType("int");
+                    b.Property<string>("Value")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("DeleteCount")
-                        .HasColumnType("int");
+                    b.HasKey("Key");
 
-                    b.Property<int>("GetCount")
-                        .HasColumnType("int");
+                    b.ToTable("UserSettings");
+                });
 
-                    b.Property<string>("Operation")
-                        .HasColumnType("varchar(255)");
+            modelBuilder.Entity("Xunkong.Desktop.Models.WebToolItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
 
-                    b.Property<int>("PutCount")
-                        .HasColumnType("int");
+                    b.Property<string>("Icon")
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("Uid")
-                        .HasColumnType("int");
+                    b.Property<string>("JavaScript")
+                        .HasColumnType("TEXT");
 
-                    b.HasIndex("Operation");
+                    b.Property<int>("Order")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("Uid");
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
 
-                    b.ToTable("Record_Wishlog");
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WebToolItems");
                 });
 
             modelBuilder.Entity("Xunkong.Core.Metadata.ConstellationInfo", b =>
@@ -1115,15 +993,6 @@ namespace Xunkong.Web.Api.Migrations
                     b.HasOne("Xunkong.Core.TravelRecord.TravelRecordMonthData", null)
                         .WithMany("PrimogemsGroupBy")
                         .HasForeignKey("TravelRecordMonthDataId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Xunkong.Web.Api.Models.WishlogRecordModel", b =>
-                {
-                    b.HasOne("Xunkong.Web.Api.Models.BaseRecordModel", null)
-                        .WithOne()
-                        .HasForeignKey("Xunkong.Web.Api.Models.WishlogRecordModel", "RequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

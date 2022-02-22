@@ -84,7 +84,7 @@ namespace Xunkong.Desktop
             ConfigureDatabase(sc);
             ConfigureServices(sc);
 
-            sc.AddSingleton(_ => new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+            sc.AddSingleton(_ => new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, WriteIndented = true });
             return sc.BuildServiceProvider();
         }
 

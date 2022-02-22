@@ -215,6 +215,14 @@ namespace Xunkong.Core.XunkongApi
         }
 
 
+        public async Task<IEnumerable<I18nModel>> GetI18nModelsAsync()
+        {
+            var url = $"{BaseUrl}/{ApiVersion}/genshin/metadata/i18n";
+            var result = await CommonGetAsync<MetadataDto<I18nModel>>(url);
+            return result?.List!;
+        }
+
+
 
         #endregion
 
