@@ -35,9 +35,6 @@ namespace Xunkong.Desktop.ViewModels
         public Action HideUserPanelSelectorFlyout { get; set; }
 
 
-        public UserPanelViewModel() { }
-
-
 
         public UserPanelViewModel(UserSettingService userSettingService, HoyolabService hoyolabService, ILogger<UserPanelViewModel> logger)
         {

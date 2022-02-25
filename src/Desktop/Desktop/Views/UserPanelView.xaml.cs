@@ -46,7 +46,7 @@ namespace Xunkong.Desktop.Views
         public UserPanelView()
         {
             this.InitializeComponent();
-            DataContext = App.Current.Services.GetService<UserPanelViewModel>();
+            DataContext = ActivatorUtilities.CreateInstance<UserPanelViewModel>(App.Current.Services);
             Loaded += async (_, _) => await vm.InitializeDataAsync();
             vm.HideUserPanelSelectorFlyout += () => _Flyout_UserPanelSelector.DispatcherQueue.TryEnqueue(() => _Flyout_UserPanelSelector.Hide());
         }

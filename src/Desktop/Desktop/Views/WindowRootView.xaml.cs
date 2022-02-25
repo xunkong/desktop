@@ -47,7 +47,7 @@ namespace Xunkong.Desktop.Views
         public WindowRootView()
         {
             this.InitializeComponent();
-            DataContext = App.Current.Services.GetService<WindowRootViewModel>();
+            DataContext = ActivatorUtilities.CreateInstance<WindowRootViewModel>(App.Current.Services);
             _dbConnectionFactory = App.Current.Services.GetService<DbConnectionFactory<SqliteConnection>>()!;
             _logger = App.Current.Services.GetService<ILogger<WindowRootView>>()!;
             RegisterMessage();

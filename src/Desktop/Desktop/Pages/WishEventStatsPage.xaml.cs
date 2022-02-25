@@ -33,7 +33,7 @@ namespace Xunkong.Desktop.Pages
         public WishEventStatsPage()
         {
             this.InitializeComponent();
-            DataContext = App.Current.Services.GetService<WishEventStatsViewModel>();
+            DataContext = ActivatorUtilities.CreateInstance<WishEventStatsViewModel>(App.Current.Services);
         }
 
 

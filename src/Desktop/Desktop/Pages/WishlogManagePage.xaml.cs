@@ -37,7 +37,7 @@ namespace Xunkong.Desktop.Pages
         public WishlogManagePage()
         {
             this.InitializeComponent();
-            DataContext = App.Current.Services.GetService<WishlogManageViewModel>();
+            DataContext = ActivatorUtilities.CreateInstance<WishlogManageViewModel>(App.Current.Services);
             Loaded += async (_, _) => await vm.InitializeDataAsync();
         }
 

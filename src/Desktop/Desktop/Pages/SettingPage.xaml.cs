@@ -37,7 +37,7 @@ namespace Xunkong.Desktop.Pages
         public SettingPage()
         {
             this.InitializeComponent();
-            DataContext = App.Current.Services.GetService<SettingViewModel>();
+            DataContext = ActivatorUtilities.CreateInstance<SettingViewModel>(App.Current.Services);
             Loaded += async (_, _) => await vm.InitializeDataAsync();
             SetNumberBoxNumberFormatter();
         }

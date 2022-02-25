@@ -182,18 +182,13 @@ namespace Xunkong.Desktop
 
         private void ConfigureServices(ServiceCollection sc)
         {
-            sc.AddTransient<SettingViewModel>();
-            sc.AddTransient<UserPanelViewModel>();
-            sc.AddTransient<WindowRootViewModel>();
-            sc.AddTransient<WishlogManageViewModel>();
-            sc.AddTransient<WishEventStatsViewModel>();
-            sc.AddSingleton<AlbumViewModel>();
-
             sc.AddSingleton<HoyolabService>();
             sc.AddSingleton<UserSettingService>();
             sc.AddSingleton<WishlogService>();
             sc.AddSingleton<XunkongApiService>();
             sc.AddSingleton<BackupService>();
+
+            sc.AddSingleton<AlbumViewModel>();
         }
 
 
