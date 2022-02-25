@@ -112,6 +112,11 @@ namespace Xunkong.Desktop.ViewModels
                 }
                 _logger.LogTrace($"Game path: {gamePath}");
                 albumFolder = Path.Combine(gamePath, "ScreenShot");
+                if (!Directory.Exists(albumFolder))
+                {
+                    InfoBarHelper.Warning("Cannot find screenshot foler.");
+                    return;
+                }
                 _logger.LogInformation($"Album folder: {albumFolder}");
             }
             catch (Exception ex)
@@ -119,7 +124,7 @@ namespace Xunkong.Desktop.ViewModels
                 _logger.LogError(ex, "Get genshin screenshot path.");
                 InfoBarHelper.Error(ex);
             }
-            if (!string.IsNullOrWhiteSpace(albumFolder))
+            if (Directory.Exists(albumFolder))
             {
                 _watcher.Path = albumFolder;
                 _watcher.EnableRaisingEvents = true;
@@ -131,7 +136,7 @@ namespace Xunkong.Desktop.ViewModels
 
         private void GetAllImages()
         {
-            if (!string.IsNullOrWhiteSpace(albumFolder))
+            if (Directory.Exists(albumFolder))
             {
                 try
                 {
@@ -155,9 +160,9 @@ namespace Xunkong.Desktop.ViewModels
         [ICommand]
         private void OpenImageFolder()
         {
-            if (string.IsNullOrWhiteSpace(albumFolder))
+            if (!Directory.Exists(albumFolder))
             {
-                InfoBarHelper.Warning("Cannot find album folder.");
+                InfoBarHelper.Warning("Cannot find screenshot folder.");
                 return;
             }
             try

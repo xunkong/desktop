@@ -32,18 +32,22 @@ namespace Xunkong.Desktop
         public App()
         {
             UnhandledException += App_UnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Services = ConfigureServiceProvider();
             InitializeApplicationTheme();
             this.InitializeComponent();
         }
 
 
-
-
-
         private void App_UnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
         {
             Log.Fatal(e.Exception, "App crash.");
+            Log.CloseAndFlush();
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, System.UnhandledExceptionEventArgs e)
+        {
+            Log.Fatal(e.ExceptionObject as Exception, "App crash.");
             Log.CloseAndFlush();
         }
 
