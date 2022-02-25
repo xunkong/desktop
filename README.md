@@ -6,7 +6,7 @@
 
 ### 前提条件
 
-- Windows 10 1909 及以上版本
+- Windows 10 1809 及以上版本
 - Visual Studio 2022 及以上版本
 
 ### 生成客户端
@@ -29,7 +29,7 @@
 - 在项目 `Xunkong.Web.Api` 的 `appsettings.json` 文件中修改连接字符串
 - 迁移数据库架构
   - 安装 EF Core CLI 工具，命令行运行 `dotnet tool install --global dotnet-ef`
-  - 在 `Xunkong.Web.Api` 项目的文件夹内使用命令行运行 `dotnet ef database update`
+  - 更新数据库表结构，在 `Xunkong.Web.Api` 项目的文件夹内使用命令行运行 `dotnet ef database update`
 
 到此您已经完成了生成服务端的全部准备，单独运行则需要修改 `appsettings.json` 文件中的端口。
 
