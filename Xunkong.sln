@@ -22,6 +22,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xunkong.Desktop.Extension",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xunkong.Desktop.Database", "src\Desktop\Database\Xunkong.Desktop.Database.csproj", "{2B79B5BB-7C3F-434B-B3AB-0C3B8B90D4FC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Xunkong.Desktop.Secret", "src\Desktop\Secret\Xunkong.Desktop.Secret.csproj", "{194B1822-64E9-48CB-8C36-5F01CED4F662}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -186,6 +188,26 @@ Global
 		{2B79B5BB-7C3F-434B-B3AB-0C3B8B90D4FC}.Release|x64.Build.0 = Release|Any CPU
 		{2B79B5BB-7C3F-434B-B3AB-0C3B8B90D4FC}.Release|x86.ActiveCfg = Release|Any CPU
 		{2B79B5BB-7C3F-434B-B3AB-0C3B8B90D4FC}.Release|x86.Build.0 = Release|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Debug|ARM.Build.0 = Debug|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Debug|arm64.Build.0 = Debug|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Debug|x64.Build.0 = Debug|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Debug|x86.Build.0 = Debug|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Release|Any CPU.Build.0 = Release|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Release|ARM.ActiveCfg = Release|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Release|ARM.Build.0 = Release|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Release|arm64.ActiveCfg = Release|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Release|arm64.Build.0 = Release|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Release|x64.ActiveCfg = Release|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Release|x64.Build.0 = Release|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Release|x86.ActiveCfg = Release|Any CPU
+		{194B1822-64E9-48CB-8C36-5F01CED4F662}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

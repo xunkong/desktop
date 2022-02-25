@@ -1,16 +1,10 @@
-﻿using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Http;
 using Microsoft.UI.Xaml;
 using Serilog;
 using Serilog.Events;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using Windows.Storage;
 using Xunkong.Core.Hoyolab;
 using Xunkong.Core.Wish;
 using Xunkong.Core.XunkongApi;
@@ -77,8 +71,7 @@ namespace Xunkong.Desktop
         private IServiceProvider ConfigureServiceProvider()
         {
 #if !DEBUG
-            AppCenter.Start("", typeof(Analytics), typeof(Crashes));
-            AppCenter.SetUserId(XunkongEnvironment.DeviceId);
+            InitializeAppCenter.Initialize();
 #endif
 
             var sc = new ServiceCollection();
