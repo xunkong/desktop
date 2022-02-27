@@ -22,6 +22,7 @@
 		<None Remove="Pages\WelcomePage.xaml" />
 		<None Remove="Pages\WishEventStatsPage.xaml" />
 		<None Remove="Pages\WishlogManagePage.xaml" />
+		<None Remove="Pages\WishlogSummaryPage.xaml" />
 		<None Remove="Toolbox\KeqingNiuzaMetadataTool.xaml" />
 		<None Remove="Toolbox\PixivMetadataTool.xaml" />
 	</ItemGroup>
@@ -66,7 +67,13 @@
 		<ProjectReference Include="..\BackgroundTask\Xunkong.Desktop.BackgroundTask.csproj" />
 		<ProjectReference Include="..\Database\Xunkong.Desktop.Database.csproj" />
 		<ProjectReference Include="..\Extension\Xunkong.Desktop.Extension.csproj" />
-		<ProjectReference Include="..\Secret\Xunkong.Desktop.Secret.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+		<ProjectReference Include="..\Secret\Xunkong.Desktop.Secret.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Pages\WishlogSummaryPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 
 	<ItemGroup>

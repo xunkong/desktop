@@ -26,7 +26,16 @@
         </Style>
         <Flyout x:Key="WallpaperInfoFlyout" Placement="RightEdgeAlignedBottom">
             <StackPanel Width="200" Spacing="8">
-                <TextBlock FontSize="16" Text="图片信息" />
+                <Grid>
+                    <TextBlock HorizontalAlignment="Left"
+                               FontSize="16"
+                               Text="图片信息" />
+                    <TextBlock HorizontalAlignment="Right"
+                               VerticalAlignment="Bottom"
+                               FontSize="12"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                               Text="{x:Bind vm.BackgroundWallpaper.Id}" />
+                </Grid>
                 <MenuFlyoutSeparator />
                 <TextBlock Grid.Column="1">
                     <Run FontSize="14" Text="{x:Bind vm.BackgroundWallpaper.Title}" />
@@ -95,7 +104,15 @@
                 <NavigationViewItem Content="相册"
                                     Icon="Camera"
                                     Tag="AlbumPage" />
-                <NavigationViewItem Content="祈愿记录管理" Tag="WishlogManagePage">
+                <NavigationViewItem Content="祈愿记录" Tag="WishlogSummaryPage">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon Width="36"
+                                    Height="36"
+                                    ShowAsMonochrome="False"
+                                    UriSource="ms-appx:///Assets/Images/Ui_SystemOpenIcon_Gacha.png" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="祈愿记录管理（待删除）" Tag="WishlogManagePage">
                     <NavigationViewItem.Icon>
                         <BitmapIcon Width="36"
                                     Height="36"
@@ -270,9 +287,8 @@
 
 
                 <TeachingTip Name="_TeachingTip_NewNotification"
-                             Content="收到了新的通知"
-                             PlacementMargin="0 0 -12 0"
-                             PreferredPlacement="Bottom"
+                             Content="收到了新的消息"
+                             PreferredPlacement="BottomLeft"
                              Target="{x:Bind _Button_Notification}" />
 
 

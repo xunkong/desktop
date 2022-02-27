@@ -315,7 +315,7 @@
                         </GroupStyle>
                     </ListView.GroupStyle>
                     <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="models:WishlogItemEditableModel">
+                        <DataTemplate x:DataType="models:WishlogItemEx">
                             <StackPanel Orientation="Horizontal" Spacing="16">
                                 <TextBlock Width="60"
                                            Foreground="{Binding RankType, Converter={StaticResource RankToColorConverter}}"

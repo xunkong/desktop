@@ -22,11 +22,14 @@ namespace Xunkong.Desktop.Services
         }
 
 
-        public async Task<T?> GetSettingAsync<T>(string key)
+        public async Task<T?> GetSettingAsync<T>(string key, bool notPrintLog = false)
         {
             using var con = _connectionFactory.CreateDbConnection();
-            var value = await con.QueryFirstOrDefaultAsync<string>($"SELECT Value FROM UserSettings WHERE Key='{key}';");
-            _logger.LogTrace("Query UserSetting by key {Key} with value {Value}", key, value);
+            var value = await con.QueryFirstOrDefaultAsync<string>($"SELECT Value FROM UserSettings WHERE Key=@Key;", new { Key = key });
+            if (!notPrintLog)
+            {
+                _logger.LogTrace("Query UserSetting by key {Key} with value {Value}", key, value);
+            }
             if (value == null)
             {
                 return default;
@@ -48,16 +51,27 @@ namespace Xunkong.Desktop.Services
 
 
 
-        public async Task SaveSettingAsync<T>(string key, T value)
+        public async Task SaveSettingAsync<T>(string key, T value, bool notPrintLog = false)
         {
-            _logger.LogTrace("Save UserSetting with key {Key}, value {Value}", key, value);
-            using var con = _connectionFactory.CreateDbConnection();
-            var setting = new UserSettingModel
+            if (!notPrintLog)
             {
-                Key = key,
-                Value = value?.ToString(),
-            };
-            await con.ExecuteAsync("INSERT OR REPLACE INTO UserSettings VALUES (@Key,@Value);", setting);
+                _logger.LogTrace("Save UserSetting with key {Key}, value {Value}", key, value);
+            }
+            try
+            {
+                using var con = _connectionFactory.CreateDbConnection();
+                var setting = new UserSettingModel
+                {
+                    Key = key,
+                    Value = value?.ToString(),
+                };
+                await con.ExecuteAsync("INSERT OR REPLACE INTO UserSettings VALUES (@Key,@Value);", setting);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Save UserSetting.");
+            }
+
         }
 
 

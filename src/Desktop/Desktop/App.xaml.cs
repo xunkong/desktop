@@ -5,6 +5,7 @@ using Serilog;
 using Serilog.Events;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using Windows.Storage;
 using Xunkong.Core.Hoyolab;
 using Xunkong.Core.Wish;
 using Xunkong.Core.XunkongApi;
@@ -92,15 +93,14 @@ namespace Xunkong.Desktop
 
         private void ConfigureLogging(ServiceCollection sc)
         {
-            var logBasePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"Xunkong\Log");
             var now = DateTime.Now;
-            var myLogPath = Path.Combine(logBasePath, $@"Log\log_{now:yyyyMMdd}_{now:HHmmss}.txt");
-            var fxLogPath = Path.Combine(logBasePath, $@"Trace\trace_{now:yyyyMMdd}_{now:HHmmss}.txt");
+            var fxLogPath = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, $@"Xunkong\Log\Trace\trace_{now:yyyyMMdd}_{now:HHmmss}.txt");
             var fxLogger = new LoggerConfiguration().MinimumLevel.Verbose()
                                                     .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                                                     .WriteTo.Async(x => x.File(path: fxLogPath, outputTemplate: logTemplate, shared: true, retainedFileCountLimit: 1000))
                                                     .Enrich.FromLogContext()
                                                     .CreateLogger();
+            var myLogPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $@"Xunkong\Log\Log\log_{now:yyyyMMdd}_{now:HHmmss}.txt");
             var myLogger = new LoggerConfiguration().MinimumLevel.Verbose()
                                                     .MinimumLevel.Override("System", LogEventLevel.Warning)
                                                     .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)

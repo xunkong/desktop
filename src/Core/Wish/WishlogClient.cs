@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using Xunkong.Core.Hoyolab;
+using Xunkong.Core.XunkongApi;
 
 namespace Xunkong.Core.Wish
 {
@@ -40,7 +41,7 @@ namespace Xunkong.Core.Wish
             var match = Regex.Match(wishlogUrl, @"(https://webstatic.+#/log)");
             if (!match.Success)
             {
-                throw new ArgumentException("Url does not meet the requirement.");
+                throw new XunkongException(ErrorCode.UrlFormatError, "Url does not fit the requirement.");
             }
             wishlogUrl = match.Groups[1].Value;
             var auth = wishlogUrl.Substring(wishlogUrl.IndexOf('?')).Replace("#/log", "");

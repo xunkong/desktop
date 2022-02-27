@@ -79,10 +79,9 @@
 
             <x:Boolean x:Key="True">True</x:Boolean>
             <x:Boolean x:Key="False">False</x:Boolean>
-            <SolidColorBrush x:Key="Rank5ForegroundBrush">#BD6932</SolidColorBrush>
+            <SolidColorBrush x:Key="Rank5ForegroundBrush">#FFA500</SolidColorBrush>
             <SolidColorBrush x:Key="Rank4ForegroundBrush">#A256E1</SolidColorBrush>
-            <SolidColorBrush x:Key="Rank3ForegroundBrush">#5F9CB8</SolidColorBrush>
-            <SolidColorBrush x:Key="Rank5BackgroundBrush">#8C6EB7</SolidColorBrush>
+            <SolidColorBrush x:Key="Rank3ForegroundBrush">#6495ED</SolidColorBrush>
 
         </ResourceDictionary>
     </Application.Resources>

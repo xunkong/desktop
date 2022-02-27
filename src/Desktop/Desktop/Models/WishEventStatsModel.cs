@@ -43,7 +43,7 @@ namespace Xunkong.Desktop.Models
         public List<WishEventStatsRarity5Item> Rarity5Items { get; set; }
 
 
-        public List<WishlogItemEditableModel> Wishlogs { get; set; }
+        public List<WishlogItemEx> Wishlogs { get; set; }
 
 
         public int TotalCount { get; set; }

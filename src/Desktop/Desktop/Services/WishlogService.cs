@@ -22,9 +22,9 @@ namespace Xunkong.Desktop.Services
 
         private readonly WishlogClient _wishlogClient;
 
-        private readonly IDbContextFactory<XunkongDbContext> _dbContextFactory;
+        private readonly IDbContextFactory<XunkongDbContext> _ctxFactory;
 
-        private readonly DbConnectionFactory<SqliteConnection> _dbConnectionFactory;
+        private readonly DbConnectionFactory<SqliteConnection> _cntFactory;
 
         private readonly BackupService _backupService;
 
@@ -45,8 +45,8 @@ namespace Xunkong.Desktop.Services
             _logger = logger;
             _httpClient = httpClient;
             _wishlogClient = wishlogClient;
-            _dbContextFactory = dbContextFactory;
-            _dbConnectionFactory = dbConnectionFactory;
+            _ctxFactory = dbContextFactory;
+            _cntFactory = dbConnectionFactory;
             _backupService = backupService;
         }
 
@@ -90,7 +90,7 @@ namespace Xunkong.Desktop.Services
 
 
         /// <summary>
-        /// 获取原神日志中的祈愿记录网址
+        /// 获取原神日志中最新的祈愿记录网址
         /// </summary>
         /// <param name="isSea"></param>
         /// <returns></returns>
@@ -140,7 +140,7 @@ namespace Xunkong.Desktop.Services
                 _logger.LogDebug("The wishlog url doesn't have any wishlog.");
                 throw new HoyolabException(-1, "该网址没有对应的祈愿记录");
             }
-            using var cnt = _dbConnectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             var model = new WishlogAuthkeyItem { Uid = uid, Url = wishlogUrl, DateTime = DateTimeOffset.Now };
             await cnt.ExecuteAsync("INSERT OR REPLACE INTO Wishlog_Authkeys (Uid,Url,DateTime) VALUES(@Uid,@Url,@DateTime);", model);
             return uid;
@@ -148,10 +148,17 @@ namespace Xunkong.Desktop.Services
 
 
 
-
+        /// <summary>
+        /// 检查指定uid的祈愿记录认证信息是否过期，默认24小时后过期
+        /// </summary>
+        /// <remarks>
+        /// 寻空使用祈愿记录网址确认用户身份，每次从米哈游服务器获取祈愿记录时，会保存此次使用的祈愿记录网址和当前时间，在之后的24小时内认为该认证有效
+        /// </remarks>
+        /// <param name="uid"></param>
+        /// <returns></returns>
         public async Task<bool> CheckWishlogAuthkeyExpiredAsync(int uid)
         {
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var model = await ctx.WishlogAuthkeys.Where(x => x.Uid == uid).FirstOrDefaultAsync();
             if (model == null)
             {
@@ -165,9 +172,17 @@ namespace Xunkong.Desktop.Services
 
 
 
+        /// <summary>
+        /// 检查指定uid保存的祈愿记录网址的实时有效性
+        /// </summary>
+        /// <remarks>
+        /// 此有效性不同于祈愿记录认证信息，有效则表示使用此网址能够从米哈游服务器获取祈愿记录
+        /// </remarks>
+        /// <param name="uid"></param>
+        /// <returns></returns>
         public async Task<bool> CheckWishlogUrlTimeoutAsync(int uid)
         {
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var model = await ctx.WishlogAuthkeys.Where(x => x.Uid == uid).FirstOrDefaultAsync();
             if (model == null)
             {
@@ -193,9 +208,19 @@ namespace Xunkong.Desktop.Services
 
 
 
+
+        /// <summary>
+        /// 根据本地保存的祈愿记录网址，从米哈游服务器获取指定uid的祈愿记录，并返回新增数量
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <param name="onProgressChanged">页数变化时调用</param>
+        /// <param name="getAll">是否获取全部数据</param>
+        /// <returns>新增祈愿记录的数量</returns>
+        /// <exception cref="XunkongException"></exception>
+        /// <exception cref="HoyolabException"></exception>
         public async Task<int> GetWishlogByUidAsync(int uid, EventHandler<(WishType WishType, int Page)>? onProgressChanged = null, bool getAll = false)
         {
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var wishlogUrl = await ctx.WishlogAuthkeys.Where(x => x.Uid == uid).Select(x => x.Url).FirstOrDefaultAsync();
             if (string.IsNullOrWhiteSpace(wishlogUrl))
             {
@@ -226,8 +251,8 @@ namespace Xunkong.Desktop.Services
         /// <summary>
         /// 获取原神日志中祈愿记录网址的祈愿记录，返回新增条数
         /// </summary>
-        /// <param name="isSea"></param>
-        /// <param name="getAll"></param>
+        /// <param name="isSea">首先从外服日志获取</param>
+        /// <param name="getAll">是否获取全部数据</param>
         /// <returns></returns>
         /// <exception cref="HoyolabException"></exception>
         public async Task<int> GetWishlogsByLogFileAsync(bool isSea = false, bool getAll = false)
@@ -237,12 +262,12 @@ namespace Xunkong.Desktop.Services
             long lastId = 0;
             if (!getAll)
             {
-                using var cnt = _dbConnectionFactory.CreateDbConnection();
+                using var cnt = _cntFactory.CreateDbConnection();
                 lastId = await cnt.QueryFirstOrDefaultAsync<long>("SELECT Id FROM Wishlog_Items WHERE Uid=@Uid ORDER BY Id DESC;", new { Uid = uid });
             }
             _logger.LogDebug("Start getting wishlog with uid {Uid} and (get all? {GetAll})", uid, getAll);
             var wishlogs = await _wishlogClient.GetAllWishlogAsync(wishlogUrl, lastId);
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var existList = await ctx.WishlogItems.AsNoTracking().Where(x => x.Uid == uid).Select(x => x.Id).ToListAsync();
             var addList = wishlogs.ExceptBy(existList, x => x.Id).ToList();
             ctx.AddRange(addList);
@@ -253,24 +278,38 @@ namespace Xunkong.Desktop.Services
 
 
 
-
+        /// <summary>
+        /// 获取本地数据库中所有的uid
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<int>> GetAllUidsAsync()
         {
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             return await ctx.WishlogItems.Select(x => x.Uid).Distinct().ToListAsync();
         }
 
+
+        /// <summary>
+        /// 获取指定uid的本地祈愿记录数量
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        public async Task<int> GetWishlogCountAsync(int uid)
+        {
+            using var ctx = _ctxFactory.CreateDbContext();
+            return await ctx.WishlogItems.Where(x => x.Uid == uid).CountAsync();
+        }
 
 
 
         public async Task<WishlogPanelModel> GetWishlogPanelModelAsync(int uid)
         {
             var model = new WishlogPanelModel { Uid = uid };
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             model.NickName = await ctx.UserGameRoleInfos.Where(x => x.Uid == uid).Select(x => x.Nickname).FirstOrDefaultAsync();
             model.LastUpdateTime = await ctx.WishlogAuthkeys.Where(x => x.Uid == uid).Select(x => x.DateTime).FirstOrDefaultAsync();
             model.WishlogCount = await ctx.WishlogItems.Where(x => x.Uid == uid).CountAsync();
-            var list = (await GetWishlogItemEditableModelsByUidAsync(uid)).OrderByDescending(x => x.Id).ToList();
+            var list = (await GetWishlogItemExByUidAsync(uid)).OrderByDescending(x => x.Id).ToList();
             foreach (var type in new[] { WishType.CharacterEvent, WishType.WeaponEvent, WishType.Permanent })
             {
                 var stats = new WishlogPanelWishTypeStatsModel { WishType = type };
@@ -326,7 +365,7 @@ namespace Xunkong.Desktop.Services
             }
             var uid = list.FirstOrDefault()!.Uid;
             _logger.LogInformation($"Imported uid of wishlog is {uid}");
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             if (await ctx.WishlogItems.AnyAsync(x => x.Uid == uid))
             {
                 await _backupService.BackupWishlogItemsAsync(uid);
@@ -362,7 +401,7 @@ namespace Xunkong.Desktop.Services
             }
             var uid = list.FirstOrDefault()!.Uid;
             _logger.LogInformation($"Imported uid of wishlog is {uid}");
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             if (await ctx.WishlogItems.AnyAsync(x => x.Uid == uid))
             {
                 await _backupService.BackupWishlogItemsAsync(uid);
@@ -387,25 +426,42 @@ namespace Xunkong.Desktop.Services
 
 
 
-        public async Task<List<WishlogItemEditableModel>> GetWishlogItemEditableModelsByUidAsync(int uid)
+        public async Task<List<WishlogItemEx>> GetWishlogItemExByUidAsync(int uid)
         {
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var items = await ctx.WishlogItems.Where(x => x.Uid == uid).ToListAsync();
-            var models = items.Adapt<List<WishlogItemEditableModel>>();
+            var events = await ctx.WishEventInfos.ToListAsync();
+            var models = items.Adapt<List<WishlogItemEx>>();
             var groups = models.GroupBy(x => x.QueryType);
-            foreach (var group in groups)
+            Parallel.ForEach(groups, group =>
             {
                 int guaranteeIndex = 0;
-                foreach (var model in group.OrderBy(x => x.Id))
+                foreach (var item in group.OrderBy(x => x.Id))
                 {
                     guaranteeIndex++;
-                    model.GuaranteeIndex = guaranteeIndex;
-                    if (model.RankType == 5)
+                    item.GuaranteeIndex = guaranteeIndex;
+                    if (item.RankType == 5)
                     {
                         guaranteeIndex = 0;
                     }
                 }
-            }
+                var queryType = group.FirstOrDefault()?.QueryType;
+                if (queryType is WishType.CharacterEvent or WishType.WeaponEvent)
+                {
+                    var eventGroup = events.Where(x => x.QueryType == queryType).GroupBy(x => x.StartTime);
+                    var rank45Items = group.Where(x => x.RankType > 3).ToList();
+                    Parallel.ForEach(eventGroup, eg =>
+                    {
+                        var upNames = eg.SelectMany(x => x.Rank5UpItems).Concat(eg.SelectMany(x => x.Rank4UpItems).Distinct()).ToList();
+                        var firstEvent = eg.First();
+                        var queryUp = rank45Items.Where(x => firstEvent.StartTime <= x.Time && x.Time <= firstEvent.EndTime).Where(x => upNames.Contains(x.Name));
+                        foreach (var item in queryUp)
+                        {
+                            item.IsUp = true;
+                        }
+                    });
+                }
+            });
             return models;
         }
 
@@ -421,11 +477,11 @@ namespace Xunkong.Desktop.Services
 
 
 
-        public async Task<List<WishlogItemEditableModel>> GetWishlogItemEditableModelsByUidAndTypeAsync(int uid, WishType queryType)
+        public async Task<List<WishlogItemEx>> GetWishlogItemEditableModelsByUidAndTypeAsync(int uid, WishType queryType)
         {
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var items = await ctx.WishlogItems.Where(x => x.Uid == uid && x.QueryType == queryType).ToListAsync();
-            var models = items.Adapt<List<WishlogItemEditableModel>>().OrderBy(x => x.Id).ToList();
+            var models = items.Adapt<List<WishlogItemEx>>().OrderBy(x => x.Id).ToList();
             int guaranteeIndex = 0;
             foreach (var model in models)
             {
@@ -449,7 +505,7 @@ namespace Xunkong.Desktop.Services
         {
             WishEventInfo.RegionType = UidToRegionType(uid);
             var wishlogModels = await GetWishlogItemEditableModelsByUidAndTypeAsync(uid, WishType.CharacterEvent);
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var eventInfos = await ctx.WishEventInfos.ToListAsync();
             var groups = eventInfos.Where(x => x.QueryType == WishType.CharacterEvent).GroupBy(x => x.StartTime).ToList();
             var dics = await ctx.CharacterInfos.ToDictionaryAsync(x => x.Name!);
@@ -515,7 +571,7 @@ namespace Xunkong.Desktop.Services
         {
             WishEventInfo.RegionType = UidToRegionType(uid);
             var wishlogModels = await GetWishlogItemEditableModelsByUidAndTypeAsync(uid, WishType.WeaponEvent);
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var eventInfos = await ctx.WishEventInfos.ToListAsync();
             var groups = eventInfos.Where(x => x.QueryType == WishType.WeaponEvent).GroupBy(x => x.StartTime).ToList();
             var dics = await ctx.WeaponInfos.ToDictionaryAsync(x => x.Name!);
