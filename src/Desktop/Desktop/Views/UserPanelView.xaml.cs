@@ -97,5 +97,18 @@ namespace Xunkong.Desktop.Views
         }
 
 
+
+        private async void _Button_PinTile_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button)
+            {
+                if (button.DataContext is UserPanelModel model)
+                {
+                    await vm.PinOrUnpinTileAsync(model);
+                }
+            }
+        }
+
+
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Xunkong.Core.Hoyolab;
@@ -431,6 +432,33 @@ namespace Xunkong.Desktop.ViewModels
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error in {nameof(DeleteUserInfoAsync)}");
+                InfoBarHelper.Error(ex);
+            }
+        }
+
+
+
+        public async Task PinOrUnpinTileAsync(UserPanelModel model)
+        {
+            var note = model?.DailyNoteInfo;
+            if (model is null || note is null)
+            {
+                return;
+            }
+            try
+            {
+                if (model.IsPinned)
+                {
+                    model.IsPinned = !await TileHelper.RequestUnpinTileAsync(note);
+                }
+                else
+                {
+                    model.IsPinned = await TileHelper.RequestPinTileAsync(note);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Pin or unpin tile.");
                 InfoBarHelper.Error(ex);
             }
         }

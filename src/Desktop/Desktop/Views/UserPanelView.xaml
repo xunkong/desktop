@@ -224,9 +224,10 @@
                                                                 <Run Text="级" />
                                                             </TextBlock>
                                                         </StackPanel>
-                                                        <Button HorizontalAlignment="Right"
+                                                        <Button Name="_Button_PinTile"
+                                                                HorizontalAlignment="Right"
                                                                 VerticalAlignment="Center"
-                                                                Command="{x:Bind PinOrUnpinTileCommand}"
+                                                                Click="_Button_PinTile_Click"
                                                                 FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                                                 Style="{ThemeResource DateTimePickerFlyoutButtonStyle}"
                                                                 Visibility="{x:Bind PinButtonVisibility}">

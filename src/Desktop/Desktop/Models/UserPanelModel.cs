@@ -63,7 +63,7 @@ namespace Xunkong.Desktop.Models
         }
 
 
-
+        [AlsoNotifyChangeFor(nameof(PinButtonVisibility))]
         private DailyNoteInfo? _DailyNoteInfo;
         public DailyNoteInfo? DailyNoteInfo
         {
@@ -71,15 +71,7 @@ namespace Xunkong.Desktop.Models
             set
             {
                 SetProperty(ref _DailyNoteInfo, value);
-                OnPropertyChanged(nameof(PinButtonVisibility));
             }
-        }
-
-
-        public void ClearError()
-        {
-            HasError = false;
-            ErrorMessage = null;
         }
 
 
@@ -96,32 +88,6 @@ namespace Xunkong.Desktop.Models
                     return DailyNoteInfo is null ? Visibility.Collapsed : Visibility.Visible;
                 }
             }
-        }
-
-
-        [ICommand]
-        public async Task PinOrUnpinTileAsync()
-        {
-            if (DailyNoteInfo is null)
-            {
-                return;
-            }
-            try
-            {
-                if (IsPinned)
-                {
-                    IsPinned = !await TileHelper.RequestUnpinTileAsync(DailyNoteInfo);
-                }
-                else
-                {
-                    IsPinned = await TileHelper.RequestPinTileAsync(DailyNoteInfo);
-                }
-            }
-            catch (Exception ex)
-            {
-                InfoBarHelper.Error(ex);
-            }
-
         }
 
 
