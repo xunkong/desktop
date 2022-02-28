@@ -37,10 +37,10 @@
 
             <Border Name="_Border_GragIn"
                     AllowDrop="True"
+                    Background="Transparent"
                     BorderBrush="{ThemeResource TextFillColorSecondaryBrush}"
                     BorderThickness="1"
                     CornerRadius="4"
-                    Background="Transparent"
                     DragOver="_Border_GragIn_DragOver"
                     Drop="_Border_GragIn_Drop">
                 <TextBlock HorizontalAlignment="Center"
@@ -51,8 +51,15 @@
 
             <StackPanel Grid.Row="1" Spacing="12">
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <TextBlock VerticalAlignment="Center" Text="进度" />
-                    <ProgressRing Name="_PrograssRing" IsActive="False"/>
+                    <TextBlock VerticalAlignment="Center" Text="代理" />
+                    <TextBox Name="_TextBox_Proxy" Width="200" />
+                    <Button Name="_Button_ConfirmProxy"
+                            Click="_Button_ConfirmProxy_Click"
+                            Content="确认" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBlock VerticalAlignment="Center" Text="状态" />
+                    <ProgressRing Name="_PrograssRing" IsActive="False" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <TextBlock VerticalAlignment="Center" Text="不在文件名中包含除 Pid 以外的信息" />

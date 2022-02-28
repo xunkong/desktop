@@ -24,6 +24,7 @@ using Windows.Storage;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using System.Net;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -37,24 +38,54 @@ namespace Xunkong.Desktop.Toolbox
     public sealed partial class PixivMetadataTool : Page
     {
 
+        private const string PixivToolBoxProxy = "PixivToolBoxProxy";
 
-        private readonly HttpClient _httpClient;
+
+        private HttpClient _httpClient;
 
 
         public PixivMetadataTool()
         {
             this.InitializeComponent();
-            _httpClient = App.Current.Services.GetService<HttpClient>()!;
-            _httpClient.DefaultRequestHeaders.Add("Accept-Language", "zh-CN");
-            _httpClient.DefaultRequestHeaders.Add("Referer", "https://www.pixiv.net/");
+            var proxy = LocalSettingHelper.GetSetting<string>(PixivToolBoxProxy);
+            BuildHttpClient(proxy);
+            _TextBox_Proxy.Text = proxy;
         }
-
 
 
         private bool useCompactName = false;
 
 
         private List<WallpaperInfo> wallpaperInfos = new();
+
+
+        private void BuildHttpClient(string? proxy)
+        {
+            var handler = new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All, UseProxy = true };
+            if (!string.IsNullOrWhiteSpace(proxy))
+            {
+                handler.Proxy = new WebProxy(proxy);
+            }
+            var client = new HttpClient(handler, false);
+            client.DefaultRequestHeaders.Add("Accept-Language", "zh-CN");
+            client.DefaultRequestHeaders.Add("Referer", "https://www.pixiv.net/");
+            _httpClient = client;
+        }
+
+
+        private void _Button_ConfirmProxy_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var proxy = _TextBox_Proxy.Text;
+                BuildHttpClient(proxy);
+                LocalSettingHelper.SaveSetting(PixivToolBoxProxy, proxy);
+            }
+            catch (Exception ex)
+            {
+                InfoBarHelper.Error(ex);
+            }
+        }
 
 
         private void _Border_GragIn_DragOver(object sender, DragEventArgs e)
@@ -207,6 +238,7 @@ namespace Xunkong.Desktop.Toolbox
                 InfoBarHelper.Error(ex);
             }
         }
+
 
 
         private record PixivMetadata(int Pid, string? Title, string? Artist, string? Description, DateTimeOffset Time, List<string> Tags);
