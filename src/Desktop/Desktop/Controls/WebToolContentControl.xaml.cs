@@ -34,7 +34,6 @@ namespace Xunkong.Desktop.Controls
         {
             await _WebView2.EnsureCoreWebView2Async();
             _WebView2.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
-            _WebView2.CoreWebView2.NewWindowRequested += (sender, args) => args.Handled = true;
         }
 
 
