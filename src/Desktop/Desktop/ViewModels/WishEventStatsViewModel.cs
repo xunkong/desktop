@@ -1,14 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunkong.Core.Metadata;
-using Xunkong.Core.Wish;
-using Xunkong.Desktop.Models;
-
-namespace Xunkong.Desktop.ViewModels
+﻿namespace Xunkong.Desktop.ViewModels
 {
     internal class WishEventStatsViewModel : ObservableObject
     {

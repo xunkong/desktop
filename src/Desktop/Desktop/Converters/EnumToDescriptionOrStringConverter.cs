@@ -1,12 +1,4 @@
-﻿using Microsoft.UI.Xaml.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Xunkong.Core;
-
-namespace Xunkong.Desktop.Converters
+﻿namespace Xunkong.Desktop.Converters
 {
     class EnumToDescriptionOrStringConverter : IValueConverter
     {

@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Xunkong.Core.Wish
+﻿namespace Xunkong.Core.Wish
 {
     /// <summary>
     /// 祈愿记录详细信息

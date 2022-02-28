@@ -1,30 +1,13 @@
 ﻿using AngleSharp;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging.Messages;
 using CommunityToolkit.WinUI.UI;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
-using Windows.Storage;
 using Xunkong.Core.XunkongApi;
-using Xunkong.Desktop.Services;
 
 namespace Xunkong.Desktop.ViewModels
 {
 
-    [InjectService]
     internal partial class SettingViewModel : ObservableObject
     {
 

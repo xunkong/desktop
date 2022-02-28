@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Xunkong.Core.Hoyolab;
+﻿using Xunkong.Core.Hoyolab;
 
 namespace Xunkong.Core.TravelRecord
 {

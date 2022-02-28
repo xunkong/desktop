@@ -1,9 +1,4 @@
-﻿using Mapster;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.Reflection.PortableExecutable;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Xunkong.Core.Hoyolab;
 using Xunkong.Core.Metadata;
 using Xunkong.Core.Wish;
@@ -12,7 +7,7 @@ using Xunkong.Core.XunkongApi;
 namespace Xunkong.Desktop.Services
 {
 
-    [InjectService]
+
     public class WishlogService
     {
 

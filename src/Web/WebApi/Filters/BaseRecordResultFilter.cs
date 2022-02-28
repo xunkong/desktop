@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Xunkong.Core.XunkongApi;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Xunkong.Web.Api.Models;
 using Xunkong.Web.Api.Services;
 

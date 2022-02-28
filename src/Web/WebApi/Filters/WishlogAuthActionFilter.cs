@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Xunkong.Core.Hoyolab;
 using Xunkong.Core.Wish;
 using Xunkong.Core.XunkongApi;
-using Xunkong.Web.Api.Models;
 using Xunkong.Web.Api.Services;
 
 namespace Xunkong.Web.Api.Filters

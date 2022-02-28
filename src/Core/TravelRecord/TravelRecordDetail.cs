@@ -1,6 +1,4 @@
-﻿using Xunkong.Core.Hoyolab;
-
-namespace Xunkong.Core.TravelRecord
+﻿namespace Xunkong.Core.TravelRecord
 {
     public class TravelRecordDetail : TravelRecordBase, IJsonOnDeserialized
     {

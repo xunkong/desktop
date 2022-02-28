@@ -1,22 +1,11 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.UI.Xaml.Controls;
+﻿using CommunityToolkit.WinUI.UI;
 using Microsoft.UI.Xaml;
-using Xunkong.Core.Hoyolab;
-using Xunkong.Desktop.Services;
-using System.Net;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
+using Microsoft.UI.Xaml.Controls;
 using Xunkong.Core.XunkongApi;
-using CommunityToolkit.Mvvm.Messaging.Messages;
-using Microsoft.UI.Dispatching;
-using CommunityToolkit.WinUI.UI;
 
 namespace Xunkong.Desktop.ViewModels
 {
 
-    [InjectService]
     internal partial class WindowRootViewModel : ObservableObject
     {
 

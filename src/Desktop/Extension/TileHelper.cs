@@ -2,7 +2,6 @@
 using CommunityToolkit.WinUI.Notifications;
 using Windows.UI.Notifications;
 using Windows.UI.StartScreen;
-using WinRT.Interop;
 using Xunkong.Core.Hoyolab;
 
 namespace Xunkong.Desktop.Extension

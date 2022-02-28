@@ -1,23 +1,10 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.UI.Xaml.Controls;
-using System;
+﻿using Microsoft.UI.Xaml.Controls;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Xunkong.Core.Hoyolab;
-using Xunkong.Desktop.Services;
 
 namespace Xunkong.Desktop.ViewModels
 {
 
-    [InjectService]
     internal partial class UserPanelViewModel : ObservableObject
     {
 

@@ -1,17 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.UI.Dispatching;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.Win32;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage.Streams;
 
 namespace Xunkong.Desktop.ViewModels
 {

@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Xunkong.Core.Hoyolab
+﻿namespace Xunkong.Core.Hoyolab
 {
     [Table("DailyNote_Items")]
     public class DailyNoteInfo

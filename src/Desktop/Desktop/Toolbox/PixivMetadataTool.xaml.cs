@@ -1,30 +1,15 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using IS = SixLabors.ImageSharp;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
+using System.Net;
+using System.Text;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Xunkong.Core.XunkongApi;
-using SixLabors.ImageSharp.Metadata.Profiles.Exif;
-using SixLabors.ImageSharp;
-using Windows.Storage.Streams;
-using Windows.Storage;
-using System.Text;
-using Newtonsoft.Json.Linq;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using System.Net;
+using IS = SixLabors.ImageSharp;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.

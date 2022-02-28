@@ -1,13 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Numerics;
-using System.Diagnostics;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Xunkong.Desktop.Helpers
 {

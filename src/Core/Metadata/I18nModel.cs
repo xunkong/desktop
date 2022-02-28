@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Xunkong.Core.Metadata
+﻿namespace Xunkong.Core.Metadata
 {
     [Table("i18n")]
     public class I18nModel

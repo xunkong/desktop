@@ -1,23 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text.Json.Nodes;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.Web.WebView2.Core;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Windows.Storage;
 
 // To learn more about WinUI, the WinUI project structure,

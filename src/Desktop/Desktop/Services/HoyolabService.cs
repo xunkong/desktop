@@ -1,12 +1,11 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Xunkong.Core.Hoyolab;
+﻿using Xunkong.Core.Hoyolab;
 using Xunkong.Core.SpiralAbyss;
 using Xunkong.Core.TravelRecord;
 
 namespace Xunkong.Desktop.Services
 {
-    [InjectService]
+
+
     public class HoyolabService
     {
 
@@ -14,9 +13,9 @@ namespace Xunkong.Desktop.Services
 
         private readonly HoyolabClient _hoyolabClient;
 
-        private readonly IDbContextFactory<XunkongDbContext> _contextFactory;
+        private readonly IDbContextFactory<XunkongDbContext> _ctxFactory;
 
-        private readonly DbConnectionFactory<SqliteConnection> _connectionFactory;
+        private readonly DbConnectionFactory<SqliteConnection> _cntFactory;
 
 
 
@@ -24,14 +23,14 @@ namespace Xunkong.Desktop.Services
         {
             _logger = logger;
             _hoyolabClient = hoyolabClient;
-            _contextFactory = dbFactory;
-            _connectionFactory = connectionFactory;
+            _ctxFactory = dbFactory;
+            _cntFactory = connectionFactory;
         }
 
 
         public async Task<UserInfo?> GetLastSelectedOrFirstUserInfoAsync()
         {
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             const string sql = $"SELECT u.* FROM UserSettings AS s LEFT JOIN Hoyolab_Users AS u ON s.Value=u.Uid WHERE s.Key='{SettingKeys.LastSelectUserInfoUid}';";
             var info = await cnt.QueryFirstOrDefaultAsync<UserInfo>(sql);
             if (info is not null)
@@ -47,7 +46,7 @@ namespace Xunkong.Desktop.Services
 
         public async Task<UserGameRoleInfo?> GetLastSelectedOrFirstUserGameRoleInfoAsync()
         {
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             const string sql = $"SELECT u.* FROM UserSettings AS s LEFT JOIN Genshin_Users AS u ON s.Value=u.Uid WHERE s.Key='{SettingKeys.LastSelectGameRoleUid}';";
             var info = await cnt.QueryFirstOrDefaultAsync<UserGameRoleInfo>(sql);
             if (info is not null)
@@ -69,7 +68,7 @@ namespace Xunkong.Desktop.Services
                 throw new ArgumentNullException(nameof(cookie));
             }
             var user = await _hoyolabClient.GetUserInfoAsync(cookie);
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             const string sql = "INSERT OR REPLACE INTO Hoyolab_Users"
                                + "(Uid,Nickname,Introduce,Avatar,Gender,AvatarUrl,Pendant,Cookie)"
                                + "VALUES (@Uid,@Nickname,@Introduce,@Avatar,@Gender,@AvatarUrl,@Pendant,@Cookie);";
@@ -82,21 +81,21 @@ namespace Xunkong.Desktop.Services
 
         public async Task<IEnumerable<UserInfo>> GetUserInfoListAsync()
         {
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             return await cnt.QueryAsync<UserInfo>("SELECT * FROM Hoyolab_Users;");
         }
 
 
         public async Task<UserInfo?> GetUserInfoAsync(int uid)
         {
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             return await cnt.QueryFirstOrDefaultAsync<UserInfo>($"SELECT * FROM Hoyolab_Users WHERE Uid={uid};");
         }
 
 
         public async Task<UserInfo?> GetUserInfoOrFirstAsync(int uid)
         {
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             var info = await cnt.QueryFirstOrDefaultAsync<UserInfo>($"SELECT * FROM Hoyolab_Users WHERE Uid={uid};");
             if (info is not null)
             {
@@ -123,7 +122,7 @@ namespace Xunkong.Desktop.Services
 
         public async Task DeleteUserInfoAsync(int uid)
         {
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             await cnt.ExecuteAsync($"DELETE FROM Hoyolab_Users WHERE Uid={uid};");
         }
 
@@ -131,7 +130,7 @@ namespace Xunkong.Desktop.Services
 
         public async Task<IEnumerable<UserGameRoleInfo>> GetUserGameRoleInfoListAsync()
         {
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             return await cnt.QueryAsync<UserGameRoleInfo>("SELECT * FROM Genshin_Users;");
         }
 
@@ -139,14 +138,14 @@ namespace Xunkong.Desktop.Services
 
         public async Task<UserGameRoleInfo?> GetUserGameRoleInfoAsync(int uid)
         {
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             return await cnt.QueryFirstOrDefaultAsync<UserGameRoleInfo>($"SELECT * FROM Genshin_Users WHERE Uid={uid};");
         }
 
 
         public async Task<UserGameRoleInfo?> GetUserGameRoleInfoOrFirstAsync(int uid)
         {
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             var info = await cnt.QueryFirstOrDefaultAsync<UserGameRoleInfo>($"SELECT * FROM Genshin_Users WHERE Uid={uid};");
             if (info is not null)
             {
@@ -186,7 +185,7 @@ namespace Xunkong.Desktop.Services
                 throw new ArgumentNullException(nameof(cookie));
             }
             var roles = await _hoyolabClient.GetUserGameRoleInfosAsync(cookie);
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             const string sql = "INSERT OR REPLACE INTO Genshin_Users"
                                + "(Uid,GameBiz,Region,Nickname,Level,IsChosen,RegionName,IsOfficial,Cookie)"
                                + "VALUES (@Uid,@GameBiz,@Region,@Nickname,@Level,@IsChosen,@RegionName,@IsOfficial,@Cookie);";
@@ -198,7 +197,7 @@ namespace Xunkong.Desktop.Services
 
         public async Task DeleteUserGameRoleInfoAsync(int uid)
         {
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             await cnt.ExecuteAsync($"DELETE FROM Genshin_Users WHERE Uid={uid};");
         }
 
@@ -222,7 +221,7 @@ namespace Xunkong.Desktop.Services
         public async Task<SpiralAbyssInfo> GetSpiralAbyssInfoAsync(UserGameRoleInfo role, int schedule = 1)
         {
             var info = await _hoyolabClient.GetSpiralAbyssInfoAsync(role, schedule);
-            using var ctx = _contextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             using var t = await ctx.Database.BeginTransactionAsync();
             try
             {
@@ -263,7 +262,7 @@ namespace Xunkong.Desktop.Services
             {
                 return null;
             }
-            using var cnt = _connectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             const string sql = "INSERT INTO DailyNote_Items"
                                + "(Uid,Time,CurrentResin,MaxResin,ResinRecoveryTime,FinishedTaskNumber,TotalTaskNumber,IsExtraTaskRewardReceived,RemainResinDiscountNumber,ResinDiscountLimitedNumber,CurrentExpeditionNumber,MaxExpeditionNumber,CurrentHomeCoin,MaxHomeCoin,HomeCoinRecoveryTime)"
                                + "VALUES (@Uid,@Time,@CurrentResin,@MaxResin,@ResinRecoveryTime,@FinishedTaskNumber,@TotalTaskNumber,@IsExtraTaskRewardReceived,@RemainResinDiscountNumber,@ResinDiscountLimitedNumber,@CurrentExpeditionNumber,@MaxExpeditionNumber,@CurrentHomeCoin,@MaxHomeCoin,@HomeCoinRecoveryTime);";
@@ -281,7 +280,7 @@ namespace Xunkong.Desktop.Services
                 return summary;
             }
             var m = summary.MonthData;
-            using var ctx = _contextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             using var t = await ctx.Database.BeginTransactionAsync();
             try
             {
@@ -310,7 +309,7 @@ namespace Xunkong.Desktop.Services
             var list = detail.List;
             var dataYear = list[0].Year;
             var dataMonth = list[0].Month;
-            using var ctx = _contextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             using var t = await ctx.Database.BeginTransactionAsync();
             try
             {

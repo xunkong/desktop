@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Xunkong.Core.SpiralAbyss
+﻿namespace Xunkong.Core.SpiralAbyss
 {
     [Table("SpiralAbyss_Infos")]
     [Index(nameof(Uid), nameof(ScheduleId), IsUnique = true)]

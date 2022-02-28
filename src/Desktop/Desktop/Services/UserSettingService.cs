@@ -1,30 +1,28 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Xunkong.Desktop.Services
 {
 
-    [InjectService]
+
     public class UserSettingService
     {
 
 
-        private readonly DbConnectionFactory<SqliteConnection> _connectionFactory;
-
         private readonly ILogger<UserSettingService> _logger;
 
+        private readonly DbConnectionFactory<SqliteConnection> _cntFactory;
 
-        public UserSettingService(DbConnectionFactory<SqliteConnection> connectionFactory, ILogger<UserSettingService> logger)
+
+        public UserSettingService(ILogger<UserSettingService> logger, DbConnectionFactory<SqliteConnection> connectionFactory)
         {
-            _connectionFactory = connectionFactory;
             _logger = logger;
+            _cntFactory = connectionFactory;
         }
 
 
         public async Task<T?> GetSettingAsync<T>(string key, bool notPrintLog = false)
         {
-            using var con = _connectionFactory.CreateDbConnection();
+            using var con = _cntFactory.CreateDbConnection();
             var value = await con.QueryFirstOrDefaultAsync<string>($"SELECT Value FROM UserSettings WHERE Key=@Key;", new { Key = key });
             if (!notPrintLog)
             {
@@ -59,7 +57,7 @@ namespace Xunkong.Desktop.Services
             }
             try
             {
-                using var con = _connectionFactory.CreateDbConnection();
+                using var con = _cntFactory.CreateDbConnection();
                 var setting = new UserSettingModel
                 {
                     Key = key,

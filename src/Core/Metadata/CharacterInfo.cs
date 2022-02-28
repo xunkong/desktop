@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace Xunkong.Core.Metadata
+﻿namespace Xunkong.Core.Metadata
 {
     [Table("Info_Character")]
     [Index(nameof(Name))]

@@ -1,6 +1,5 @@
 ﻿using Windows.ApplicationModel;
 using Windows.ApplicationModel.Background;
-using Windows.Storage;
 
 namespace Xunkong.Desktop.BackgroundTask
 {

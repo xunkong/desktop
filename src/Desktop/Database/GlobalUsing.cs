@@ -1,2 +1,1 @@
-﻿global using Microsoft.Extensions.Logging;
-global using Xunkong.Desktop.Models;
+﻿global using Xunkong.Desktop.Models;

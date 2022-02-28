@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
+﻿using System.Net.Http.Json;
 using System.Text.Encodings.Web;
-using System.Threading.Channels;
-using System.Threading.Tasks;
-using Xunkong.Core.Hoyolab;
 using Xunkong.Core.Metadata;
 using Xunkong.Core.Wish;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Xunkong.Core.XunkongApi
 {

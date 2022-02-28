@@ -1,27 +1,15 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using Microsoft.UI.Xaml.Media.Animation;
-using System.Threading.Tasks;
-using Vanara.PInvoke;
-using Xunkong.Core;
 using Xunkong.Core.Wish;
-using Xunkong.Core.XunkongApi;
 using Xunkong.Desktop.Pages;
-using static Vanara.PInvoke.Kernel32.REASON_CONTEXT;
 
 namespace Xunkong.Desktop.ViewModels
 {
+
+
     internal partial class WishlogManageViewModel : ObservableObject
     {
-
 
         private readonly ILogger<WishlogManageViewModel> _logger;
 

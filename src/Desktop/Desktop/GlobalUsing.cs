@@ -2,10 +2,16 @@
 global using CommunityToolkit.Mvvm.Input;
 global using CommunityToolkit.Mvvm.Messaging;
 global using Dapper;
+global using Mapster;
 global using Microsoft.Data.Sqlite;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
+global using Microsoft.UI.Xaml.Data;
 global using System.Collections.ObjectModel;
+global using System.Diagnostics;
+global using System.Text.Json;
+global using Xunkong.Core;
 global using Xunkong.Desktop.Controls;
 global using Xunkong.Desktop.Helpers;
 global using Xunkong.Desktop.Messages;

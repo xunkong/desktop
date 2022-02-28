@@ -1,24 +1,21 @@
-﻿using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Xunkong.Core.Metadata;
+﻿using Xunkong.Core.Metadata;
 using Xunkong.Core.Wish;
 using Xunkong.Core.XunkongApi;
 
 namespace Xunkong.Desktop.Services
 {
 
-    [InjectService]
+
     public class XunkongApiService
     {
-
 
         private readonly ILogger<XunkongApiService> _logger;
 
         private readonly XunkongApiClient _xunkongClient;
 
-        private readonly IDbContextFactory<XunkongDbContext> _dbContextFactory;
+        private readonly IDbContextFactory<XunkongDbContext> _ctxFactory;
 
-        private readonly DbConnectionFactory<SqliteConnection> _dbConnectionFactory;
+        private readonly DbConnectionFactory<SqliteConnection> _cntFactory;
 
         private readonly WishlogService _wishlogService;
 
@@ -33,8 +30,8 @@ namespace Xunkong.Desktop.Services
         {
             _logger = logger;
             _xunkongClient = xunkongClient;
-            _dbContextFactory = dbContextFactory;
-            _dbConnectionFactory = dbConnectionFactory;
+            _ctxFactory = dbContextFactory;
+            _cntFactory = dbConnectionFactory;
             _wishlogService = wishlogService;
             _backupService = backupService;
         }
@@ -58,7 +55,7 @@ namespace Xunkong.Desktop.Services
 
         public async Task<bool> HasUnreadNotification()
         {
-            using var cnt = _dbConnectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             var notification = await cnt.QueryFirstOrDefaultAsync<int>("SELECT Id FROM Notifications WHERE HasRead=FALSE LIMIT 1;");
             return notification != 0;
         }
@@ -67,7 +64,7 @@ namespace Xunkong.Desktop.Services
 
         public async Task<bool> GetNotificationsAsync(ChannelType channel, Version version)
         {
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var lastId = await ctx.NotificationItems.OrderByDescending(x => x.Id).Select(x => x.Id).FirstOrDefaultAsync();
             var wrapper = await _xunkongClient.GetNotificationsAsync<NotificationDesktopModel>(channel, version, lastId);
             var list = wrapper.List;
@@ -98,7 +95,7 @@ namespace Xunkong.Desktop.Services
         {
             _logger.LogDebug("Start chech wishlog authkey with uid {Uid}.", uid);
             progressHandler?.Invoke("检查祈愿记录网址的有效性");
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var auth = await ctx.WishlogAuthkeys.AsNoTracking().FirstOrDefaultAsync(x => x.Uid == uid);
             if (auth is not null)
             {
@@ -145,7 +142,7 @@ namespace Xunkong.Desktop.Services
             var url = await CheckWishlogAuthkey(uid, progressHandler);
             _logger.LogInformation("Pass checking authkey of uid {Uid}.", uid);
             long lastId = 0;
-            using var cnt = _dbConnectionFactory.CreateDbConnection();
+            using var cnt = _cntFactory.CreateDbConnection();
             if (!getAll)
             {
                 lastId = await cnt.QueryFirstOrDefaultAsync<long>($"SELECT Id FROM Wishlog_Items WHERE Uid={uid} ORDER BY Id DESC;");
@@ -204,7 +201,7 @@ namespace Xunkong.Desktop.Services
                 result = await _xunkongClient.GetWishlogLastItemFromCloudAsync(model);
                 lastId = result.List?.LastOrDefault()?.Id ?? 0;
             }
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var list = await ctx.WishlogItems.AsNoTracking().Where(x => x.Uid == uid && x.Id > lastId).ToListAsync();
             if (list.Any())
             {
@@ -253,7 +250,7 @@ namespace Xunkong.Desktop.Services
         public async Task<IEnumerable<CharacterInfo>> GetCharacterInfosFromServerAsync()
         {
             var characterInfos = await _xunkongClient.GetCharacterInfosAsync();
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var ids = characterInfos.Select(x => x.Id).ToList();
             using var t = ctx.Database.BeginTransaction();
             try
@@ -275,7 +272,7 @@ namespace Xunkong.Desktop.Services
         public async Task<IEnumerable<WeaponInfo>> GetWeaponInfosFromServerAsync()
         {
             var weaponInfos = await _xunkongClient.GetWeaponInfosAsync();
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var ids = weaponInfos.Select(x => x.Id).ToList();
             using var t = ctx.Database.BeginTransaction();
             try
@@ -297,7 +294,7 @@ namespace Xunkong.Desktop.Services
         public async Task<IEnumerable<WishEventInfo>> GetWishEventInfosFromServerAsync()
         {
             var wishEventInfos = await _xunkongClient.GetWishEventInfosAsync();
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var ids = wishEventInfos.Select(x => x.Id).ToList();
             using var t = ctx.Database.BeginTransaction();
             try
@@ -319,7 +316,7 @@ namespace Xunkong.Desktop.Services
         public async Task<IEnumerable<I18nModel>> GetI18nModelsFromServerAsync()
         {
             var i18ns = await _xunkongClient.GetI18nModelsAsync();
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var ids = i18ns.Select(x => x.Id).ToList();
             using var t = ctx.Database.BeginTransaction();
             try

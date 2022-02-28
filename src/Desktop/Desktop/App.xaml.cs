@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Http;
+﻿using Microsoft.Extensions.Http;
 using Microsoft.UI.Xaml;
 using Serilog;
 using Serilog.Events;
 using System.Text.Encodings.Web;
-using System.Text.Json;
 using Windows.Storage;
 using Xunkong.Core.Hoyolab;
 using Xunkong.Core.Wish;

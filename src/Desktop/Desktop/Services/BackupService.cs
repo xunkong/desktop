@@ -1,35 +1,25 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Xunkong.Core.Wish;
-using Xunkong.Core.XunkongApi;
+﻿using Xunkong.Core.Wish;
 
 namespace Xunkong.Desktop.Services
 {
+
     public class BackupService
     {
 
-
         private readonly ILogger<BackupService> _logger;
 
-        private readonly DbConnectionFactory<SqliteConnection> _dbConnectionFactory;
+        private readonly DbConnectionFactory<SqliteConnection> _cntFactory;
 
-        private readonly IDbContextFactory<XunkongDbContext> _dbContextFactory;
+        private readonly IDbContextFactory<XunkongDbContext> _ctxFactory;
 
         private readonly JsonSerializerOptions _jsonSerializerOptions;
-
 
 
         public BackupService(ILogger<BackupService> logger, DbConnectionFactory<SqliteConnection> dbConnectionFactory, IDbContextFactory<XunkongDbContext> dbContextFactory, JsonSerializerOptions jsonSerializerOptions)
         {
             _logger = logger;
-            _dbConnectionFactory = dbConnectionFactory;
-            _dbContextFactory = dbContextFactory;
+            _cntFactory = dbConnectionFactory;
+            _ctxFactory = dbContextFactory;
             _jsonSerializerOptions = jsonSerializerOptions;
         }
 
@@ -71,7 +61,7 @@ namespace Xunkong.Desktop.Services
         public async Task<string> BackupWishlogItemsAsync(int uid, bool throwError = false)
         {
             _logger.LogInformation($"Start to backup wishlog items of uid {uid}.");
-            using var ctx = _dbContextFactory.CreateDbContext();
+            using var ctx = _ctxFactory.CreateDbContext();
             var orderedItems = await ctx.WishlogItems.Where(x => x.Uid == uid).OrderBy(x => x.Id).ToListAsync();
             var model = new WishlogBackupModel
             {

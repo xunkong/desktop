@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging.Console;
 using Serilog;
+using Xunkong.Core.Wish;
 using Xunkong.Core.XunkongApi;
 using Xunkong.Web.Api.Controllers;
 using Xunkong.Web.Api.Filters;
 using Xunkong.Web.Api.Services;
-using Microsoft.AspNetCore.HttpLogging;
-using Xunkong.Core.Wish;
 
 // net6限定：避免因为启用剪裁，在efcore的使用中出现「找不到System.DateOnly相关方法」的异常
 DateOnly.FromDayNumber(1).AddYears(1).AddMonths(1).AddDays(1);

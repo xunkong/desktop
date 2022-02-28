@@ -1,7 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Windows.ApplicationModel;
-using Windows.Storage;
 using Xunkong.Core.XunkongApi;
 
 namespace Xunkong.Desktop.Extension
