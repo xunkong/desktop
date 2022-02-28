@@ -17,6 +17,9 @@ using System.Collections.Immutable;
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Mapster;
+using Windows.Storage.Pickers;
+using WinRT.Interop;
 
 namespace Xunkong.Desktop.ViewModels
 {
@@ -36,6 +39,13 @@ namespace Xunkong.Desktop.ViewModels
 
 
         private readonly ImmutableList<string> ColorSet = new[] { "#5470C6", "#91CC75", "#FAC858", "#EE6666", "#73C0DE", "#3BA272", "#FC8452", "#9A60B4", "#EA7CCC" }.ToImmutableList();
+
+
+        static WishlogSummaryViewModel()
+        {
+            TypeAdapterConfig<CharacterInfo, WishlogSummary_UpItem>.NewConfig().Map(dest => dest.Icon, src => src.FaceIcon);
+            TypeAdapterConfig<WeaponInfo, WishlogSummary_UpItem>.NewConfig().Map(dest => dest.Icon, src => src.Icon);
+        }
 
 
         public WishlogSummaryViewModel(ILogger<WishlogSummaryViewModel> logger,
@@ -103,20 +113,37 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
-        private List<WishlogSummary_CharacterThumb> _CharacterThumbs;
-        public List<WishlogSummary_CharacterThumb> CharacterThumbs
+        private List<WishlogSummary_ItemThumb> _CharacterThumbs;
+        public List<WishlogSummary_ItemThumb> CharacterThumbs
         {
             get => _CharacterThumbs;
             set => SetProperty(ref _CharacterThumbs, value);
         }
 
 
-        private List<WishlogSummary_WeaponThumb> _WeaponThumbs;
-        public List<WishlogSummary_WeaponThumb> WeaponThumbs
+        private List<WishlogSummary_ItemThumb> _WeaponThumbs;
+        public List<WishlogSummary_ItemThumb> WeaponThumbs
         {
             get => _WeaponThumbs;
             set => SetProperty(ref _WeaponThumbs, value);
         }
+
+
+        private List<WishlogSummary_EventStats> _CharacterEventStats;
+        public List<WishlogSummary_EventStats> CharacterEventStats
+        {
+            get => _CharacterEventStats;
+            set => SetProperty(ref _CharacterEventStats, value);
+        }
+
+
+        private List<WishlogSummary_EventStats> _WeaponEventStats;
+        public List<WishlogSummary_EventStats> WeaponEventStats
+        {
+            get => _WeaponEventStats;
+            set => SetProperty(ref _WeaponEventStats, value);
+        }
+
 
 
         /// <summary>
@@ -129,7 +156,8 @@ namespace Xunkong.Desktop.ViewModels
             try
             {
                 Uids = (await _wishlogService.GetAllUidsAsync()).Select(x => x.ToString()).ToList();
-                SelectedUid = await _settingService.GetSettingAsync<string>("LastSelectedUidInWishlogSummaryPage") ?? "";
+                _SelectedUid = await _settingService.GetSettingAsync<int>("LastSelectedUidInWishlogSummaryPage");
+                OnPropertyChanged(nameof(SelectedUid));
                 if (!Uids.Contains(SelectedUid) || _SelectedUid == 0)
                 {
                     SelectedUid = Uids.FirstOrDefault() ?? "";
@@ -137,11 +165,11 @@ namespace Xunkong.Desktop.ViewModels
                 if (_SelectedUid == 0)
                 {
                     StateText = "没有祈愿数据";
+                    await LoadWishlogAsync(true);
                 }
                 else
                 {
                     await LoadWishlogAsync();
-                    OnPropertyChanged(nameof(SelectedUid));
                 }
             }
             catch (Exception ex)
@@ -157,76 +185,127 @@ namespace Xunkong.Desktop.ViewModels
         /// 加载已选择uid的祈愿信息
         /// </summary>
         /// <returns></returns>
-        public async Task LoadWishlogAsync()
+        public async Task LoadWishlogAsync(bool ignoreWishlogStats = false)
         {
             IsLoading = true;
             await Task.Delay(100);
             try
             {
-                var wishlogs = await _wishlogService.GetWishlogItemExByUidAsync(_SelectedUid);
-                var queryTypeGroups = wishlogs.GroupBy(x => x.QueryType);
-                var statsCollection = new BlockingCollection<WishlogSummary_QueryTypeStats>();
-                Parallel.ForEach(queryTypeGroups, group =>
-                {
-                    var type = group.Key;
-                    if (type == WishType.Novice)
-                    {
-                        return;
-                    }
-                    var items = group.OrderBy(x => x.Id).ToList();
-                    var totalCount = items.Count;
-                    var rank5Count = items.Where(x => x.RankType == 5).Count();
-                    var rank4Count = items.Where(x => x.RankType == 4).Count();
-                    var startTime = items.First().Time;
-                    var endTime = items.Last().Time;
-                    var upCount = items.Where(x => x.RankType == 5 && x.IsUp).Count();
-                    var currentGuarantee = items.Last().RankType == 5 ? 0 : items.Last().GuaranteeIndex;
-                    var maxGuarantee = items.Where(x => x.RankType == 5).Max(x => x.GuaranteeIndex);
-                    var minGuarantee = items.Where(x => x.RankType == 5).Min(x => x.GuaranteeIndex);
-                    var rank5Items = items.Where(x => x.RankType == 5).Select(x => new WishlogSummary_Rank5Item(x.Name, x.GuaranteeIndex, x.Time)).ToList();
-                    var colors = ColorSet.OrderBy(x => Random.Shared.Next()).ToList();
-                    var gi = rank5Items.GroupBy(x => x.Name).OrderBy(x => x.Min(y => y.Time));
-                    int index = 0;
-                    foreach (var g in gi)
-                    {
-                        var color = colors[index];
-                        g.ToList().ForEach(x => { x.Color = color; x.Foreground = color; });
-                        index = (index + 1) % colors.Count;
-                    }
-                    var stats = new WishlogSummary_QueryTypeStats(type,
-                                                                  totalCount,
-                                                                  rank5Count,
-                                                                  rank4Count,
-                                                                  startTime,
-                                                                  endTime,
-                                                                  upCount,
-                                                                  currentGuarantee,
-                                                                  maxGuarantee,
-                                                                  minGuarantee,
-                                                                  rank5Items,
-                                                                  items.LastOrDefault(x => x.RankType == 5)?.IsUp ?? false,
-                                                                  items.LastOrDefault(x => x.RankType == 5)?.GuaranteeIndex ?? 0);
-                    statsCollection.Add(stats);
-                });
-                QueryTypeStats = statsCollection.Where(x => x.QueryType == WishType.CharacterEvent)
-                                                .Concat(statsCollection.Where(x => x.QueryType == WishType.WeaponEvent))
-                                                .Concat(statsCollection.Where(x => x.QueryType == WishType.Permanent))
-                                                .ToList();
                 var ctx = _ctxFactory.CreateDbContext();
                 var characters = await ctx.CharacterInfos.ToListAsync();
                 var weapons = await ctx.WeaponInfos.ToListAsync();
-                var query1 = from c in characters
-                             join w in wishlogs
-                             on c.Name equals w.Name into g
-                             where g.Any()
-                             select new WishlogSummary_CharacterThumb(c.Name, c.Rarity, c.Element, g.Count(), c.FaceIcon, g.Last().Time);
-                CharacterThumbs = new(query1.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime));
-                var query2 = from c in weapons
-                             join w in wishlogs
-                             on c.Name equals w.Name into g
-                             where g.Any()
-                             select new WishlogSummary_WeaponThumb(c.Name, c.Rarity, c.WeaponType, g.Count(), c.Icon, g.Last().Time);
-                WeaponThumbs = new(query2.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime));
+                var wishlogs = await _wishlogService.GetWishlogItemExByUidAsync(_SelectedUid);
+
+                if (!ignoreWishlogStats)
+                {
+                    var queryTypeGroups = wishlogs.GroupBy(x => x.QueryType);
+                    var statsCollection = new BlockingCollection<WishlogSummary_QueryTypeStats>();
+                    Parallel.ForEach(queryTypeGroups, group =>
+                    {
+                        var type = group.Key;
+                        if (type == WishType.Novice)
+                        {
+                            return;
+                        }
+                        var items = group.OrderBy(x => x.Id).ToList();
+                        var totalCount = items.Count;
+                        var rank5Count = items.Where(x => x.RankType == 5).Count();
+                        var rank4Count = items.Where(x => x.RankType == 4).Count();
+                        var startTime = items.First().Time;
+                        var endTime = items.Last().Time;
+                        var upCount = items.Where(x => x.RankType == 5 && x.IsUp).Count();
+                        var currentGuarantee = items.Last().RankType == 5 ? 0 : items.Last().GuaranteeIndex;
+                        var maxGuarantee = items.Where(x => x.RankType == 5).Max(x => x.GuaranteeIndex);
+                        var minGuarantee = items.Where(x => x.RankType == 5).Min(x => x.GuaranteeIndex);
+                        var rank5Items = items.Where(x => x.RankType == 5).Select(x => new WishlogSummary_Rank5Item(x.Name, x.GuaranteeIndex, x.Time)).ToList();
+                        var colors = ColorSet.OrderBy(x => Random.Shared.Next()).ToList();
+                        var gi = rank5Items.GroupBy(x => x.Name).OrderBy(x => x.Min(y => y.Time));
+                        int index = 0;
+                        foreach (var g in gi)
+                        {
+                            var color = colors[index];
+                            g.ToList().ForEach(x => { x.Color = color; x.Foreground = color; });
+                            index = (index + 1) % colors.Count;
+                        }
+                        var stats = new WishlogSummary_QueryTypeStats(type,
+                                                                      totalCount,
+                                                                      rank5Count,
+                                                                      rank4Count,
+                                                                      startTime,
+                                                                      endTime,
+                                                                      upCount,
+                                                                      currentGuarantee,
+                                                                      maxGuarantee,
+                                                                      minGuarantee,
+                                                                      rank5Items,
+                                                                      items.LastOrDefault(x => x.RankType == 5)?.IsUp ?? false,
+                                                                      items.LastOrDefault(x => x.RankType == 5)?.GuaranteeIndex ?? 0);
+                        statsCollection.Add(stats);
+                    });
+                    QueryTypeStats = statsCollection.Where(x => x.QueryType == WishType.CharacterEvent)
+                                                    .Concat(statsCollection.Where(x => x.QueryType == WishType.WeaponEvent))
+                                                    .Concat(statsCollection.Where(x => x.QueryType == WishType.Permanent))
+                                                    .ToList();
+                    var query1 = from c in characters
+                                 join w in wishlogs
+                                 on c.Name equals w.Name into g
+                                 where g.Any()
+                                 select new WishlogSummary_ItemThumb(c.Name, c.Rarity, c.Element, c.WeaponType, g.Count(), c.FaceIcon, g.Last().Time);
+                    CharacterThumbs = new(query1.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime));
+                    var query2 = from c in weapons
+                                 join w in wishlogs
+                                 on c.Name equals w.Name into g
+                                 where g.Any()
+                                 select new WishlogSummary_ItemThumb(c.Name, c.Rarity, ElementType.None, c.WeaponType, g.Count(), c.Icon, g.Last().Time);
+                    WeaponThumbs = new(query2.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime));
+                }
+
+                var eventInfos = await ctx.WishEventInfos.ToListAsync();
+
+                var character_groups = eventInfos.Where(x => x.QueryType == WishType.CharacterEvent).GroupBy(x => x.StartTime).ToList();
+                var character_dics = characters.ToDictionary(x => x.Name!);
+                var character_eventStats = new List<WishlogSummary_EventStats>();
+                foreach (var group in character_groups)
+                {
+                    var stats = group.FirstOrDefault()?.Adapt<WishlogSummary_EventStats>()!;
+                    character_eventStats.Add(stats);
+                    stats.Name = string.Join(" ", group.Select(x => x.Name));
+                    stats.UpItems = group.SelectMany(x => x.Rank5UpItems).Join(character_dics, str => str, dic => dic.Key, (str, dic) => dic.Value).ToList().Adapt<List<WishlogSummary_UpItem>>();
+                    stats.UpItems.AddRange(group.FirstOrDefault()!.Rank4UpItems.Join(character_dics, str => str, dic => dic.Key, (str, dic) => dic.Value).Adapt<IEnumerable<WishlogSummary_UpItem>>());
+                    var currentEventItems = wishlogs.Where(x => x.QueryType == WishType.CharacterEvent && stats.StartTime <= x.Time && x.Time <= stats.EndTime).OrderByDescending(x => x.Id).ToList();
+                    stats.TotalCount = currentEventItems.Count;
+                    stats.Rank3Count = currentEventItems.Count(x => x.RankType == 3);
+                    stats.Rank4Count = currentEventItems.Count(x => x.RankType == 4);
+                    stats.Rank5Count = currentEventItems.Count(x => x.RankType == 5);
+                    Parallel.ForEach(stats.UpItems, x => x.Count = currentEventItems.Count(y => y.Name == x.Name));
+                    stats.Rank5Items = QueryTypeStats?.FirstOrDefault(x => x.QueryType == WishType.CharacterEvent)?.Rank5Items
+                                                      .Where(x => x.Time >= stats.StartTime && x.Time <= stats.EndTime)
+                                                      .ToList() ?? new();
+                }
+                CharacterEventStats = character_eventStats.OrderByDescending(x => x.StartTime).ToList();
+
+                var weapon_groups = eventInfos.Where(x => x.QueryType == WishType.WeaponEvent).GroupBy(x => x.StartTime).ToList();
+                var weapon_dics = weapons.ToDictionary(x => x.Name!);
+                var weapon_eventStats = new List<WishlogSummary_EventStats>();
+                foreach (var group in weapon_groups)
+                {
+                    var stats = group.FirstOrDefault()?.Adapt<WishlogSummary_EventStats>()!;
+                    weapon_eventStats.Add(stats);
+                    stats.Name = string.Join(" ", group.Select(x => x.Name));
+                    stats.UpItems = group.SelectMany(x => x.Rank5UpItems).Join(weapon_dics, str => str, dic => dic.Key, (str, dic) => dic.Value).ToList().Adapt<List<WishlogSummary_UpItem>>();
+                    stats.UpItems.AddRange(group.FirstOrDefault()!.Rank4UpItems.Join(weapon_dics, str => str, dic => dic.Key, (str, dic) => dic.Value).Adapt<IEnumerable<WishlogSummary_UpItem>>());
+                    var currentEventItems = wishlogs.Where(x => x.QueryType == WishType.WeaponEvent && stats.StartTime <= x.Time && x.Time <= stats.EndTime).OrderByDescending(x => x.Id).ToList();
+                    stats.TotalCount = currentEventItems.Count;
+                    stats.Rank3Count = currentEventItems.Count(x => x.RankType == 3);
+                    stats.Rank4Count = currentEventItems.Count(x => x.RankType == 4);
+                    stats.Rank5Count = currentEventItems.Count(x => x.RankType == 5);
+                    Parallel.ForEach(stats.UpItems, x => x.Count = currentEventItems.Count(y => y.Name == x.Name));
+                    stats.Rank5Items = QueryTypeStats?.FirstOrDefault(x => x.QueryType == WishType.WeaponEvent)?.Rank5Items
+                                                      .Where(x => x.Time >= stats.StartTime && x.Time <= stats.EndTime)
+                                                      .ToList() ?? new();
+                }
+                WeaponEventStats = weapon_eventStats.OrderByDescending(x => x.StartTime).ToList();
+
             }
             catch (Exception ex)
             {
@@ -595,6 +674,10 @@ namespace Xunkong.Desktop.ViewModels
         /// <returns></returns>
         public async Task ImportWishlogItemsFromExcelOrJsonFile(IEnumerable<string> files)
         {
+            if (!files.Any())
+            {
+                return;
+            }
             IsLoading = true;
             StateText = "导入中";
             await Task.Delay(100);
@@ -628,13 +711,34 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task OpenImportedFilesAsync()
+        {
+            try
+            {
+                var dialog = new FileOpenPicker();
+                dialog.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+                dialog.FileTypeFilter.Add(".json");
+                dialog.FileTypeFilter.Add(".xlsx");
+                dialog.FileTypeFilter.Add("*");
+                InitializeWithWindow.Initialize(dialog, MainWindow.Hwnd);
+                var files = await dialog.PickMultipleFilesAsync();
+                await ImportWishlogItemsFromExcelOrJsonFile(files.Select(x => x.Path));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Open imported files.");
+                InfoBarHelper.Error(ex);
+            }
+        }
+
+
 
     }
 
 
 
-    public record WishlogSummary_CharacterThumb(string? Name, int Rarity, ElementType Element, int Count, string? Icon, DateTimeOffset LastTime);
-    public record WishlogSummary_WeaponThumb(string? Name, int Rarity, WeaponType Type, int Count, string? Icon, DateTimeOffset LastTime);
+    public record WishlogSummary_ItemThumb(string? Name, int Rarity, ElementType Element, WeaponType WeaponType, int Count, string? Icon, DateTimeOffset LastTime);
 
     public record WishlogSummary_QueryTypeStats(WishType QueryType,
                                                 int TotalCount,
@@ -698,6 +802,75 @@ namespace Xunkong.Desktop.ViewModels
                 }
             }
         }
+
+    }
+
+
+
+    public class WishlogSummary_EventStats
+    {
+
+        public int Id { get; set; }
+
+
+        public WishType QueryType { get; set; }
+
+
+        public string Name { get; set; }
+
+
+        public string Version { get; set; }
+
+
+        public DateTimeOffset StartTime { get; set; }
+
+
+        public DateTimeOffset EndTime { get; set; }
+
+
+        public int TotalCount { get; set; }
+
+
+        public int Rank5Count { get; set; }
+
+
+        public int Rank4Count { get; set; }
+
+
+        public int Rank3Count { get; set; }
+
+
+        public List<WishlogSummary_UpItem> UpItems { get; set; }
+
+
+        public List<WishlogSummary_Rank5Item> Rank5Items { get; set; }
+
+    }
+
+
+
+    public class WishlogSummary_UpItem
+    {
+
+        public string Name { get; set; }
+
+
+        public int Rarity { get; set; }
+
+
+        public string Icon { get; set; }
+
+
+        public ElementType Element { get; set; }
+
+
+        public WeaponType WeaponType { get; set; }
+
+
+        public int Count { get; set; }
+
+
+        public bool AnyData => Count > 0;
 
     }
 

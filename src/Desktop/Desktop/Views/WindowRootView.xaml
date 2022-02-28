@@ -112,14 +112,6 @@
                                     UriSource="ms-appx:///Assets/Images/Ui_SystemOpenIcon_Gacha.png" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="祈愿记录管理（待删除）" Tag="WishlogManagePage">
-                    <NavigationViewItem.Icon>
-                        <BitmapIcon Width="36"
-                                    Height="36"
-                                    ShowAsMonochrome="False"
-                                    UriSource="ms-appx:///Assets/Images/Ui_SystemOpenIcon_Gacha.png" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
             </NavigationView.MenuItems>
 
 
@@ -288,6 +280,7 @@
 
                 <TeachingTip Name="_TeachingTip_NewNotification"
                              Content="收到了新的消息"
+                             IsLightDismissEnabled="True"
                              PreferredPlacement="BottomLeft"
                              Target="{x:Bind _Button_Notification}" />
 
