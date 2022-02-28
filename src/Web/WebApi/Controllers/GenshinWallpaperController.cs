@@ -61,7 +61,7 @@ namespace Xunkong.Web.Api.Controllers
             var info = await _dbContext.WallpaperInfos.Where(x => x.Enable && x.Id > excludeId).OrderBy(x => x.Id).FirstOrDefaultAsync();
             if (info == null)
             {
-                info = await _dbContext.WallpaperInfos.Where(x => x.Enable).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+                info = await _dbContext.WallpaperInfos.Where(x => x.Enable).OrderBy(x => x.Id).FirstOrDefaultAsync();
             }
             return ResponseBaseWrapper.Ok(info!);
         }
