@@ -180,7 +180,7 @@ namespace Xunkong.Desktop.ViewModels
                     var startTime = items.First().Time;
                     var endTime = items.Last().Time;
                     var upCount = items.Where(x => x.RankType == 5 && x.IsUp).Count();
-                    var currentGuarantee = items.Last().GuaranteeIndex;
+                    var currentGuarantee = items.Last().RankType == 5 ? 0 : items.Last().GuaranteeIndex;
                     var maxGuarantee = items.Where(x => x.RankType == 5).Max(x => x.GuaranteeIndex);
                     var minGuarantee = items.Where(x => x.RankType == 5).Min(x => x.GuaranteeIndex);
                     var rank5Items = items.Where(x => x.RankType == 5).Select(x => new WishlogSummary_Rank5Item(x.Name, x.GuaranteeIndex, x.Time)).ToList();
