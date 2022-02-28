@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 namespace Xunkong.Core.XunkongApi
 {
     [Table("Wallpapers")]
+    [Index(nameof(Enable))]
+    [Index(nameof(Recommend))]
     public class WallpaperInfo
     {
 
         public int Id { get; set; }
 
         public bool Enable { get; set; }
+
+        public bool Recommend { get; set; }
 
         [MaxLength(255)]
         public string? Title { get; set; }
