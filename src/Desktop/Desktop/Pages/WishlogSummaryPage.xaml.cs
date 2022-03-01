@@ -15,6 +15,7 @@ namespace Xunkong.Desktop.Pages
     public sealed partial class WishlogSummaryPage : Page
     {
 
+        private const string HasShownUpdateMetadataTeachingTip = "HasShownUpdateMetadataTeachingTip";
 
         private WishlogSummaryViewModel vm => (DataContext as WishlogSummaryViewModel)!;
 
@@ -24,8 +25,21 @@ namespace Xunkong.Desktop.Pages
             this.InitializeComponent();
             DataContext = ActivatorUtilities.CreateInstance<WishlogSummaryViewModel>(App.Current.Services);
             Loaded += async (_, _) => await vm.InitializePageDataAsync();
+            Loaded += ShowUpdateMetadataTeachingTip;
         }
 
+        private void ShowUpdateMetadataTeachingTip(object sender, RoutedEventArgs e)
+        {
+            if (!LocalSettingHelper.GetSetting<bool>(HasShownUpdateMetadataTeachingTip))
+            {
+                _TeachingTip_UpdateMetadata.IsOpen = true;
+            }
+        }
+
+        private void _TeachingTip_UpdateMetadata_CloseButtonClick(TeachingTip sender, object args)
+        {
+            LocalSettingHelper.SaveSetting(HasShownUpdateMetadataTeachingTip, true);
+        }
 
         private void _Flyout_InputWishlogUrl_Opened(object sender, object e)
         {

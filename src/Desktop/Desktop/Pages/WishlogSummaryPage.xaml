@@ -14,7 +14,7 @@
 
     <Page.Resources>
         <converters:WishTypeToGuaranteeCountNumberConverter x:Key="WishTypeToGuaranteeCountNumberConverter" />
-        <!--卡池统计模板-->
+        <!--  卡池统计模板  -->
         <DataTemplate x:Key="QueryTypeStatsDataTemplate" x:DataType="models:WishlogSummary_QueryTypeStats">
             <Grid Name="_Grid_QueryTypeStats"
                   Height="200"
@@ -153,7 +153,7 @@
                 </Grid>
             </Grid>
         </DataTemplate>
-        <!--角色武器一览模板-->
+        <!--  角色武器一览模板  -->
         <DataTemplate x:Key="WishlogItemStatsDataTemplate" x:DataType="models:WishlogSummary_ItemThumb">
             <Grid Width="80"
                   Height="97"
@@ -191,7 +191,7 @@
                 </Border>
             </Grid>
         </DataTemplate>
-        <!--角色武器活动祈愿模板-->
+        <!--  角色武器活动祈愿模板  -->
         <DataTemplate x:Key="WishEventStatsDataTemplate" x:DataType="models:WishlogSummary_EventStats">
             <Grid Margin="24,6,24,6" ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
@@ -387,7 +387,8 @@
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <AppBarButton Command="{x:Bind vm.GetMetadataCommand, Mode=OneTime}"
+                <AppBarButton Name="_AppBarButton_UpdateMetadata"
+                              Command="{x:Bind vm.GetMetadataCommand, Mode=OneTime}"
                               Icon="ContactInfo"
                               Label="更新元数据"
                               ToolTipService.ToolTip="更新角色、武器、卡池等信息" />
@@ -401,6 +402,12 @@
 
             </StackPanel>
         </Grid>
+
+        <TeachingTip Name="_TeachingTip_UpdateMetadata"
+                     CloseButtonClick="_TeachingTip_UpdateMetadata_CloseButtonClick"
+                     Content="首次使用或卡池更新后记得「更新元数据」"
+                     PreferredPlacement="BottomLeft"
+                     Target="{x:Bind _AppBarButton_UpdateMetadata}" />
 
         <TeachingTip Name="_TeachingTip_Import"
                      IsLightDismissEnabled="True"
