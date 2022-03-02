@@ -205,8 +205,8 @@ namespace Xunkong.Desktop.ViewModels
                         var endTime = items.Last().Time;
                         var upCount = items.Where(x => x.RankType == 5 && x.IsUp).Count();
                         var currentGuarantee = items.Last().RankType == 5 ? 0 : items.Last().GuaranteeIndex;
-                        var maxGuarantee = items.Where(x => x.RankType == 5).Max(x => x.GuaranteeIndex);
-                        var minGuarantee = items.Where(x => x.RankType == 5).Min(x => x.GuaranteeIndex);
+                        var maxGuarantee = rank5Count == 0 ? currentGuarantee : items.Where(x => x.RankType == 5).Max(x => x.GuaranteeIndex);
+                        var minGuarantee = rank5Count == 0 ? currentGuarantee : items.Where(x => x.RankType == 5).Min(x => x.GuaranteeIndex);
                         var rank5Items = items.Where(x => x.RankType == 5).Select(x => new WishlogSummary_Rank5Item(x.Name, x.GuaranteeIndex, x.Time)).ToList();
                         var colors = ColorSet.OrderBy(x => Random.Shared.Next()).ToList();
                         var gi = rank5Items.GroupBy(x => x.Name).OrderBy(x => x.Min(y => y.Time));

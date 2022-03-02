@@ -40,7 +40,7 @@ public record WishlogSummary_QueryTypeStats(WishType QueryType,
 
     public int BaodiWai => QueryType == WishType.Permanent ? 0 : (Rank5Count - UpItemCount);
 
-    public int BaodiBuwai => QueryType == WishType.Permanent ? Rank5Count : (2 * UpItemCount - Rank5Count + (LastRank5ItemIsUp ? 0 : 1));
+    public int BaodiBuwai => QueryType == WishType.Permanent ? Rank5Count : Rank5Count == 0 ? 0 : (2 * UpItemCount - Rank5Count + (LastRank5ItemIsUp ? 0 : 1));
 
     public string AverageRank5Count => ((TotalCount - CurrentGuarantee) / (double)Rank5Count).ToString("F2");
 
