@@ -18,6 +18,7 @@
 		<None Remove="Controls\WebToolContentControl.xaml" />
 		<None Remove="Pages\AlbumPage.xaml" />
 		<None Remove="Pages\ToolboxPage.xaml" />
+		<None Remove="Pages\TravelNotesPage.xaml" />
 		<None Remove="Pages\WebViewPage.xaml" />
 		<None Remove="Pages\WelcomePage.xaml" />
 		<None Remove="Pages\WishEventStatsPage.xaml" />
@@ -58,6 +59,7 @@
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="2.0.0" />
+		<PackageReference Include="Syncfusion.Chart.WinUI" Version="19.4.0.54" />
 		<PackageReference Include="Vanara.PInvoke.User32" Version="3.3.15" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
@@ -68,6 +70,12 @@
 		<ProjectReference Include="..\Database\Xunkong.Desktop.Database.csproj" />
 		<ProjectReference Include="..\Extension\Xunkong.Desktop.Extension.csproj" />
 		<ProjectReference Include="..\Secret\Xunkong.Desktop.Secret.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Pages\TravelNotesPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 
 	<ItemGroup>

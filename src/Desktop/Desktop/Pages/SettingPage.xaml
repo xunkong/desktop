@@ -390,12 +390,6 @@
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                Text="点击下面的按钮可以把相关信息保存到本地，供以后分析使用" />
                     <StackPanel Orientation="Horizontal" Spacing="16">
-                        <Button Command="{x:Bind vm.GetTravelRecordSummaryCommand, Mode=OneTime}" Content="获取旅行札记" />
-                        <controls:GenshinElementLoading Height="24"
-                                                        IsActive="{x:Bind vm.GetTravelRecordSummaryCommand.IsRunning}"
-                                                        SyncActiveAndVisibility="True" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="16">
                         <Button Command="{x:Bind vm.GetSpiralAbyssInfoSummaryCommand, Mode=OneTime}" Content="获取深渊记录" />
                         <controls:GenshinElementLoading Height="24"
                                                         IsActive="{x:Bind vm.GetSpiralAbyssInfoSummaryCommand.IsRunning}"

@@ -448,7 +448,7 @@ namespace Xunkong.Core.Hoyolab
         /// <param name="type">1原石，2摩拉</param>
         /// <param name="limit">每页几条，最多100</param>
         /// <returns></returns>
-        public async Task<TravelRecordDetail> GetTravelRecordDetailAsync(UserGameRoleInfo role, int month, TravelRecordAwardType type, int limit = 10)
+        public async Task<TravelRecordDetail> GetTravelRecordDetailAsync(UserGameRoleInfo role, int month, TravelRecordAwardType type, int limit = 100)
         {
             var data = await GetTravelRecordDetailByPageAsync(role, month, type, 1, limit);
             if (data.List.Count < limit)

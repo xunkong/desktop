@@ -439,34 +439,6 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
-        [ICommand(AllowConcurrentExecutions = false)]
-        private async Task GetTravelRecordSummary()
-        {
-            try
-            {
-                var role = await _hoyolabService.GetLastSelectedOrFirstUserGameRoleInfoAsync();
-                var now = DateTime.UtcNow.AddHours(8);
-                var month = now.Month;
-                var r = await _hoyolabService.GetTravelRecordSummaryAsync(role, month);
-                var s = await _hoyolabService.GetTravelRecordDetailAsync(role, month, Core.TravelRecord.TravelRecordAwardType.Primogems);
-                var t = await _hoyolabService.GetTravelRecordDetailAsync(role, month, Core.TravelRecord.TravelRecordAwardType.Mora);
-                month = now.AddMonths(-1).Month;
-                r = await _hoyolabService.GetTravelRecordSummaryAsync(role, month);
-                s = await _hoyolabService.GetTravelRecordDetailAsync(role, month, Core.TravelRecord.TravelRecordAwardType.Primogems);
-                t = await _hoyolabService.GetTravelRecordDetailAsync(role, month, Core.TravelRecord.TravelRecordAwardType.Mora);
-                month = now.AddMonths(-2).Month;
-                r = await _hoyolabService.GetTravelRecordSummaryAsync(role, month);
-                s = await _hoyolabService.GetTravelRecordDetailAsync(role, month, Core.TravelRecord.TravelRecordAwardType.Primogems);
-                t = await _hoyolabService.GetTravelRecordDetailAsync(role, month, Core.TravelRecord.TravelRecordAwardType.Mora);
-                InfoBarHelper.Success($"{role.Nickname}的旅行札记保存成功");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Get travel record summary.");
-                InfoBarHelper.Error(ex);
-            }
-        }
-
 
         [ICommand(AllowConcurrentExecutions = false)]
         private async Task GetSpiralAbyssInfoSummary()

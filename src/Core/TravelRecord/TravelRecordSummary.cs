@@ -30,12 +30,6 @@ namespace Xunkong.Core.TravelRecord
 
         public void OnDeserialized()
         {
-            var offset = Region switch
-            {
-                RegionType.US => -5,
-                RegionType.EU => 1,
-                _ => 8,
-            };
             var year = DataMonth > Date.Month ? Date.Year - 1 : Date.Year;
             MonthData.Uid = Uid;
             MonthData.Year = year;

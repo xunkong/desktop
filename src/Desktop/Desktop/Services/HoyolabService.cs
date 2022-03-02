@@ -1,6 +1,7 @@
 ﻿using Xunkong.Core.Hoyolab;
 using Xunkong.Core.SpiralAbyss;
 using Xunkong.Core.TravelRecord;
+using Xunkong.Core.XunkongApi;
 
 namespace Xunkong.Desktop.Services
 {
@@ -281,6 +282,14 @@ namespace Xunkong.Desktop.Services
             }
             var m = summary.MonthData;
             using var ctx = _ctxFactory.CreateDbContext();
+            var existData = await ctx.TravelRecordMonthDatas.AsNoTracking().Where(x => x.Uid == m.Uid && x.Year == m.Year && x.Month == m.Month).FirstOrDefaultAsync();
+            if (existData is not null)
+            {
+                if (existData.CurrentPrimogems == m.CurrentPrimogems && existData.CurrentMora == m.CurrentMora)
+                {
+                    return summary;
+                }
+            }
             using var t = await ctx.Database.BeginTransactionAsync();
             try
             {
@@ -309,7 +318,16 @@ namespace Xunkong.Desktop.Services
             var list = detail.List;
             var dataYear = list[0].Year;
             var dataMonth = list[0].Month;
+            if (list.Any(x => x.Year != dataYear) || list.Any(x => x.Month != dataMonth))
+            {
+                throw new XunkongException(ErrorCode.InternalException, "Some of travel record items is out of the request month.");
+            }
             using var ctx = _ctxFactory.CreateDbContext();
+            var existCount = await ctx.TravelRecordAwardItems.Where(x => x.Uid == detail.Uid && x.Year == dataYear && x.Month == dataMonth && x.Type == type).CountAsync();
+            if (existCount == list.Count)
+            {
+                return detail;
+            }
             using var t = await ctx.Database.BeginTransactionAsync();
             try
             {

@@ -112,6 +112,9 @@
                                     UriSource="ms-appx:///Assets/Images/Ui_SystemOpenIcon_Gacha.png" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="旅行札记"
+                                    Icon="PhoneBook"
+                                    Tag="TravelNotesPage" />
             </NavigationView.MenuItems>
 
 
