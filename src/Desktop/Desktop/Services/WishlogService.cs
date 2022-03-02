@@ -1,6 +1,5 @@
 ﻿using System.Text.RegularExpressions;
 using Xunkong.Core.Hoyolab;
-using Xunkong.Core.Metadata;
 using Xunkong.Core.Wish;
 using Xunkong.Core.XunkongApi;
 
@@ -43,13 +42,6 @@ namespace Xunkong.Desktop.Services
             _ctxFactory = dbContextFactory;
             _cntFactory = dbConnectionFactory;
             _backupService = backupService;
-        }
-
-
-        static WishlogService()
-        {
-            TypeAdapterConfig<CharacterInfo, WishEventStatsItemInfoModel>.NewConfig().Map(dest => dest.Icon, src => src.FaceIcon).Map(dest => dest.GachaCard, src => src.GachaCard);
-            TypeAdapterConfig<WeaponInfo, WishEventStatsItemInfoModel>.NewConfig().Map(dest => dest.Icon, src => src.Icon).Map(dest => dest.GachaCard, src => src.GachaIcon);
         }
 
 
@@ -297,47 +289,6 @@ namespace Xunkong.Desktop.Services
 
 
 
-        public async Task<WishlogPanelModel> GetWishlogPanelModelAsync(int uid)
-        {
-            var model = new WishlogPanelModel { Uid = uid };
-            using var ctx = _ctxFactory.CreateDbContext();
-            model.NickName = await ctx.UserGameRoleInfos.Where(x => x.Uid == uid).Select(x => x.Nickname).FirstOrDefaultAsync();
-            model.LastUpdateTime = await ctx.WishlogAuthkeys.Where(x => x.Uid == uid).Select(x => x.DateTime).FirstOrDefaultAsync();
-            model.WishlogCount = await ctx.WishlogItems.Where(x => x.Uid == uid).CountAsync();
-            var list = (await GetWishlogItemExByUidAsync(uid)).OrderByDescending(x => x.Id).ToList();
-            foreach (var type in new[] { WishType.CharacterEvent, WishType.WeaponEvent, WishType.Permanent })
-            {
-                var stats = new WishlogPanelWishTypeStatsModel { WishType = type };
-                model.WishTypeStats.Add(stats);
-                stats.TotalCount = list.Where(x => x.QueryType == type).Count();
-                if (stats.TotalCount == 0)
-                {
-                    continue;
-                }
-                stats.Rank5Count = list.Where(x => x.QueryType == type && x.RankType == 5).Count();
-                stats.Rank4Count = list.Where(x => x.QueryType == type && x.RankType == 4).Count();
-                stats.Rank5Guarantee = list.Where(x => x.QueryType == type).FirstOrDefault()?.GuaranteeIndex ?? 0;
-                stats.Rank4Guarantee = list.Where(x => x.QueryType == type).TakeWhile(x => x.RankType < 4).Count();
-                var lastRank5Item = list.Where(x => x.QueryType == type && x.RankType == 5).FirstOrDefault();
-                if (lastRank5Item is not null)
-                {
-                    stats.LastRank5ItemName = lastRank5Item.Name;
-                    stats.LastRank5ItemGuaranteeIndex = lastRank5Item.GuaranteeIndex;
-                    stats.LastRank5ItemTime = lastRank5Item.Time;
-                    if (lastRank5Item.ItemType == "角色")
-                    {
-                        stats.LastRank5ItemIcon = await ctx.CharacterInfos.Where(x => x.Name == lastRank5Item.Name).Select(x => x.SideIcon).FirstOrDefaultAsync();
-                    }
-                    else
-                    {
-                        stats.LastRank5ItemIcon = await ctx.WeaponInfos.Where(x => x.Name == lastRank5Item.Name).Select(x => x.Icon).FirstOrDefaultAsync();
-                    }
-                }
-            }
-            return model;
-        }
-
-
 
         public async Task<string> ImportFromJsonFile(string file)
         {
@@ -488,138 +439,6 @@ namespace Xunkong.Desktop.Services
                 }
             }
             return models;
-        }
-
-
-        /// <summary>
-        /// 获取角色活动卡池统计的数据
-        /// </summary>
-        /// <param name="uid"></param>
-        /// <returns></returns>
-        public async Task<List<WishEventStatsModel>> GetCharacterWishEventStatsModelsByUidAsync(int uid)
-        {
-            WishEventInfo.RegionType = UidToRegionType(uid);
-            var wishlogModels = await GetWishlogItemEditableModelsByUidAndTypeAsync(uid, WishType.CharacterEvent);
-            using var ctx = _ctxFactory.CreateDbContext();
-            var eventInfos = await ctx.WishEventInfos.ToListAsync();
-            var groups = eventInfos.Where(x => x.QueryType == WishType.CharacterEvent).GroupBy(x => x.StartTime).ToList();
-            var dics = await ctx.CharacterInfos.ToDictionaryAsync(x => x.Name!);
-            var eventModels = new List<WishEventStatsModel>();
-            foreach (var group in groups)
-            {
-                var model = group.FirstOrDefault()?.Adapt<WishEventStatsModel>()!;
-                model.Name = string.Join(" ", group.Select(x => x.Name));
-                model.UpItems = group.SelectMany(x => x.Rank5UpItems).Join(dics, str => str, dic => dic.Key, (str, dic) => dic.Value).ToList().Adapt<List<WishEventStatsItemInfoModel>>();
-                model.UpItems.AddRange(group.FirstOrDefault()!.Rank4UpItems.Join(dics, str => str, dic => dic.Key, (str, dic) => dic.Value).Adapt<IEnumerable<WishEventStatsItemInfoModel>>());
-                var wishlogItems = wishlogModels.Where(x => x.Time >= model.StartTime && x.Time <= model.EndTime).OrderByDescending(x => x.Id).ToList();
-                model.TotalCount = wishlogItems.Count;
-                model.Rarity3Count = wishlogItems.Count(x => x.RankType == 3);
-                model.Rarity4Count = wishlogItems.Count(x => x.RankType == 4);
-                model.Rarity5Count = wishlogItems.Count(x => x.RankType == 5);
-                int index = 0;
-                foreach (var item in wishlogItems)
-                {
-                    index++;
-                    item.Index = index;
-                }
-                foreach (var item in model.UpItems)
-                {
-                    item.Count = wishlogItems.Count(x => x.Name == item.Name);
-                }
-                var noneUpCharacters = wishlogItems.Where(x => x.RankType > 3 && x.ItemType == "角色")
-                                                     .ExceptBy(model.UpItems.Select(x => x.Name), x => x.Name)
-                                                     .GroupBy(x => x.Name)
-                                                     .Join(dics, g => g.Key, d => d.Key, (g, d) =>
-                                                     {
-                                                         var model = d.Value.Adapt<WishEventStatsItemInfoModel>();
-                                                         model.Count = g.Count();
-                                                         return model;
-                                                     });
-                var dics_weapon = await ctx.WeaponInfos.ToDictionaryAsync(x => x.Name!);
-                var noneUpWeapons = wishlogItems.Where(x => x.RankType > 3 && x.ItemType == "武器")
-                                                     .ExceptBy(model.UpItems.Select(x => x.Name), x => x.Name)
-                                                     .GroupBy(x => x.Name)
-                                                     .Join(dics_weapon, g => g.Key, d => d.Key, (g, d) =>
-                                                     {
-                                                         var model = d.Value.Adapt<WishEventStatsItemInfoModel>();
-                                                         model.Count = g.Count();
-                                                         return model;
-                                                     });
-                model.NoneUpItems = noneUpCharacters.Concat(noneUpWeapons).OrderByDescending(x => x.Rarity).OrderByDescending(x => x.Count).ToList();
-                model.Rarity5Items = wishlogItems.Where(x => x.RankType == 5)
-                                                   .Join(dics, item => item.Name, dic => dic.Key, (item, dic) => new WishEventStatsRarity5Item(item.Name, item.Time, item.GuaranteeIndex, dic.Value.SideIcon!, item.Id))
-                                                   .OrderBy(x => x.Id)
-                                                   .ToList();
-                model.Wishlogs = wishlogItems.Where(x => x.RankType > 3).OrderByDescending(x => x.Id).ToList();
-                eventModels.Add(model);
-            }
-            return eventModels.OrderByDescending(x => x.StartTime).ToList();
-        }
-
-
-        /// <summary>
-        /// 获取武器活动卡池统计的数据
-        /// </summary>
-        /// <param name="uid"></param>
-        /// <returns></returns>
-        public async Task<List<WishEventStatsModel>> GetWeaponWishEventStatsModelsByUidAsync(int uid)
-        {
-            WishEventInfo.RegionType = UidToRegionType(uid);
-            var wishlogModels = await GetWishlogItemEditableModelsByUidAndTypeAsync(uid, WishType.WeaponEvent);
-            using var ctx = _ctxFactory.CreateDbContext();
-            var eventInfos = await ctx.WishEventInfos.ToListAsync();
-            var groups = eventInfos.Where(x => x.QueryType == WishType.WeaponEvent).GroupBy(x => x.StartTime).ToList();
-            var dics = await ctx.WeaponInfos.ToDictionaryAsync(x => x.Name!);
-            var eventModels = new List<WishEventStatsModel>();
-            foreach (var group in groups)
-            {
-                var model = group.FirstOrDefault()?.Adapt<WishEventStatsModel>()!;
-                model.Name = string.Join(" ", group.Select(x => x.Name));
-                model.UpItems = group.SelectMany(x => x.Rank5UpItems).Join(dics, str => str, dic => dic.Key, (str, dic) => dic.Value).ToList().Adapt<List<WishEventStatsItemInfoModel>>();
-                model.UpItems.AddRange(group.FirstOrDefault()!.Rank4UpItems.Join(dics, str => str, dic => dic.Key, (str, dic) => dic.Value).Adapt<IEnumerable<WishEventStatsItemInfoModel>>());
-                var wishlogItems = wishlogModels.Where(x => x.Time >= model.StartTime && x.Time <= model.EndTime).OrderByDescending(x => x.Id).ToList();
-                model.TotalCount = wishlogItems.Count;
-                model.Rarity3Count = wishlogItems.Count(x => x.RankType == 3);
-                model.Rarity4Count = wishlogItems.Count(x => x.RankType == 4);
-                model.Rarity5Count = wishlogItems.Count(x => x.RankType == 5);
-                int index = 0;
-                foreach (var item in wishlogItems)
-                {
-                    index++;
-                    item.Index = index;
-                }
-                foreach (var item in model.UpItems)
-                {
-                    item.Count = wishlogItems.Count(x => x.Name == item.Name);
-                }
-                var noneUpCharacters = wishlogItems.Where(x => x.RankType > 3 && x.ItemType == "角色")
-                                                     .ExceptBy(model.UpItems.Select(x => x.Name), x => x.Name)
-                                                     .GroupBy(x => x.Name)
-                                                     .Join(dics, g => g.Key, d => d.Key, (g, d) =>
-                                                     {
-                                                         var model = d.Value.Adapt<WishEventStatsItemInfoModel>();
-                                                         model.Count = g.Count();
-                                                         return model;
-                                                     });
-                var dics_weapon = await ctx.WeaponInfos.ToDictionaryAsync(x => x.Name!);
-                var noneUpWeapons = wishlogItems.Where(x => x.RankType > 3 && x.ItemType == "武器")
-                                                     .ExceptBy(model.UpItems.Select(x => x.Name), x => x.Name)
-                                                     .GroupBy(x => x.Name)
-                                                     .Join(dics_weapon, g => g.Key, d => d.Key, (g, d) =>
-                                                     {
-                                                         var model = d.Value.Adapt<WishEventStatsItemInfoModel>();
-                                                         model.Count = g.Count();
-                                                         return model;
-                                                     });
-                model.NoneUpItems = noneUpCharacters.Concat(noneUpWeapons).OrderByDescending(x => x.Rarity).OrderByDescending(x => x.Count).ToList();
-                model.Rarity5Items = wishlogItems.Where(x => x.RankType == 5)
-                                                   .Join(dics, item => item.Name, dic => dic.Key, (item, dic) => new WishEventStatsRarity5Item(item.Name, item.Time, item.GuaranteeIndex, dic.Value.Icon!, item.Id))
-                                                   .OrderBy(x => x.Id)
-                                                   .ToList();
-                model.Wishlogs = wishlogItems.Where(x => x.RankType > 3).OrderByDescending(x => x.Id).ToList();
-                eventModels.Add(model);
-            }
-            return eventModels.OrderByDescending(x => x.StartTime).ToList();
         }
 
 

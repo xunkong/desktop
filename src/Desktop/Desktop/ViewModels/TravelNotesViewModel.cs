@@ -123,7 +123,8 @@ namespace Xunkong.Desktop.ViewModels
                     MonthStats = summary?.MonthData?.Adapt<TravelNotes_DayOrMonthStats>();
                     PrimogemsGroup = summary?.MonthData?.PrimogemsGroupBy;
                     using var ctx = _ctxFactory.CreateDbContext();
-                    var recentDays = await ctx.TravelRecordAwardItems.AsNoTracking().Where(x => x.Uid == role.Uid && x.Time >= DateTime.Now.AddDays(-30)).ToListAsync();
+                    var minTime = DateTime.UtcNow.AddDays(-30).AddHours(12);
+                    var recentDays = await ctx.TravelRecordAwardItems.AsNoTracking().Where(x => x.Uid == role.Uid && x.Time >= minTime).ToListAsync();
                     var group = recentDays.GroupBy(x => x.Time.Date).OrderBy(x => x.Key);
                     var dayDatas = new List<TravelNotes_DayData>(30);
                     foreach (var item in group)
@@ -135,8 +136,8 @@ namespace Xunkong.Desktop.ViewModels
                     }
                     RecentDayData = dayDatas;
                     AllMonthData = (await ctx.TravelRecordMonthDatas.AsNoTracking().Where(x => x.Uid == role.Uid).OrderBy(x => x.Year).ThenBy(x => x.Month).ToListAsync()).Adapt<List<TravelNotes_MonthData>>();
-                    PrimogemsAwardItems = await ctx.TravelRecordAwardItems.AsNoTracking().Where(x => x.Uid == role.Uid && x.Time >= DateTime.Now.AddDays(-30) && x.Type == TravelRecordAwardType.Primogems).ToListAsync();
-                    MoraAwardItems = await ctx.TravelRecordAwardItems.AsNoTracking().Where(x => x.Uid == role.Uid && x.Time >= DateTime.Now.AddDays(-30) && x.Type == TravelRecordAwardType.Mora).ToListAsync();
+                    PrimogemsAwardItems = await ctx.TravelRecordAwardItems.AsNoTracking().Where(x => x.Uid == role.Uid && x.Time >= minTime && x.Type == TravelRecordAwardType.Primogems).ToListAsync();
+                    MoraAwardItems = await ctx.TravelRecordAwardItems.AsNoTracking().Where(x => x.Uid == role.Uid && x.Time >= minTime && x.Type == TravelRecordAwardType.Mora).ToListAsync();
                 }
             }
             catch (Exception ex)

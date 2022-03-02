@@ -21,8 +21,6 @@
 		<None Remove="Pages\TravelNotesPage.xaml" />
 		<None Remove="Pages\WebViewPage.xaml" />
 		<None Remove="Pages\WelcomePage.xaml" />
-		<None Remove="Pages\WishEventStatsPage.xaml" />
-		<None Remove="Pages\WishlogManagePage.xaml" />
 		<None Remove="Pages\WishlogSummaryPage.xaml" />
 		<None Remove="Toolbox\KeqingNiuzaMetadataTool.xaml" />
 		<None Remove="Toolbox\PixivMetadataTool.xaml" />
@@ -110,18 +108,6 @@
 
 	<ItemGroup>
 		<Page Update="Controls\GenshinElementLoading.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Page Update="Pages\WishEventStatsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Page Update="Pages\WishlogManagePage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>

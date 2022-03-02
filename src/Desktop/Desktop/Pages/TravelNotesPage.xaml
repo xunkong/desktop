@@ -113,6 +113,7 @@
                            Style="{ThemeResource SubtitleTextBlockStyle}"
                            Text="实时数据" />
 
+                <!--  实时数据  -->
                 <StackPanel Orientation="Horizontal" Spacing="16">
                     <!--  每日统计  -->
                     <Grid Width="360"
@@ -345,7 +346,7 @@
                                    Text="{x:Bind vm.MonthStats.MoraChangeRatio}" />
                     </Grid>
 
-                    <!--  原石组成  -->
+                    <!--  原石收入组成  -->
                     <Grid Width="360"
                           Height="240"
                           Padding="0,8,12,8"
@@ -420,7 +421,7 @@
                                                        FontSize="12"
                                                        Text="{x:Bind ActionName}" />
                                             <TextBlock FontSize="12">
-                                                <Run Text="{x:Bind Number}" />
+                                                <Run Text="{x:Bind Percent}" />
                                                 <Run Text="%" />
                                             </TextBlock>
                                         </StackPanel>
