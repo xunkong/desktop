@@ -24,13 +24,13 @@
             <StaticResource x:Key="ApplicationPageBackgroundThemeBrush" ResourceKey="ControlFillColorTransparentBrush" />
 
             <AcrylicBrush x:Key="CustomAcrylicBrush"
-                          FallbackColor="{ThemeResource SystemBaseHighColor}"
+                          FallbackColor="{ThemeResource ControlOnImageFillColorDefault}"
                           Opacity="0.7"
                           TintColor="{ThemeResource SystemChromeAltHighColor}"
                           TintOpacity="0.3" />
 
             <AcrylicBrush x:Key="CustomControlBackgroundAcrylicBrush"
-                          FallbackColor="{ThemeResource SystemBaseHighColor}"
+                          FallbackColor="{ThemeResource ControlOnImageFillColorDefault}"
                           Opacity="0.8"
                           TintColor="{ThemeResource SystemChromeAltHighColor}"
                           TintOpacity="0.2" />
