@@ -18,9 +18,9 @@
 - 安装 Windows App SDK
   - 若使用 Visual Studio 17.1 及以上版本，在上一步选择工作负载的窗口右侧勾选 「.NET 桌面开发 / Windows 应用 SDK C# 模板」
   - 若使用其他版本，前往 [此页面](https://docs.microsoft.com/zh-cn/windows/apps/windows-app-sdk/downloads) 下载 1.0 稳定版的 Windows App SDK
-- 打开解决方案 `Xunkong.sln`，并将项目 `Xunkong.Desktop.Package` 设为启动项目
+- 打开解决方案 `Xunkong.sln`，并将项目 `Xunkong.Desktop.Package` 设为启动项目，配置设为 `x64`
 
-到此您已经完成了生成客户端的全部准备，但是仍然会生成失败，因为项目中还有部分图片没有准备好。
+到此您已经完成了生成客户端的全部准备。
 
 ### 生成服务端
 

@@ -341,7 +341,7 @@ namespace Xunkong.Desktop.Services
                 await t.RollbackAsync();
                 throw;
             }
-            return existCount - list.Count;
+            return list.Count - existCount;
         }
 
 

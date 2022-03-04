@@ -57,7 +57,7 @@
   <ItemGroup>
     <Content Include="Assets\Fonts\*" />
     <Content Include="Assets\Images\*" />
-    <Content Include="Images\*" />
+    <Content Include="Assets\Logos\*" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Desktop\Xunkong.Desktop.csproj" />
