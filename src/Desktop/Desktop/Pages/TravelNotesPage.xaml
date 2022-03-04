@@ -45,8 +45,8 @@
 
         <charts:ChartColorModel x:Key="PrimogemsMoraDotColorModel">
             <charts:ChartColorModel.CustomBrushes>
-                <SolidColorBrush Color="Orange" />
                 <SolidColorBrush Color="#3BA272" />
+                <SolidColorBrush Color="#FFA500" />
             </charts:ChartColorModel.CustomBrushes>
         </charts:ChartColorModel>
 
@@ -494,7 +494,7 @@
                         <charts:ChartTooltipBehavior Style="{ThemeResource ToolTipStyle}" />
                     </charts:SfCartesianChart.Behaviors>
                     <charts:SfCartesianChart.Legend>
-                        <charts:ChartLegend />
+                        <charts:ChartLegend ToggleSeriesVisibility="True" />
                     </charts:SfCartesianChart.Legend>
                 </charts:SfCartesianChart>
 
@@ -587,7 +587,7 @@
                         </charts:SplineSeries.YAxis>
                     </charts:SplineSeries>
                     <charts:SfCartesianChart.Legend>
-                        <charts:ChartLegend />
+                        <charts:ChartLegend ToggleSeriesVisibility="True" />
                     </charts:SfCartesianChart.Legend>
                 </charts:SfCartesianChart>
 
@@ -597,44 +597,60 @@
                                          Palette="Custom"
                                          PointerWheelChanged="SfCartesianChart_PointerWheelChanged">
                     <charts:SfCartesianChart.Resources>
-                        <DataTemplate x:Key="TooltipTemplate">
-                            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}">
-                                <Run Text="{Binding Item.Type, Converter={StaticResource EnumToDescriptionOrStringConverter}}" />
-                                <LineBreak />
-                                <Run Text="{Binding Item.Time, Converter={StaticResource DateTimeOffsetToDateTimeStringConverter}}" />
-                                <LineBreak />
-                                <Run Text="{Binding Item.ActionName}" />
-                                <Run Text="{Binding Item.Number}" />
-                            </TextBlock>
-                        </DataTemplate>
                         <Style x:Key="ToolTipStyle" TargetType="Path">
                             <Setter Property="Fill" Value="{ThemeResource ControlOnImageFillColorDefaultBrush}" />
                         </Style>
                     </charts:SfCartesianChart.Resources>
                     <charts:FastScatterBitmapSeries charts:ChartTooltip.EnableAnimation="False"
-                                                    ItemsSource="{x:Bind vm.PrimogemsAwardItems}"
-                                                    Label="原石"
-                                                    ScatterHeight="2"
-                                                    ScatterWidth="2"
-                                                    ShowTooltip="True"
-                                                    TooltipTemplate="{StaticResource TooltipTemplate}"
-                                                    XBindingPath="Time"
-                                                    YBindingPath="Number">
-                        <charts:FastScatterBitmapSeries.YAxis>
-                            <charts:NumericalAxis Header="原石" />
-                        </charts:FastScatterBitmapSeries.YAxis>
-                    </charts:FastScatterBitmapSeries>
-                    <charts:FastScatterBitmapSeries charts:ChartTooltip.EnableAnimation="False"
+                                                    charts:ChartTooltip.ShowDuration="10000"
                                                     ItemsSource="{x:Bind vm.MoraAwardItems}"
                                                     Label="摩拉"
                                                     ScatterHeight="2"
                                                     ScatterWidth="2"
                                                     ShowTooltip="True"
-                                                    TooltipTemplate="{StaticResource TooltipTemplate}"
                                                     XBindingPath="Time"
                                                     YBindingPath="Number">
+                        <charts:FastScatterBitmapSeries.TooltipTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Image Width="32" Source="{StaticResource Image_Mora}" />
+                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                        <Run Text="{Binding Item.ActionName}" />
+                                        <Run Text="{Binding Item.Number}" />
+                                        <LineBreak />
+                                        <Run Text="{Binding Item.Time, Converter={StaticResource DateTimeOffsetToDateTimeStringConverter}}" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </charts:FastScatterBitmapSeries.TooltipTemplate>
                         <charts:FastScatterBitmapSeries.YAxis>
                             <charts:NumericalAxis Header="摩拉" OpposedPosition="True" />
+                        </charts:FastScatterBitmapSeries.YAxis>
+                    </charts:FastScatterBitmapSeries>
+                    <charts:FastScatterBitmapSeries charts:ChartTooltip.EnableAnimation="False"
+                                                    charts:ChartTooltip.ShowDuration="10000"
+                                                    ItemsSource="{x:Bind vm.PrimogemsAwardItems}"
+                                                    Label="原石"
+                                                    ScatterHeight="2"
+                                                    ScatterWidth="2"
+                                                    ShowTooltip="True"
+                                                    XBindingPath="Time"
+                                                    YBindingPath="Number">
+                        <charts:FastScatterBitmapSeries.TooltipTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Image Width="32" Source="{StaticResource Image_Primogems}" />
+                                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                        <Run Text="{Binding Item.ActionName}" />
+                                        <Run Text="{Binding Item.Number}" />
+                                        <LineBreak />
+                                        <Run Text="{Binding Item.Time, Converter={StaticResource DateTimeOffsetToDateTimeStringConverter}}" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </charts:FastScatterBitmapSeries.TooltipTemplate>
+                        <charts:FastScatterBitmapSeries.YAxis>
+                            <charts:NumericalAxis Header="原石" />
                         </charts:FastScatterBitmapSeries.YAxis>
                     </charts:FastScatterBitmapSeries>
                     <charts:SfCartesianChart.PrimaryAxis>
@@ -649,7 +665,13 @@
                         <charts:ChartTooltipBehavior Style="{StaticResource ToolTipStyle}" />
                     </charts:SfCartesianChart.Behaviors>
                     <charts:SfCartesianChart.Legend>
-                        <charts:ChartLegend />
+                        <charts:ChartLegend ToggleSeriesVisibility="True">
+                            <charts:ChartLegend.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel FlowDirection="RightToLeft" Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </charts:ChartLegend.ItemsPanel>
+                        </charts:ChartLegend>
                     </charts:SfCartesianChart.Legend>
                 </charts:SfCartesianChart>
 

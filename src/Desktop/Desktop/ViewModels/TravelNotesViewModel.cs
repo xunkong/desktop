@@ -169,18 +169,20 @@ namespace Xunkong.Desktop.ViewModels
                 {
                     var now = DateTime.UtcNow.AddHours(8);
                     var month = now.Month;
-                    await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Primogems);
-                    await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Mora);
+                    var primogemsAddCount = await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Primogems);
+                    var moraAddCount = await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Mora);
+                    InfoBarHelper.Success($"{role.Nickname} 的 {month} 月旅行札记新增原石记录 {primogemsAddCount} 条、摩拉记录 {moraAddCount} 条", 10000);
                     if (!onlyCurrentMonth)
                     {
                         month = now.AddMonths(-1).Month;
                         await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Primogems);
                         await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Mora);
+                        InfoBarHelper.Success($"{role.Nickname} 的 {month} 月旅行札记新增原石记录 {primogemsAddCount} 条、摩拉记录 {moraAddCount} 条", 10000);
                         month = now.AddMonths(-2).Month;
                         await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Primogems);
                         await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Mora);
+                        InfoBarHelper.Success($"{role.Nickname} 的 {month} 月旅行札记新增原石记录 {primogemsAddCount} 条、摩拉记录 {moraAddCount} 条", 10000);
                     }
-                    InfoBarHelper.Success($"{role.Nickname} 的旅行札记保存成功");
                 }
             }
             catch (Exception ex)

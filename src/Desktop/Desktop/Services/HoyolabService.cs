@@ -308,12 +308,12 @@ namespace Xunkong.Desktop.Services
 
 
 
-        public async Task<TravelRecordDetail> GetTravelRecordDetailAsync(UserGameRoleInfo role, int month, TravelRecordAwardType type, int limit = 100)
+        public async Task<int> GetTravelRecordDetailAsync(UserGameRoleInfo role, int month, TravelRecordAwardType type, int limit = 100)
         {
             var detail = await _hoyolabClient.GetTravelRecordDetailAsync(role, month, type, limit);
             if (detail.List is null || !detail.List.Any())
             {
-                return detail;
+                return 0;
             }
             var list = detail.List;
             var dataYear = list[0].Year;
@@ -326,7 +326,7 @@ namespace Xunkong.Desktop.Services
             var existCount = await ctx.TravelRecordAwardItems.Where(x => x.Uid == detail.Uid && x.Year == dataYear && x.Month == dataMonth && x.Type == type).CountAsync();
             if (existCount == list.Count)
             {
-                return detail;
+                return 0;
             }
             using var t = await ctx.Database.BeginTransactionAsync();
             try
@@ -341,7 +341,7 @@ namespace Xunkong.Desktop.Services
                 await t.RollbackAsync();
                 throw;
             }
-            return detail;
+            return existCount - list.Count;
         }
 
 
