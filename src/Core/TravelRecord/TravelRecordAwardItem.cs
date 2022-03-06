@@ -5,9 +5,7 @@
     /// 旅行记录原石或摩拉获取记录
     /// </summary>
     [Table("TravelRecord_AwardItems")]
-    [Index(nameof(Uid))]
-    [Index(nameof(Year))]
-    [Index(nameof(Month))]
+    [Index(nameof(Uid), nameof(Year), nameof(Month))]
     [Index(nameof(Type))]
     [Index(nameof(ActionId))]
     [Index(nameof(Time))]

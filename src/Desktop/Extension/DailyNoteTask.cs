@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.WinUI.Notifications;
-using Dapper;
+﻿using Dapper;
 using Microsoft.Data.Sqlite;
 using Serilog;
 using Xunkong.Core.Hoyolab;
@@ -78,18 +77,16 @@ namespace Xunkong.Desktop.Extension
                 {
                     var states = (notifications.Any(x => x.isResin), notifications.Any(x => x.isHomeCoin));
                     Log.Debug($"Noti states: anyResin {states.Item1}, anyHomecoin {states.Item2}");
-                    var tb = new ToastContentBuilder();
-                    tb = states switch
+                    var title = states switch
                     {
-                        (true, true) => tb.AddText("您有以下账号需要清理树脂或收集洞天宝钱"),
-                        (true, false) => tb.AddText("您有以下账号需要清理树脂"),
-                        (false, true) => tb.AddText("您有以下账号需要收集洞天宝钱"),
-                        _ => tb,
+                        (true, true) => "您有以下账号需要清理树脂或收集洞天宝钱",
+                        (true, false) => "您有以下账号需要清理树脂",
+                        (false, true) => "您有以下账号需要收集洞天宝钱",
+                        _ => "",
                     };
                     var nicknames = notifications.Where(x => x.isResin || x.isHomeCoin).Select(x => x.nickname).ToList();
-                    tb.AddText(string.Join("\n", nicknames));
-                    tb.AddAttributionText(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                    tb.Show();
+                    var message = string.Join("\n", nicknames);
+                    NotificationHelper.SendNotification(title, message);
                 }
             }
             Log.Information("Fresh daily note task finished.");

@@ -48,6 +48,9 @@ class Program
                     case "DailyNoteTask":
                         await DailyNoteTask.RefreshDailyNoteAsync();
                         break;
+                    case "HoyolabCheckInTask":
+                        await HoyolabCheckInTask.CheckInAsync();
+                        break;
                     default:
                         break;
                 }

@@ -2,11 +2,9 @@
 using CommunityToolkit.WinUI.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Vanara.PInvoke;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Storage.Streams;
-using Windows.Storage;
+using Xunkong.Core.Hoyolab;
 using Xunkong.Core.XunkongApi;
 
 namespace Xunkong.Desktop.ViewModels
@@ -39,6 +37,8 @@ namespace Xunkong.Desktop.ViewModels
 
 
         private const string DailyNoteRefreshBackgroundTask = "DailyNoteRefreshBackgroundTask";
+
+        private const string HoyolabDailyCheckInTask = "HoyolabDailyCheckInTask";
 
 
         public SettingViewModel(ILogger<SettingViewModel> logger,
@@ -81,14 +81,11 @@ namespace Xunkong.Desktop.ViewModels
                     _IsRegisterDailyNoteTask = true;
                     OnPropertyChanged(nameof(IsRegisterDailyNoteTask));
                 }
-                _EnableDailyNoteNotification = LocalSettingHelper.GetSetting<bool>(SettingKeys.EnableDailyNoteNotification);
-                OnPropertyChanged(nameof(EnableDailyNoteNotification));
-                _DisableBackgroundTaskOutputLog = LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundTaskOutputLog);
-                OnPropertyChanged(nameof(DisableBackgroundTaskOutputLog));
-                _DailyNoteNotification_ResinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_ResinThreshold, 150);
-                OnPropertyChanged(nameof(DailyNoteNotification_ResinThreshold));
-                _DailyNoteNotification_HomeCoinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_HomeCoinThreshold, 0.9);
-                OnPropertyChanged(nameof(DailyNoteNotification_HomeCoinThreshold));
+                if (allTasks.Any(x => x.Value.Name == HoyolabDailyCheckInTask))
+                {
+                    _IsRegisterHoyolabCheckInTask = true;
+                    OnPropertyChanged(nameof(IsRegisterHoyolabCheckInTask));
+                }
             }
             catch (Exception ex)
             {
@@ -100,6 +97,7 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
+        #region Version and Theme
 
 
         private ChannelType _SelectedChannel = XunkongEnvironment.Channel;
@@ -173,6 +171,7 @@ namespace Xunkong.Desktop.ViewModels
             }
         }
 
+        #endregion
 
 
 
@@ -323,8 +322,7 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
-        #region Background Task
-
+        #region Refresh Daily Note Tile Task
 
 
         private bool _IsRegisterDailyNoteTask;
@@ -333,17 +331,18 @@ namespace Xunkong.Desktop.ViewModels
             get => _IsRegisterDailyNoteTask;
             set
             {
-                if (_IsRegisterDailyNoteTask != value)
-                {
-                    ChangeDailyNoteBackgroundTaskStateAsync(value);
-                }
+                ChangeDailyNoteBackgroundTaskState(value);
                 SetProperty(ref _IsRegisterDailyNoteTask, value);
             }
         }
 
 
-        private async void ChangeDailyNoteBackgroundTaskStateAsync(bool enable)
+        private async void ChangeDailyNoteBackgroundTaskState(bool enable, bool ignoreDuplicateCheck = false)
         {
+            if (_IsRegisterDailyNoteTask == enable && !ignoreDuplicateCheck)
+            {
+                return;
+            }
             try
             {
                 var allTasks = BackgroundTaskRegistration.AllTasks;
@@ -366,16 +365,15 @@ namespace Xunkong.Desktop.ViewModels
             }
             catch (Exception ex)
             {
-                _IsRegisterDailyNoteTask = !IsRegisterDailyNoteTask;
-                OnPropertyChanged(nameof(IsRegisterDailyNoteTask));
-                _logger.LogError(ex, "Error in {MethodName}", nameof(ChangeDailyNoteBackgroundTaskStateAsync));
+                _logger.LogError(ex, "Error in {MethodName}", nameof(ChangeDailyNoteBackgroundTaskState));
                 InfoBarHelper.Error(ex);
+                IsRegisterDailyNoteTask = false;
             }
         }
 
 
 
-        private bool _EnableDailyNoteNotification;
+        private bool _EnableDailyNoteNotification = LocalSettingHelper.GetSetting<bool>(SettingKeys.EnableDailyNoteNotification);
         public bool EnableDailyNoteNotification
         {
             get => _EnableDailyNoteNotification;
@@ -391,7 +389,7 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
-        private bool _DisableBackgroundTaskOutputLog;
+        private bool _DisableBackgroundTaskOutputLog = LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundTaskOutputLog);
         public bool DisableBackgroundTaskOutputLog
         {
             get => _DisableBackgroundTaskOutputLog;
@@ -407,7 +405,7 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
-        private int _DailyNoteNotification_ResinThreshold;
+        private int _DailyNoteNotification_ResinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_ResinThreshold, 150);
         public int DailyNoteNotification_ResinThreshold
         {
             get => _DailyNoteNotification_ResinThreshold;
@@ -424,7 +422,7 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
-        private double _DailyNoteNotification_HomeCoinThreshold;
+        private double _DailyNoteNotification_HomeCoinThreshold = LocalSettingHelper.GetSetting(SettingKeys.DailyNoteNotification_HomeCoinThreshold, 0.9);
         public double DailyNoteNotification_HomeCoinThreshold
         {
             get => _DailyNoteNotification_HomeCoinThreshold;
@@ -443,6 +441,162 @@ namespace Xunkong.Desktop.ViewModels
 
         #endregion
 
+
+
+        #region Hoyolab Check in Task
+
+
+        private bool _IsRegisterHoyolabCheckInTask;
+        public bool IsRegisterHoyolabCheckInTask
+        {
+            get => _IsRegisterHoyolabCheckInTask;
+            set
+            {
+                ChangeHoyolabCheckinTaskState(value);
+                SetProperty(ref _IsRegisterHoyolabCheckInTask, value);
+            }
+        }
+
+
+        private async void ChangeHoyolabCheckinTaskState(bool enable, bool ignoreDuplicateCheck = false)
+        {
+            if (_IsRegisterHoyolabCheckInTask == enable && !ignoreDuplicateCheck)
+            {
+                return;
+            }
+            try
+            {
+                var allTasks = BackgroundTaskRegistration.AllTasks;
+                foreach (var item in allTasks)
+                {
+                    if (item.Value.Name == HoyolabDailyCheckInTask)
+                    {
+                        item.Value.Unregister(true);
+                    }
+                }
+                if (enable)
+                {
+                    var requestStatus = await BackgroundExecutionManager.RequestAccessAsync();
+                    var builder = new BackgroundTaskBuilder();
+                    builder.Name = HoyolabDailyCheckInTask;
+                    builder.SetTrigger(new TimeTrigger((uint)HoyolabCheckinTimeSpan.TotalMinutes, false));
+                    builder.TaskEntryPoint = "Xunkong.Desktop.BackgroundTask.HoyolabCheckInTask";
+                    BackgroundTaskRegistration task = builder.Register();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in {MethodName}", nameof(ChangeHoyolabCheckinTaskState));
+                InfoBarHelper.Error(ex);
+                IsRegisterDailyNoteTask = false;
+            }
+        }
+
+
+
+        private TimeSpan _HoyolabCheckinTimeSpan = LocalSettingHelper.GetSetting("HoyolabCheckinTimeSpan", TimeSpan.FromHours(2));
+        public TimeSpan HoyolabCheckinTimeSpan
+        {
+            get => _HoyolabCheckinTimeSpan;
+            set
+            {
+                ChangeHoyolabCheckinTimeSpan(value);
+                SetProperty(ref _HoyolabCheckinTimeSpan, value);
+            }
+        }
+
+
+        private void ChangeHoyolabCheckinTimeSpan(TimeSpan value)
+        {
+            if (value < TimeSpan.FromMinutes(15))
+            {
+                InfoBarHelper.Warning("间隔时间至少为 15 分钟", 3000);
+                return;
+            }
+            if (_HoyolabCheckinTimeSpan == value)
+            {
+                return;
+            }
+            LocalSettingHelper.SaveSetting("HoyolabCheckinTimeSpan", value);
+            ChangeHoyolabCheckinTaskState(IsRegisterHoyolabCheckInTask, true);
+        }
+
+
+
+        private bool _DailyCheckInSuccessNotification = LocalSettingHelper.GetSetting<bool>(SettingKeys.DailyCheckInSuccessNotification);
+        public bool DailyCheckInSuccessNotification
+        {
+            get => _DailyCheckInSuccessNotification;
+            set
+            {
+                LocalSettingHelper.SaveSetting(SettingKeys.DailyCheckInSuccessNotification, value);
+                SetProperty(ref _DailyCheckInSuccessNotification, value);
+            }
+        }
+
+
+        private bool _DailyCheckInErrorNotification = LocalSettingHelper.GetSetting<bool>(SettingKeys.DailyCheckInErrorNotification);
+        public bool DailyCheckInErrorNotification
+        {
+            get => _DailyCheckInErrorNotification;
+            set
+            {
+                LocalSettingHelper.SaveSetting(SettingKeys.DailyCheckInErrorNotification, value);
+                SetProperty(ref _DailyCheckInErrorNotification, value);
+            }
+        }
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task CheckInNowAsync()
+        {
+            try
+            {
+                var roles = await _hoyolabService.GetUserGameRoleInfoListAsync();
+                foreach (var role in roles)
+                {
+                    try
+                    {
+                        if (await _hoyolabService.SignInAsync(role))
+                        {
+                            InfoBarHelper.Success($"{role.Nickname} ({role.Uid}) 签到成功");
+                        }
+                        else
+                        {
+                            InfoBarHelper.Information($"{role.Nickname} ({role.Uid}) 无需签到");
+                        }
+                    }
+                    catch (HoyolabException ex)
+                    {
+                        _logger.LogError(ex, $"Check in with account: {role.Nickname} ({role.Uid}).");
+                        InfoBarHelper.Error(ex, $"{role.Nickname} ({role.Uid})");
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        _logger.LogError(ex, $"Check in with account: {role.Nickname} ({role.Uid}).");
+                        InfoBarHelper.Error(ex, $"{role.Nickname} ({role.Uid})");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Check in but other exception.");
+                InfoBarHelper.Error(ex);
+            }
+            finally
+            {
+                InfoBarHelper.Information("签到结束");
+            }
+        }
+
+
+
+
+        #endregion
+
+
+
+        #region Others
 
 
 
@@ -508,6 +662,7 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+        #endregion
 
 
     }

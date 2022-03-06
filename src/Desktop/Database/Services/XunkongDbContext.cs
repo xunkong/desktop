@@ -40,6 +40,8 @@ namespace Xunkong.Desktop.Services
 
         public DbSet<WebToolItem> WebToolItems { get; set; }
 
+        public DbSet<DailyCheckInItem> DailyCheckInItems { get; set; }
+
 
         public XunkongDbContext(DbContextOptions<XunkongDbContext> options) : base(options)
         {

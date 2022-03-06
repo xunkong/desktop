@@ -1,4 +1,5 @@
-﻿using Xunkong.Core.Hoyolab;
+﻿using Windows.Media.Protection.PlayReady;
+using Xunkong.Core.Hoyolab;
 using Xunkong.Core.SpiralAbyss;
 using Xunkong.Core.TravelRecord;
 using Xunkong.Core.XunkongApi;
@@ -212,9 +213,40 @@ namespace Xunkong.Desktop.Services
 
 
 
-        public async Task<SignInResult> SignInAsync(UserGameRoleInfo role)
+        /// <summary>
+        /// 签到
+        /// </summary>
+        /// <param name="role"></param>
+        /// <returns>true 签到成功，false 无需签到</returns>
+        public async Task<bool> SignInAsync(UserGameRoleInfo role)
         {
-            return await _hoyolabClient.SignInAsync(role);
+            using var ctx = _ctxFactory.CreateDbContext();
+            var localInfo = await ctx.DailyCheckInItems.AsNoTracking().Where(x => x.Uid == role.Uid).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+            if (localInfo != null)
+            {
+                var nowDate = DateTimeOffset.UtcNow.AddHours(8).ToString("yyyy-MM-dd");
+                var signDate = localInfo.Date;
+                if (nowDate == signDate)
+                {
+                    return false;
+                }
+            }
+            var signInfo = await _hoyolabClient.GetSignInInfoAsync(role);
+            bool result = false;
+            if (signInfo.IsSign)
+            {
+                await _hoyolabClient.SignInAsync(role);
+                result = true;
+            }
+            localInfo = new DailyCheckInItem
+            {
+                Uid = role.Uid,
+                Date = signInfo.Today.ToString("yyyy-MM-dd"),
+                Time = DateTimeOffset.Now
+            };
+            ctx.Add(localInfo);
+            await ctx.SaveChangesAsync();
+            return result;
         }
 
 

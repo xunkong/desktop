@@ -38,5 +38,9 @@
 
         public const string DailyNoteNotification_HomeCoinThreshold = nameof(DailyNoteNotification_HomeCoinThreshold);
 
+        public const string DailyCheckInSuccessNotification = nameof(DailyCheckInSuccessNotification);
+
+        public const string DailyCheckInErrorNotification = nameof(DailyCheckInErrorNotification);
+
     }
 }
