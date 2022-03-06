@@ -8,39 +8,35 @@ namespace Xunkong.Desktop.Controls
     internal class CachedImage : ImageEx
     {
 
-
-
-
-        public bool EnableMemoryCache
-        {
-            get { return (bool)GetValue(EnableMemoryCacheProperty); }
-            set { SetValue(EnableMemoryCacheProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for EnableMemoryCache.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty EnableMemoryCacheProperty =
-            DependencyProperty.Register("EnableMemoryCache", typeof(bool), typeof(CachedImage), new PropertyMetadata(false));
-
-
+        [ThreadStatic]
+        private int randomId;
 
 
         static CachedImage()
         {
             ImageCache.Instance.CacheDuration = TimeSpan.FromDays(7);
             ImageCache.Instance.RetryCount = 3;
-            ImageCache.Instance.MaxMemoryCacheCount = 0;
         }
 
 
         protected override async Task<ImageSource> ProvideCachedResourceAsync(Uri imageUri, CancellationToken token)
         {
+            var id = Random.Shared.Next();
+            randomId = id;
             var image = await ImageCache.Instance.GetFromCacheAsync(imageUri, false, token);
             if (image == null)
             {
                 await ImageCache.Instance.RemoveAsync(new[] { imageUri });
                 image = await ImageCache.Instance.GetFromCacheAsync(imageUri, false, token);
             }
-            return image;
+            if (randomId == id)
+            {
+                return image;
+            }
+            else
+            {
+                throw new TaskCanceledException("Image source has changed.");
+            }
         }
 
 

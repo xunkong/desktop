@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Http;
 using Microsoft.UI.Xaml;
+using Microsoft.Windows.AppLifecycle;
 using Serilog;
 using Serilog.Events;
 using System.Text.Encodings.Web;
@@ -19,6 +20,8 @@ namespace Xunkong.Desktop
     /// </summary>
     public partial class App : Application
     {
+
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -51,8 +54,21 @@ namespace Xunkong.Desktop
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        protected override void OnLaunched(LaunchActivatedEventArgs _)
         {
+            var args = AppInstance.GetCurrent().GetActivatedEventArgs();
+            var data = args.Data as Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+            if (data != null)
+            {
+                if (!string.IsNullOrWhiteSpace(data.Arguments))
+                {
+                    LauncheWithArguement(data.Arguments);
+                    return;
+                }
+            }
+#if !DEBUG
+            InitializeAppCenter.Initialize();
+#endif
             m_window = new MainWindow();
             m_window.Activate();
         }
@@ -69,14 +85,11 @@ namespace Xunkong.Desktop
 
 
 
+        #region Configure Services
 
 
         private IServiceProvider ConfigureServiceProvider()
         {
-#if !DEBUG
-            InitializeAppCenter.Initialize();
-#endif
-
             var sc = new ServiceCollection();
 
             ConfigureLogging(sc);
@@ -194,6 +207,9 @@ namespace Xunkong.Desktop
         }
 
 
+        #endregion
+
+
 
         private void InitializeApplicationTheme()
         {
@@ -217,7 +233,8 @@ namespace Xunkong.Desktop
                 jumpList.Items.Clear();
                 if (Environment.OSVersion.Version < new Version(10, 0, 22000, 0))
                 {
-                    var refreshDailyNoteTile = JumpListItem.CreateWithArguments("RefreshDailyNoteTile", "刷新磁贴");
+                    var refreshDailyNoteTile = JumpListItem.CreateWithArguments("dailynote", "刷新便笺磁贴");
+                    refreshDailyNoteTile.Logo = new Uri("ms-appx:///Assets/Images/UI_ItemIcon_210@03059961+8b0e749c.png");
                     jumpList.Items.Add(refreshDailyNoteTile);
                 }
                 await jumpList.SaveAsync();
@@ -229,6 +246,35 @@ namespace Xunkong.Desktop
         }
 
 
+
+
+        private System.Timers.Timer _timer;
+
+
+
+
+        private async void LauncheWithArguement(string arg)
+        {
+            _timer = new(30000);
+            _timer.Elapsed += BackgroundTaskTimeout;
+            _timer.Start();
+            Log.Information($"Launcher argurement: {arg}");
+            var service = ActivatorUtilities.GetServiceOrCreateInstance<BackgroundService>(Services);
+            if (arg == "RefreshDailyNoteTile" || arg == "dailynote")
+            {
+                await service.RefreshDailyNoteTilesAsync();
+            }
+            Log.Information("Task finished, exist.");
+            Exit();
+        }
+
+
+
+        private void BackgroundTaskTimeout(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            Log.Fatal("Background task timeout.");
+            Environment.Exit(-1);
+        }
 
 
 
