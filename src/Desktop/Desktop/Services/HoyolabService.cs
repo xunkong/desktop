@@ -233,7 +233,7 @@ namespace Xunkong.Desktop.Services
             }
             var signInfo = await _hoyolabClient.GetSignInInfoAsync(role);
             bool result = false;
-            if (signInfo.IsSign)
+            if (!signInfo.IsSign)
             {
                 await _hoyolabClient.SignInAsync(role);
                 result = true;

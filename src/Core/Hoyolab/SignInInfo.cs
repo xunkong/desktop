@@ -13,7 +13,7 @@
         /// 今天是...
         /// </summary>
         [JsonPropertyName("today"), JsonConverter(typeof(SignInTodayJsonConverter))]
-        public DateOnly Today { get; set; }
+        public DateTime Today { get; set; }
 
         /// <summary>
         /// 今日是否已签到
@@ -40,24 +40,24 @@
     }
 
 
-    internal class SignInTodayJsonConverter : JsonConverter<DateOnly?>
+    internal class SignInTodayJsonConverter : JsonConverter<DateTime>
     {
-        public override DateOnly? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var value = reader.GetString();
             if (string.IsNullOrWhiteSpace(value))
             {
-                return null;
+                return DateTime.Now;
             }
             else
             {
-                return DateOnly.Parse(value);
+                return DateTime.Parse(value);
             }
         }
 
-        public override void Write(Utf8JsonWriter writer, DateOnly? value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(value?.ToString("yyyy-MM-dd") ?? "");
+            writer.WriteStringValue(value.ToString("yyyy-MM-dd"));
         }
     }
 }
