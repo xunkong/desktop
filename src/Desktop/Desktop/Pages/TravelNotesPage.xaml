@@ -593,7 +593,7 @@
 
                 <!--  获取明细图  -->
                 <charts:SfCartesianChart ColorModel="{StaticResource PrimogemsMoraDotColorModel}"
-                                         Header="获取记录"
+                                         Header="收入记录"
                                          Palette="Custom"
                                          PointerWheelChanged="SfCartesianChart_PointerWheelChanged">
                     <charts:SfCartesianChart.Resources>

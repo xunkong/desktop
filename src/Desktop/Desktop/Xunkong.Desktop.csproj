@@ -51,7 +51,7 @@
 		<PackageReference Include="Microsoft.Windows.CsWinRT" Version="1.5.0" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
-		<PackageReference Include="MiniExcel" Version="1.23.1" />
+		<PackageReference Include="MiniExcel" Version="1.23.2" />
 		<PackageReference Include="Serilog.Expressions" Version="3.3.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
@@ -78,6 +78,9 @@
 
 	<ItemGroup>
 	  <Page Update="Pages\WishlogSummaryPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	  <Page Update="Themes\Generic.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
 	</ItemGroup>

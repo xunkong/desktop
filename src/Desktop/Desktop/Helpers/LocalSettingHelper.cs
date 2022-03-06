@@ -1,4 +1,5 @@
-﻿using Windows.Storage;
+﻿using Serilog;
+using Windows.Storage;
 
 namespace Xunkong.Desktop.Helpers
 {
@@ -32,7 +33,14 @@ namespace Xunkong.Desktop.Helpers
 
         public static void SaveSetting<T>(string key, T value)
         {
-            _container.Values[key] = value;
+            try
+            {
+                _container.Values[key] = value;
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex, $"Save local setting with key {key} value {value}");
+            }
         }
 
 

@@ -7,7 +7,7 @@ namespace Xunkong.Core.XunkongApi
     public enum ChannelType
     {
 
-        [Description("稳定版")]
+        [Description("正式版")]
         Stable = 1,
 
 

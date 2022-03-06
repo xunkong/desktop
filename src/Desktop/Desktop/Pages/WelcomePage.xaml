@@ -14,9 +14,24 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <TextBlock Margin="48,24,0,0"
-                   Style="{ThemeResource TitleTextBlockStyle}"
-                   Text="欢迎使用「寻空」" />
+        <StackPanel Margin="48,24,0,0"
+                    Orientation="Horizontal"
+                    Spacing="16">
+            <TextBlock VerticalAlignment="Center"
+                       Style="{ThemeResource TitleTextBlockStyle}"
+                       Text="欢迎使用「寻空」" />
+            <Image Width="48"
+                   Height="48"
+                   Source="ms-appx:///Assets/Logos/logo.png">
+                <ToolTipService.ToolTip>
+                    <ToolTip Background="Transparent" Placement="Right">
+                        <Image Width="300"
+                               Height="300"
+                               Source="ms-appx:///Assets/Logos/logo.png" />
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+            </Image>
+        </StackPanel>
 
         <ScrollViewer Grid.Row="1">
 
@@ -66,7 +81,7 @@
 
                 <TextBlock />
                 <TextBlock FontSize="24" Text="图标缺失问题" />
-                <TextBlock Text="应用使用了 Windows 11 系统上的图标字体，在 Windows 10 系统上可能会出现乱码问题。" />
+                <TextBlock Text="「寻空」使用了 Windows 11 系统上的图标字体，在 Windows 10 系统上可能会出现乱码问题。" />
                 <TextBlock Text="下行左侧是一个点赞图标，如果不是，您需要安装缺失的字体。" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <SymbolIcon HorizontalAlignment="Left" Symbol="Like" />

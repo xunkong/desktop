@@ -15,6 +15,14 @@
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
       mc:Ignorable="d">
 
+    <Page.Resources>
+        <!--<x:Double x:Key="ToolTipMaxWidth">100</x:Double>-->
+        <Style TargetType="controls:SettingCard">
+            <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+        </Style>
+    </Page.Resources>
+
 
 
     <Grid>
@@ -48,39 +56,64 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Spacing="16">
-                    <!--  关于  -->
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="关于" />
-                    <!--<Grid Padding="16,12,16,12"
-                          Background="{StaticResource CardBackgroundFillColorDefaultBrush}"
-                          BorderBrush="{StaticResource CardStrokeColorDefaultBrush}"
-                          BorderThickness="1"
-                          ColumnSpacing="16"
-                          CornerRadius="4">
+                <StackPanel Spacing="8">
+
+                    <Grid Height="120" ColumnSpacing="16">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <SymbolIcon Grid.Column="0" Symbol="Refresh" />
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center">
-                            <Run Text="版本" />
+                        <Border Grid.RowSpan="2"
+                                Height="120"
+                                HorizontalAlignment="Left"
+                                CornerRadius="8">
+                            <Image Source="ms-appx:///Assets/Logos/LogoWithBackground.png" />
+                            <ToolTipService.ToolTip>
+                                <ToolTip MaxWidth="1000"
+                                         MaxHeight="1000"
+                                         Background="Transparent"
+                                         Placement="Right">
+                                    <Image Width="600" Source="ms-appx:///Assets/Logos/LogoWithBackground.png" />
+                                </ToolTip>
+                            </ToolTipService.ToolTip>
+                        </Border>
+                        <TextBlock Grid.Column="1"
+                                   Margin="0,4,0,0"
+                                   TextWrapping="Wrap">
+                            <Run Text="用爱发电的「原神」辅助工具，觉得好用就给个 Star 吧。（如果有赞助就更好了）" />
+                            <LineBreak />
                             <LineBreak />
                             <Run FontSize="12"
-                                 Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                 Text="{x:Bind AppVersion}" />
+                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                 Text="怎么是派蒙，荧呢？  荧在寻空。" />
                         </TextBlock>
-                        <Button Grid.Column="2" Content="检查更新" />
-                    </Grid>-->
-                    <!--  关于  -->
+                        <StackPanel Grid.Row="1"
+                                    Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    Spacing="8">
+                            <TextBlock Margin="0,0,4,0"
+                                       VerticalAlignment="Center"
+                                       Text="相关链接" />
+                            <HyperlinkButton Content="GitHub 存储库" NavigateUri="https://github.com/Scighost/Xunkong" />
+                            <HyperlinkButton Content="安装包发布页" NavigateUri="https://scighost.coding.net/public-artifacts/xunkong/releases/packages" />
+                            <HyperlinkButton Command="{x:Bind vm.CopyDevelopersMailCommand}" Content="联系开发者" />
+                            <HyperlinkButton Content="赞助开发者" NavigateUri="https://xunkong-1306705684.file.myqcloud.com/download/donate.png" />
+                        </StackPanel>
+                    </Grid>
+                    <!--  版本与外观  -->
+                    <TextBlock />
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="版本与外观" />
+                    <!--  检查更新  -->
                     <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                         <Expander.Header>
                             <Grid>
-                                <StackPanel Padding="0,12,0,12"
-                                            Orientation="Horizontal"
-                                            Spacing="16">
-                                    <SymbolIcon Symbol="Refresh" />
-                                    <TextBlock>
+                                <StackPanel Padding="4,16,0,16" Orientation="Horizontal">
+                                    <SymbolIcon Symbol="Sync" />
+                                    <TextBlock Margin="20,0,0,0">
                                         <Run Text="{x:Bind vm.AppName}" />
                                         <LineBreak />
                                         <Run FontSize="12"
@@ -94,20 +127,17 @@
                             </Grid>
                         </Expander.Header>
                         <Expander.Content>
-                            <StackPanel Margin="0,-16,44,-16">
-                                <Grid>
-                                    <StackPanel Padding="0,12,0,12"
-                                                HorizontalAlignment="Left"
+                            <StackPanel>
+                                <Grid Margin="44,0,44,0">
+                                    <StackPanel HorizontalAlignment="Left"
                                                 Orientation="Horizontal"
                                                 Spacing="16">
-                                        <!--<SymbolIcon Symbol="Refresh" />-->
-                                        <Border Width="20" />
                                         <TextBlock>
                                             <Run Text="更新通道" />
                                             <LineBreak />
                                             <Run FontSize="12"
                                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                 Text="可以选择稳定版、预览版、开发版，但只能从低版本升级至高版本" />
+                                                 Text="正式版享受长期不更，预览版体验更多 Bug 。" />
                                         </TextBlock>
                                     </StackPanel>
                                     <ComboBox HorizontalAlignment="Right"
@@ -125,78 +155,68 @@
                         </Expander.Content>
                     </Expander>
 
-                    <!--  应用模式  -->
-                    <Grid Padding="16,12,60,12"
-                          Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                          BorderThickness="1"
-                          ColumnSpacing="16"
-                          CornerRadius="4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Path Width="20"
-                              Data="M511.728 0c-144.592 4-265.024 54.128-361.312 150.4C54.144 246.704 4 367.152 0 511.744c0 45.296 7.328 88.272 21.984 128.928 14.656 40.64 35.824 76.624 63.472 107.936 27.648 31.312 59.296 55.312 94.944 71.968 35.648 16.64 73.632 24.976 113.936 24.976 40.32 0 79.968-8.992 118.944-26.976 38.976-18 76.128-44.64 111.44-79.968l2-1.984c65.296-81.296 133.6-121.6 204.896-120.944 23.312 0 45.632 3.168 66.96 9.504 21.328 6.32 41.312 13.152 59.968 20.48a435.68 435.68 0 0 0 42.48 14.992c13.664 4 26.48 6 38.48 6 39.968-3.328 64.464-23.328 73.456-59.968 8.992-36.64 12.496-68.304 10.496-94.944-4-144.592-54.144-265.04-150.416-361.312-96.288-96.288-216.72-146.432-361.312-150.416z m427.776 602.672c-6.672 0-15.168-1.664-25.488-4.992a607.584 607.584 0 0 1-33.488-12c-19.984-8-42.48-15.488-67.456-22.48-24.992-7.008-52.144-10.832-81.456-11.504-91.296-0.656-175.904 46.976-253.872 142.928-28.64 28.64-58.464 50.304-89.44 64.96-30.992 14.656-62.48 22-94.464 22-30.64 0-59.632-6.496-86.944-19.504-27.328-12.992-51.984-31.968-73.968-56.96s-38.976-54.144-50.976-87.456c-12-33.312-17.984-68.64-17.984-105.936 3.328-126.608 47.136-232.048 131.424-316.336 84.288-84.288 189.744-128.096 316.336-131.44 126.608 3.344 232.048 47.152 316.32 131.44 84.304 84.288 128.112 189.728 131.44 316.32 0 16-1.168 34.656-3.488 55.984-2.336 21.312-7.84 32.976-16.496 34.976z m-202.88-182.896c0 17.984 6.144 32.976 18.48 44.96 12.32 12 27.488 18 45.472 18s32.976-6 44.976-17.984c12-12 17.984-26.992 17.984-44.976 0-18-5.984-32.992-17.984-44.976-12-12-26.992-18-44.976-18-17.984 0-33.152 6-45.472 18s-18.496 26.976-18.496 44.96z m-343.84-202.896c0.672 18.656 7.008 33.984 18.992 45.968 12 12 26.992 18 44.976 18 18 0 32.992-6 44.976-18 12-12 18-27.152 18-45.472s-6-33.488-18-45.472c-12-12-26.976-18-44.96-18-18 0-32.992 6-44.992 18s-18.32 26.976-18.976 44.96z m215.888 26.976c0 18 6.176 32.992 18.496 44.976 12.32 12 27.488 18 45.472 18 18 0 32.992-6 44.976-18 12-12 18-26.976 18-44.96 0-18-6-32.992-18-44.992s-26.976-17.984-44.96-17.984c-18 0-33.168 6-45.488 17.984-12.32 12-18.496 26.992-18.496 44.976zM226.88 355.808c0.672 17.984 6.992 32.976 18.992 44.96 12 12 27.152 18 45.472 18s33.488-6 45.472-17.984c12-12 18-26.992 18-44.976 0-18-6-32.992-18-44.976-12-12-27.152-18-45.472-18s-33.472 6-45.472 18-18.32 26.976-18.992 44.96z m-44.96 246.864c0.64 27.312 10.144 49.968 28.48 67.968 18.32 17.984 40.96 26.976 67.952 26.976 26.992 0 49.472-8.992 67.472-26.976 17.984-18 26.976-40.64 26.976-67.968 0-27.312-8.992-49.968-26.976-67.968-18-17.984-40.48-26.976-67.472-26.976-26.976 0-49.632 8.992-67.968 26.976-18.32 18-27.808 40.64-28.48 67.968z"
-                              Fill="{ThemeResource TextFillColorPrimaryBrush}"
-                              Stretch="Uniform" />
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center">
-                            <Run Text="应用主题" />
-                            <LineBreak />
-                            <Run FontSize="12"
-                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                 Text="修改后需要重启应用才能生效" />
-                        </TextBlock>
-                        <ComboBox Grid.Column="2" SelectedIndex="{x:Bind vm.SelectedThemeIndex, Mode=TwoWay}">
-                            <ComboBoxItem Content="跟随系统" />
-                            <ComboBoxItem Content="浅色主题" />
-                            <ComboBoxItem Content="深色主题" />
-                        </ComboBox>
-                    </Grid>
+
+                    <!--  应用主题  -->
+                    <controls:SettingCard>
+                        <controls:SettingCard.Icon>
+                            <Path Data="M511.728 0c-144.592 4-265.024 54.128-361.312 150.4C54.144 246.704 4 367.152 0 511.744c0 45.296 7.328 88.272 21.984 128.928 14.656 40.64 35.824 76.624 63.472 107.936 27.648 31.312 59.296 55.312 94.944 71.968 35.648 16.64 73.632 24.976 113.936 24.976 40.32 0 79.968-8.992 118.944-26.976 38.976-18 76.128-44.64 111.44-79.968l2-1.984c65.296-81.296 133.6-121.6 204.896-120.944 23.312 0 45.632 3.168 66.96 9.504 21.328 6.32 41.312 13.152 59.968 20.48a435.68 435.68 0 0 0 42.48 14.992c13.664 4 26.48 6 38.48 6 39.968-3.328 64.464-23.328 73.456-59.968 8.992-36.64 12.496-68.304 10.496-94.944-4-144.592-54.144-265.04-150.416-361.312-96.288-96.288-216.72-146.432-361.312-150.416z m427.776 602.672c-6.672 0-15.168-1.664-25.488-4.992a607.584 607.584 0 0 1-33.488-12c-19.984-8-42.48-15.488-67.456-22.48-24.992-7.008-52.144-10.832-81.456-11.504-91.296-0.656-175.904 46.976-253.872 142.928-28.64 28.64-58.464 50.304-89.44 64.96-30.992 14.656-62.48 22-94.464 22-30.64 0-59.632-6.496-86.944-19.504-27.328-12.992-51.984-31.968-73.968-56.96s-38.976-54.144-50.976-87.456c-12-33.312-17.984-68.64-17.984-105.936 3.328-126.608 47.136-232.048 131.424-316.336 84.288-84.288 189.744-128.096 316.336-131.44 126.608 3.344 232.048 47.152 316.32 131.44 84.304 84.288 128.112 189.728 131.44 316.32 0 16-1.168 34.656-3.488 55.984-2.336 21.312-7.84 32.976-16.496 34.976z m-202.88-182.896c0 17.984 6.144 32.976 18.48 44.96 12.32 12 27.488 18 45.472 18s32.976-6 44.976-17.984c12-12 17.984-26.992 17.984-44.976 0-18-5.984-32.992-17.984-44.976-12-12-26.992-18-44.976-18-17.984 0-33.152 6-45.472 18s-18.496 26.976-18.496 44.96z m-343.84-202.896c0.672 18.656 7.008 33.984 18.992 45.968 12 12 26.992 18 44.976 18 18 0 32.992-6 44.976-18 12-12 18-27.152 18-45.472s-6-33.488-18-45.472c-12-12-26.976-18-44.96-18-18 0-32.992 6-44.992 18s-18.32 26.976-18.976 44.96z m215.888 26.976c0 18 6.176 32.992 18.496 44.976 12.32 12 27.488 18 45.472 18 18 0 32.992-6 44.976-18 12-12 18-26.976 18-44.96 0-18-6-32.992-18-44.992s-26.976-17.984-44.96-17.984c-18 0-33.168 6-45.488 17.984-12.32 12-18.496 26.992-18.496 44.976zM226.88 355.808c0.672 17.984 6.992 32.976 18.992 44.96 12 12 27.152 18 45.472 18s33.488-6 45.472-17.984c12-12 18-26.992 18-44.976 0-18-6-32.992-18-44.976-12-12-27.152-18-45.472-18s-33.472 6-45.472 18-18.32 26.976-18.992 44.96z m-44.96 246.864c0.64 27.312 10.144 49.968 28.48 67.968 18.32 17.984 40.96 26.976 67.952 26.976 26.992 0 49.472-8.992 67.472-26.976 17.984-18 26.976-40.64 26.976-67.968 0-27.312-8.992-49.968-26.976-67.968-18-17.984-40.48-26.976-67.472-26.976-26.976 0-49.632 8.992-67.968 26.976-18.32 18-27.808 40.64-28.48 67.968z"
+                                  Fill="{ThemeResource TextFillColorPrimaryBrush}"
+                                  Stretch="Uniform" />
+                        </controls:SettingCard.Icon>
+                        <controls:SettingCard.Content>
+                            <TextBlock VerticalAlignment="Center">
+                                <Run Text="应用主题" />
+                                <LineBreak />
+                                <Run FontSize="12"
+                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                     Text="白天用还是晚上用？" />
+                            </TextBlock>
+                        </controls:SettingCard.Content>
+                        <controls:SettingCard.Selector>
+                            <ComboBox SelectedIndex="{x:Bind vm.SelectedThemeIndex, Mode=TwoWay}">
+                                <ComboBoxItem Content="跟随系统" />
+                                <ComboBoxItem Content="浅色模式" />
+                                <ComboBoxItem Content="深色模式" />
+                            </ComboBox>
+                        </controls:SettingCard.Selector>
+                    </controls:SettingCard>
 
                     <!--  不显示背景图  -->
-                    <Grid Padding="16,12,60,12"
-                          Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                          BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
-                          BorderThickness="1"
-                          ColumnSpacing="16"
-                          CornerRadius="4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Path Width="20"
-                              Data="M128.299 128C92.788 128 64 156.788 64 192.299v639.4C64 867.212 92.788 896 128.299 896H895.7c35.512 0 64.3-28.788 64.3-64.299V192.299C960 156.788 931.212 128 895.701 128H128.299zM128 588.313l178.162-178.162c24.795-24.795 64.996-24.795 89.792 0L817.803 832H128V588.313z m768 231.375L666.385 590.073l64.718-64.718c25.153-25.152 65.933-25.152 91.085 0L896 599.167v220.521zM694.65 471.299l-73.519 73.519L432.653 356.34c-45.064-45.064-118.127-45.064-163.19 0L128 497.803V192h768v316.657l-37.358-37.358c-45.286-45.285-118.707-45.285-163.992 0z"
-                              Fill="{ThemeResource TextFillColorPrimaryBrush}"
-                              Stretch="Uniform" />
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center">
-                            <Run Text="不显示背景图" />
-                            <LineBreak />
-                            <Run FontSize="12"
-                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                 Text="修改后需要重启应用才能生效" />
-                        </TextBlock>
-                        <ToggleSwitch Grid.Column="2"
-                                      Margin="0,0,-48,0"
-                                      IsOn="{x:Bind vm.DisableBackgroundWallpaper, Mode=TwoWay}" />
-                    </Grid>
+                    <controls:SettingCard>
+                        <controls:SettingCard.Icon>
+                            <Path Data="M128.299 128C92.788 128 64 156.788 64 192.299v639.4C64 867.212 92.788 896 128.299 896H895.7c35.512 0 64.3-28.788 64.3-64.299V192.299C960 156.788 931.212 128 895.701 128H128.299zM128 588.313l178.162-178.162c24.795-24.795 64.996-24.795 89.792 0L817.803 832H128V588.313z m768 231.375L666.385 590.073l64.718-64.718c25.153-25.152 65.933-25.152 91.085 0L896 599.167v220.521zM694.65 471.299l-73.519 73.519L432.653 356.34c-45.064-45.064-118.127-45.064-163.19 0L128 497.803V192h768v316.657l-37.358-37.358c-45.286-45.285-118.707-45.285-163.992 0z"
+                                  Fill="{ThemeResource TextFillColorPrimaryBrush}"
+                                  Stretch="Uniform" />
+                        </controls:SettingCard.Icon>
+                        <controls:SettingCard.Content>
+                            <TextBlock Grid.Column="1" VerticalAlignment="Center">
+                                <Run Text="不显示每日一图" />
+                                <LineBreak />
+                                <Run FontSize="12"
+                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                     Text="虽然无法设计出美观的界面，但是挑选好看的图片还是没问题。" />
+                            </TextBlock>
+                        </controls:SettingCard.Content>
+                        <controls:SettingCard.Selector>
+                            <ToggleSwitch IsOn="{x:Bind vm.DisableBackgroundWallpaper, Mode=TwoWay}" Style="{ThemeResource RightAlignToggleSwitchStyle}" />
+                        </controls:SettingCard.Selector>
+                    </controls:SettingCard>
 
-                    <!--  小工具  -->
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="小工具" />
+                    <!--  功能  -->
+                    <TextBlock />
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="功能" />
+                    <!--  网页小工具  -->
                     <Expander Name="_Expander_WebTool"
                               HorizontalAlignment="Stretch"
                               HorizontalContentAlignment="Stretch"
                               Collapsed="_Expander_WebTool_Collapsed">
                         <Expander.Header>
-                            <StackPanel Padding="0,12,0,12"
-                                        Orientation="Horizontal"
-                                        Spacing="16">
+                            <StackPanel Padding="4,16,0,16" Orientation="Horizontal">
                                 <SymbolIcon Symbol="Globe" />
-                                <TextBlock>
-                                    <!--  不知道为什么要空一格才能和下行文字对齐  -->
-                                    <Run Text="网页小工具" /><LineBreak /><Run FontSize="12"
+                                <TextBlock Margin="20,0,0,0">
+                                    <Run Text="网页小工具" />
+                                    <LineBreak />
+                                    <Run FontSize="12"
                                          Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                          Text="在左侧导航栏中添加网页小工具" />
                                 </TextBlock>
@@ -268,88 +288,65 @@
                     </Expander>
 
                     <!--  后台任务  -->
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="后台任务" />
                     <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                         <Expander.Header>
                             <Grid>
-                                <StackPanel Padding="0,12,0,12"
-                                            Orientation="Horizontal"
-                                            Spacing="16">
+                                <StackPanel Padding="4,16,0,16" Orientation="Horizontal">
                                     <SymbolIcon Symbol="Clock" />
-                                    <TextBlock Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Margin="20,0,0,0">
                                         <Run Text="实时便笺定时刷新及提醒通知" />
                                         <LineBreak />
                                         <Run FontSize="12"
                                              Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                             Text="每16分钟刷新一次实时便笺磁贴" />
+                                             Text="每16分钟刷新一次实时便笺磁贴（Win10 特供）" />
                                     </TextBlock>
                                 </StackPanel>
-                                <ToggleSwitch Margin="0,0,-44,0"
-                                              HorizontalAlignment="Right"
+                                <ToggleSwitch HorizontalAlignment="Right"
                                               IsOn="{x:Bind vm.IsRegisterDailyNoteTask, Mode=TwoWay}"
-                                              OffContent="已停止"
-                                              OnContent="已启用" />
+                                              Style="{ThemeResource RightAlignToggleSwitchStyle}" />
                             </Grid>
                         </Expander.Header>
                         <Expander.Content>
                             <StackPanel Margin="0,-16,44,-16">
-                                <Grid>
-                                    <StackPanel Padding="0,12,0,12"
-                                                HorizontalAlignment="Left"
-                                                Orientation="Horizontal"
-                                                Spacing="16">
-                                        <Border Width="20" />
-                                        <TextBlock>
-                                            <Run Text="提醒通知" />
-                                            <LineBreak />
-                                            <Run FontSize="12"
-                                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                 Text="原粹树脂或洞天宝钱超过阈值时，使用系统通知提醒您" />
-                                        </TextBlock>
-                                    </StackPanel>
-                                    <ToggleSwitch Margin="0,0,-44,0"
-                                                  HorizontalAlignment="Right"
-                                                  VerticalAlignment="Center"
+                                <Grid Padding="44,12,0,12">
+
+                                    <TextBlock>
+                                        <Run Text="提醒通知" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="原粹树脂或洞天宝钱超过阈值时，使用系统通知提醒您（Win11 也能用）" />
+                                    </TextBlock>
+                                    <ToggleSwitch HorizontalAlignment="Right"
                                                   IsOn="{x:Bind vm.EnableDailyNoteNotification, Mode=TwoWay}"
                                                   OffContent="已停止"
-                                                  OnContent="已启用" />
+                                                  OnContent="已启用"
+                                                  Style="{ThemeResource RightAlignToggleSwitchStyle}" />
                                 </Grid>
-                                <Grid>
-                                    <StackPanel Padding="0,12,0,12"
-                                                HorizontalAlignment="Left"
-                                                Orientation="Horizontal"
-                                                Spacing="16">
-                                        <Border Width="20" />
-                                        <TextBlock>
-                                            <Run Text="关闭日志功能" />
-                                            <LineBreak />
-                                            <Run FontSize="12"
-                                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                 Text="没有日志会丢失错误信息，不建议关闭后台任务的日志功能" />
-                                        </TextBlock>
-                                    </StackPanel>
-                                    <ToggleSwitch Margin="0,0,-44,0"
-                                                  HorizontalAlignment="Right"
-                                                  VerticalAlignment="Center"
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock>
+                                        <Run Text="关闭日志功能" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="没有日志会丢失错误信息，不建议关闭后台任务的日志功能" />
+                                    </TextBlock>
+                                    <ToggleSwitch HorizontalAlignment="Right"
                                                   IsOn="{x:Bind vm.DisableBackgroundTaskOutputLog, Mode=TwoWay}"
                                                   OffContent="未关闭"
-                                                  OnContent="已关闭" />
+                                                  OnContent="已关闭"
+                                                  Style="{ThemeResource RightAlignToggleSwitchStyle}" />
                                 </Grid>
                                 <MenuFlyoutSeparator />
-                                <Grid>
-                                    <StackPanel Padding="0,12,0,12"
-                                                HorizontalAlignment="Left"
-                                                Orientation="Horizontal"
-                                                Spacing="16">
-                                        <Border Width="20" />
-                                        <TextBlock>
-                                            <Run Text="原粹树脂提醒阈值" />
-                                            <LineBreak />
-                                            <Run FontSize="12"
-                                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                 Text="原粹树脂达到此值，且上一次刷新时未达到时，发送系统通知" />
-                                        </TextBlock>
-                                    </StackPanel>
+                                <Grid Padding="44,12,0,12">
+
+                                    <TextBlock>
+                                        <Run Text="原粹树脂提醒阈值" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="原粹树脂达到此值，且上一次刷新时未达到，发送系统通知" />
+                                    </TextBlock>
                                     <NumberBox Width="120"
                                                HorizontalAlignment="Right"
                                                VerticalAlignment="Center"
@@ -357,20 +354,14 @@
                                                SpinButtonPlacementMode="Compact"
                                                Value="{x:Bind vm.DailyNoteNotification_ResinThreshold, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                 </Grid>
-                                <Grid>
-                                    <StackPanel Padding="0,12,0,12"
-                                                HorizontalAlignment="Left"
-                                                Orientation="Horizontal"
-                                                Spacing="16">
-                                        <Border Width="20" />
-                                        <TextBlock>
-                                            <Run Text="洞天宝钱提醒阈值" />
-                                            <LineBreak />
-                                            <Run FontSize="12"
-                                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                 Text="通天宝钱使用相对阈值" />
-                                        </TextBlock>
-                                    </StackPanel>
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock>
+                                        <Run Text="洞天宝钱提醒阈值" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="通天宝钱使用相对阈值" />
+                                    </TextBlock>
                                     <NumberBox Name="_NumberBox_HomeCoinThreshold"
                                                Width="120"
                                                HorizontalAlignment="Right"
@@ -384,8 +375,9 @@
                     </Expander>
 
 
-                    <!--  临时功能  -->
-                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="临时功能" />
+                    <!--  其他  -->
+                    <TextBlock />
+                    <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="其他" />
                     <TextBlock FontSize="12"
                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                Text="点击下面的按钮可以把相关信息保存到本地，供以后分析使用" />

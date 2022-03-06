@@ -140,7 +140,7 @@ namespace Xunkong.Desktop.Helpers
 
 
 
-        public static void ShowWithButton(InfoBarSeverity severity, string? title, string? message, string buttonContent, RoutedEventHandler handler, int delay = 0)
+        public static void ShowWithButton(InfoBarSeverity severity, string? title, string? message, string buttonContent, RoutedEventHandler buttonHandler, int delay = 0)
         {
             _container.DispatcherQueue.TryEnqueue(async () =>
             {
@@ -150,7 +150,7 @@ namespace Xunkong.Desktop.Helpers
                     HorizontalAlignment = HorizontalAlignment.Right,
                     Style = Application.Current.Resources["DateTimePickerFlyoutButtonStyle"] as Style,
                 };
-                button.Click += handler;
+                button.Click += buttonHandler;
                 var infoBar = new InfoBar
                 {
                     Severity = severity,

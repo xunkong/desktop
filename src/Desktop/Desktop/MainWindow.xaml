@@ -21,14 +21,27 @@
                               IsHitTestVisible="False"
                               Stretch="UniformToFill" />
 
-        <Rectangle Fill="{ThemeResource ControlOnImageFillColorDefaultBrush}" IsHitTestVisible="False" />
+        <Rectangle x:Name="_onImageBackgroud"
+                   Fill="{ThemeResource ControlOnImageFillColorDefaultBrush}"
+                   IsHitTestVisible="False">
+            <Rectangle.OpacityTransition>
+                <ScalarTransition />
+            </Rectangle.OpacityTransition>
+        </Rectangle>
 
-        <views:WindowRootView x:Name="_rootView" />
+        <views:WindowRootView x:Name="_rootView">
+            <views:WindowRootView.OpacityTransition>
+                <ScalarTransition />
+            </views:WindowRootView.OpacityTransition>
+        </views:WindowRootView>
 
         <StackPanel Name="_InfoBarContainer"
                     MaxWidth="600"
                     Margin="24,72,24,72"
                     VerticalAlignment="Bottom">
+            <StackPanel.OpacityTransition>
+                <ScalarTransition />
+            </StackPanel.OpacityTransition>
             <StackPanel.Transitions>
                 <AddDeleteThemeTransition />
             </StackPanel.Transitions>
@@ -38,7 +51,11 @@
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
                 Style="{ThemeResource WindowChromeStyle}"
-                Tapped="_chromeButton_Tapped" />
+                Tapped="_chromeButton_Tapped">
+            <Button.OpacityTransition>
+                <ScalarTransition />
+            </Button.OpacityTransition>
+        </Button>
 
     </Grid>
 

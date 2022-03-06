@@ -1,9 +1,11 @@
 ﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Vanara.PInvoke;
 using WinRT.Interop;
 using Xunkong.Core.XunkongApi;
+using System.Reflection;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -41,6 +43,10 @@ namespace Xunkong.Desktop
             Hwnd = WindowNative.GetWindowHandle(this);
             InitializeWindowSize();
             WeakReferenceMessenger.Default.Register<WallpaperInfo>(this, (_, e) => ChangeBackgroundWallpaper(e));
+            WeakReferenceMessenger.Default.Register<ChangeApplicationThemeMessage>(this, (_, e) => ChangeApplicationTheme(e.ThemeIndex));
+            WeakReferenceMessenger.Default.Register<DisableBackgroundWallpaperMessage>(this, (_, e) => DisableBackgroundWallpaper(e.Disabled));
+            WeakReferenceMessenger.Default.Register<HideElementMessage>(this, (_, e) => HideUIElement(e.HideElement));
+            WeakReferenceMessenger.Default.Register<ResizeWindowToImageMessage>(this, (_, _) => ResizeWindowToImage());
         }
 
 
@@ -56,15 +62,7 @@ namespace Xunkong.Desktop
             var rect = new RECT(left, top, right, bottom);
             if (rect.Width * rect.Height == 0)
             {
-                var dpi = User32.GetDpiForWindow(Hwnd);
-                float scale = dpi / 72;
-                var XLength = User32.GetSystemMetrics(User32.SystemMetric.SM_CXSCREEN);
-                var YLength = User32.GetSystemMetrics(User32.SystemMetric.SM_CYSCREEN);
-                var width = (int)(1280 * scale);
-                var height = (int)(720 * scale);
-                var x = (XLength - width) / 2;
-                var y = (YLength - height) / 2;
-                rect = new RECT(x, y, x + width, y + height);
+                return;
             }
             var wp = new User32.WINDOWPLACEMENT
             {
@@ -73,6 +71,7 @@ namespace Xunkong.Desktop
                 ptMaxPosition = new System.Drawing.Point(-1, -1),
                 rcNormalPosition = rect,
             };
+
             User32.SetWindowPlacement(Hwnd, ref wp);
             User32.SetWindowText(Hwnd, XunkongEnvironment.AppName);
         }
@@ -140,6 +139,112 @@ namespace Xunkong.Desktop
                 }
             });
             _logger.LogInformation($"Change background image:\n{image.Url}");
+        }
+
+
+
+        private void ChangeApplicationTheme(int themeIndex)
+        {
+            var theme = themeIndex switch
+            {
+                1 => ElementTheme.Light,
+                2 => ElementTheme.Dark,
+                _ => ElementTheme.Default,
+            };
+            _onImageBackgroud.RequestedTheme = theme;
+            _rootView.RequestedTheme = theme;
+            _InfoBarContainer.RequestedTheme = theme;
+            _chromeButton.RequestedTheme = theme;
+        }
+
+
+        private void DisableBackgroundWallpaper(bool disabled)
+        {
+            if (disabled)
+            {
+                _Image_Background.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                _Image_Background.Visibility = Visibility.Visible;
+            }
+        }
+
+
+        private void HideUIElement(bool hide)
+        {
+            if (hide)
+            {
+                _onImageBackgroud.Opacity = 0;
+                _InfoBarContainer.Opacity = 0;
+                _chromeButton.Opacity = 0;
+                _rootView.Opacity = 0;
+            }
+            else
+            {
+                _onImageBackgroud.Opacity = 1;
+                _InfoBarContainer.Opacity = 1;
+                _chromeButton.Opacity = 1;
+                _rootView.Opacity = 1;
+            }
+        }
+
+
+        private void ResizeWindowToImage()
+        {
+            var image = _Image_Background.GetType().GetProperty("Image", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(_Image_Background) as Image;
+            var source = image?.Source as BitmapImage;
+            if (source is null)
+            {
+                return;
+            }
+            var imageHeight = source.PixelHeight;
+            var imageWidth = source.PixelWidth;
+            if (imageHeight * imageWidth == 0)
+            {
+                return;
+            }
+            var wp = new User32.WINDOWPLACEMENT();
+            User32.GetWindowPlacement(Hwnd, ref wp);
+            var imageWidthDivHeight = (double)imageWidth / imageHeight;
+            var windowWidthDivHeight = (double)wp.rcNormalPosition.Width / wp.rcNormalPosition.Height;
+            User32.SystemParametersInfo<RECT>(User32.SPI.SPI_GETWORKAREA, out var workerArea);
+            var XLength = workerArea.Width;
+            var YLength = workerArea.Height;
+            double width, height;
+            if (windowWidthDivHeight > imageWidthDivHeight)
+            {
+                // 宽不变，高变大
+                width = wp.rcNormalPosition.Width;
+                height = width / imageWidthDivHeight;
+            }
+            else
+            {
+                // 高不变，宽变大
+                height = wp.rcNormalPosition.Height;
+                width = height * imageWidthDivHeight;
+            }
+            // 超出屏幕范围，则缩小至适应屏幕
+            if (width > XLength || height > YLength)
+            {
+                var screenWidthDivHeight = (double)XLength / YLength;
+                if (screenWidthDivHeight > imageWidthDivHeight)
+                {
+                    height = YLength;
+                    width = height * imageWidthDivHeight;
+                }
+                else
+                {
+                    width = XLength;
+                    height = width / imageWidthDivHeight;
+                }
+            }
+            var x = (XLength - width) / 2 + workerArea.X;
+            var y = (YLength - height) / 2 + workerArea.Y;
+            var rect = new RECT((int)x, (int)y, (int)(x + width), (int)(y + height));
+            wp.showCmd = ShowWindowCommand.SW_SHOWNORMAL;
+            wp.rcNormalPosition = rect;
+            User32.SetWindowPlacement(Hwnd, ref wp);
         }
 
 

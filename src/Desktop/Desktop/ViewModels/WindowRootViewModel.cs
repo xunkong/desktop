@@ -32,6 +32,7 @@ namespace Xunkong.Desktop.ViewModels
             _userSettingService = userSettingService;
             _hoyolabService = hoyolabService;
             _xunkongApiService = xunkongApiService;
+            WeakReferenceMessenger.Default.Register<DisableBackgroundWallpaperMessage>(this, (_, e) => DisableBackgroundWallpaper(e.Disabled));
         }
 
 
@@ -55,15 +56,30 @@ namespace Xunkong.Desktop.ViewModels
 
         public async void CheckVersionUpdateAsync()
         {
-            if (XunkongEnvironment.Channel == ChannelType.Development)
+            if (XunkongEnvironment.Channel != ChannelType.Development)
             {
                 try
                 {
                     var version = await _xunkongApiService.CheckUpdateAsync(ChannelType.Development);
-                    if (version.Version > XunkongEnvironment.AppVersion && !string.IsNullOrWhiteSpace(version.PackageUrl))
+                    Version.TryParse(LocalSettingHelper.GetSetting<string>("LastTestUpdateVersion"), out var lastVersion);
+                    if (version.Version > XunkongEnvironment.AppVersion && version.Version > lastVersion)
                     {
-                        RoutedEventHandler eventHandler = (_, _) => Process.Start(new ProcessStartInfo { FileName = version.PackageUrl, UseShellExecute = true, });
-                        InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, $"新版本 {version.Version}", version.Abstract, "下载", eventHandler);
+                        var button = new Button
+                        {
+                            Content = "下载",
+                            HorizontalAlignment = HorizontalAlignment.Right,
+                            Style = Application.Current.Resources["DateTimePickerFlyoutButtonStyle"] as Style,
+                        };
+                        button.Click += (_, _) => Process.Start(new ProcessStartInfo { FileName = version.PackageUrl, UseShellExecute = true, });
+                        var infobar = new InfoBar
+                        {
+                            Severity = InfoBarSeverity.Success,
+                            Title = $"新版本 {version.Version}",
+                            Message = version.Abstract,
+                            IsOpen = true,
+                        };
+                        infobar.Closed += (_, _) => LocalSettingHelper.SaveSetting("LastTestUpdateVersion", version.Version.ToString());
+                        InfoBarHelper.Show(infobar);
                     }
                 }
                 catch (Exception ex)
@@ -155,6 +171,23 @@ namespace Xunkong.Desktop.ViewModels
                 InfoBarHelper.Error(ex);
             }
         }
+
+
+        [ICommand]
+        private void ResizeWindowToImage()
+        {
+            WeakReferenceMessenger.Default.Send(new ResizeWindowToImageMessage());
+        }
+
+
+        private async void DisableBackgroundWallpaper(bool disabled)
+        {
+            if (!disabled && BackgroundWallpaper is null)
+            {
+                await ChangeBackgroundWallpaperAsync(0, true);
+            }
+        }
+
 
 
 

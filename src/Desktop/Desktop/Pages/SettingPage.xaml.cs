@@ -13,7 +13,7 @@ namespace Xunkong.Desktop.Pages
     {
 
 
-        private string AppVersion => XunkongEnvironment.AppVersion.ToString(4);
+        private string AppVersion => XunkongEnvironment.AppVersion.ToString(3);
 
         private SettingViewModel vm => (DataContext as SettingViewModel)!;
 
@@ -49,7 +49,6 @@ namespace Xunkong.Desktop.Pages
             formatter.NumberRounder = rounder;
             _NumberBox_HomeCoinThreshold.NumberFormatter = formatter;
         }
-
 
 
 

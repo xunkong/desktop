@@ -41,6 +41,7 @@ namespace Xunkong.Desktop.Views
         {
             WeakReferenceMessenger.Default.Register<RefreshWebToolNavItemMessage>(this, async (_, _) => await RefreshWebToolNavItemAsync());
             WeakReferenceMessenger.Default.Register<NavigateMessage>(this, (_, m) => NavigateTo(m));
+            WeakReferenceMessenger.Default.Register<DisableBackgroundWallpaperMessage>(this, (_, m) => DisableBackgroundWallpaper(m.Disabled));
             WeakReferenceMessenger.Default.Register<OpenOrCloseNavigationPaneMessage>(this, (_, _) =>
             {
                 _NavigationView.IsPaneOpen = !_NavigationView.IsPaneOpen;
@@ -94,7 +95,7 @@ namespace Xunkong.Desktop.Views
             Thickness currMargin = _appTitleBar.Margin;
             if (sender.DisplayMode == NavigationViewDisplayMode.Minimal)
             {
-                _appTitleBar.Margin = new Thickness((sender.CompactPaneLength * 2), currMargin.Top, currMargin.Right, currMargin.Bottom);
+                _appTitleBar.Margin = new Thickness(sender.CompactPaneLength * 2, currMargin.Top, currMargin.Right, currMargin.Bottom);
                 _NavigationView.IsPaneToggleButtonVisible = true;
             }
             else
@@ -102,18 +103,18 @@ namespace Xunkong.Desktop.Views
                 _appTitleBar.Margin = new Thickness(sender.CompactPaneLength, currMargin.Top, currMargin.Right, currMargin.Bottom);
                 _NavigationView.IsPaneToggleButtonVisible = false;
             }
-            UpdateAppTitleMargin(sender);
+            //UpdateAppTitleMargin(sender);
         }
 
 
         private void _NavigationView_PaneOpening(NavigationView sender, object args)
         {
-            UpdateAppTitleMargin(sender);
+            //UpdateAppTitleMargin(sender);
         }
 
         private void _NavigationView_PaneClosing(NavigationView sender, NavigationViewPaneClosingEventArgs args)
         {
-            UpdateAppTitleMargin(sender);
+            //UpdateAppTitleMargin(sender);
         }
 
         private void UpdateAppTitleMargin(NavigationView sender)
@@ -349,6 +350,40 @@ namespace Xunkong.Desktop.Views
                 }
             }
         }
+
+
+
+        private void DisableBackgroundWallpaper(bool disabled)
+        {
+            if (disabled)
+            {
+                _PaneFooter_BackgroundWallpaper.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                _PaneFooter_BackgroundWallpaper.Visibility = Visibility.Visible;
+            }
+        }
+
+
+        private bool enableHideElement;
+
+        private async void _Button_ResizeWindow_PointerEntered(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            enableHideElement = true;
+            await Task.Delay(300);
+            if (enableHideElement)
+            {
+                WeakReferenceMessenger.Default.Send(new HideElementMessage(true));
+            }
+        }
+
+        private void _Button_ResizeWindow_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            enableHideElement = false;
+            WeakReferenceMessenger.Default.Send(new HideElementMessage(false));
+        }
+
     }
 
 

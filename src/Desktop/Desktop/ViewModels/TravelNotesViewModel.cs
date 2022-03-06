@@ -171,17 +171,17 @@ namespace Xunkong.Desktop.ViewModels
                     var month = now.Month;
                     var primogemsAddCount = await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Primogems);
                     var moraAddCount = await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Mora);
-                    InfoBarHelper.Success($"{role.Nickname} 的 {month} 月旅行札记新增原石记录 {primogemsAddCount} 条、摩拉记录 {moraAddCount} 条", 10000);
+                    InfoBarHelper.Success($"{role.Nickname} 的 {month} 月旅行札记新增原石收入记录 {primogemsAddCount} 条、摩拉收入记录 {moraAddCount} 条", 10000);
                     if (!onlyCurrentMonth)
                     {
                         month = now.AddMonths(-1).Month;
                         await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Primogems);
                         await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Mora);
-                        InfoBarHelper.Success($"{role.Nickname} 的 {month} 月旅行札记新增原石记录 {primogemsAddCount} 条、摩拉记录 {moraAddCount} 条", 10000);
+                        InfoBarHelper.Success($"{role.Nickname} 的 {month} 月旅行札记新增原石收入记录 {primogemsAddCount} 条、摩拉收入记录 {moraAddCount} 条", 10000);
                         month = now.AddMonths(-2).Month;
                         await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Primogems);
                         await _hoyolabService.GetTravelRecordDetailAsync(role, month, TravelRecordAwardType.Mora);
-                        InfoBarHelper.Success($"{role.Nickname} 的 {month} 月旅行札记新增原石记录 {primogemsAddCount} 条、摩拉记录 {moraAddCount} 条", 10000);
+                        InfoBarHelper.Success($"{role.Nickname} 的 {month} 月旅行札记新增原石收入记录 {primogemsAddCount} 条、摩拉收入记录 {moraAddCount} 条", 10000);
                     }
                 }
             }

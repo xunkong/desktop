@@ -37,7 +37,7 @@
                                Text="{x:Bind vm.BackgroundWallpaper.Id}" />
                 </Grid>
                 <MenuFlyoutSeparator />
-                <TextBlock Grid.Column="1">
+                <TextBlock Grid.Column="1" TextWrapping="Wrap">
                     <Run FontSize="14" Text="{x:Bind vm.BackgroundWallpaper.Title}" />
                     <LineBreak />
                     <Run FontSize="12"
@@ -157,17 +157,20 @@
                                      Text="{x:Bind vm.BackgroundWallpaper.Author}" />
                             </TextBlock>
                             <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                <Button Name="_Button_ResizeWindow"
+                                        Command="{x:Bind vm.ResizeWindowToImageCommand, Mode=OneTime}"
+                                        Content="&#xE740;"
+                                        FontSize="16"
+                                        PointerEntered="_Button_ResizeWindow_PointerEntered"
+                                        PointerExited="_Button_ResizeWindow_PointerExited"
+                                        Style="{ThemeResource WallpaperPanelButtonStyle}"
+                                        ToolTipService.ToolTip="调整窗口大小适应图片" />
                                 <Button Command="{x:Bind vm.ChangeBackgroundWallpaperCommand, Mode=OneTime}"
                                         CommandParameter="random"
                                         Content="&#xE895;"
                                         FontSize="14"
                                         Style="{ThemeResource WallpaperPanelButtonStyle}"
-                                        ToolTipService.ToolTip="切换背景图（随机的哦" />
-                                <Button Command="{x:Bind vm.SaveBackgroundWallpaperCommand, Mode=OneTime}"
-                                        Content="&#xE74E;"
-                                        FontSize="16"
-                                        Style="{ThemeResource WallpaperPanelButtonStyle}"
-                                        ToolTipService.ToolTip="保存到本地" />
+                                        ToolTipService.ToolTip="随机切换一张" />
                                 <Button Content="&#xE76C;"
                                         Flyout="{StaticResource WallpaperInfoFlyout}"
                                         FontSize="14"
@@ -180,7 +183,8 @@
                                 Height="36"
                                 Margin="4,0,0,5"
                                 Flyout="{StaticResource WallpaperInfoFlyout}"
-                                Style="{ThemeResource DateTimePickerFlyoutButtonStyle}">
+                                Style="{ThemeResource DateTimePickerFlyoutButtonStyle}"
+                                ToolTipService.ToolTip="每日一图">
                             <Path Width="16"
                                   HorizontalAlignment="Center"
                                   Data="M128.299 128C92.788 128 64 156.788 64 192.299v639.4C64 867.212 92.788 896 128.299 896H895.7c35.512 0 64.3-28.788 64.3-64.299V192.299C960 156.788 931.212 128 895.701 128H128.299zM128 588.313l178.162-178.162c24.795-24.795 64.996-24.795 89.792 0L817.803 832H128V588.313z m768 231.375L666.385 590.073l64.718-64.718c25.153-25.152 65.933-25.152 91.085 0L896 599.167v220.521zM694.65 471.299l-73.519 73.519L432.653 356.34c-45.064-45.064-118.127-45.064-163.19 0L128 497.803V192h768v316.657l-37.358-37.358c-45.286-45.285-118.707-45.285-163.992 0z"
@@ -217,13 +221,17 @@
                     Height="{Binding ElementName=_NavigationView, Path=CompactPaneLength}"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top">
-                <Grid>
-                    <TextBlock x:Name="AppTitle"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
+                <StackPanel x:Name="AppTitle"
+                            HorizontalAlignment="Left"
+                            Orientation="Horizontal"
+                            Spacing="16">
+                    <!--<Image Width="20"
+                           Height="20"
+                           Source="{StaticResource LogoImage}" />-->
+                    <TextBlock VerticalAlignment="Center"
                                Style="{ThemeResource CaptionTextBlockStyle}"
                                Text="{x:Bind GetAppTitleFromPackage()}" />
-                </Grid>
+                </StackPanel>
             </Border>
 
 

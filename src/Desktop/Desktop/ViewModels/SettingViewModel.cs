@@ -2,7 +2,11 @@
 using CommunityToolkit.WinUI.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Vanara.PInvoke;
 using Windows.ApplicationModel.Background;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage.Streams;
+using Windows.Storage;
 using Xunkong.Core.XunkongApi;
 
 namespace Xunkong.Desktop.ViewModels
@@ -106,7 +110,7 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
-        public List<ChannelType> ChannelTypeList { get; set; } = Enum.GetValues<ChannelType>().Take(3).ToList();
+        public List<ChannelType> ChannelTypeList { get; set; } = Enum.GetValues<ChannelType>().Take(XunkongEnvironment.Channel == ChannelType.Development ? 3 : 2).ToList();
 
 
 
@@ -150,6 +154,7 @@ namespace Xunkong.Desktop.ViewModels
             set
             {
                 LocalSettingHelper.SaveSetting(SettingKeys.ApplicationTheme, value);
+                WeakReferenceMessenger.Default.Send(new ChangeApplicationThemeMessage(value));
                 SetProperty(ref _SelectedThemeIndex, value);
             }
         }
@@ -163,6 +168,7 @@ namespace Xunkong.Desktop.ViewModels
             set
             {
                 LocalSettingHelper.SaveSetting(SettingKeys.DisableBackgroundWallpaper, value);
+                WeakReferenceMessenger.Default.Send(new DisableBackgroundWallpaperMessage(value));
                 SetProperty(ref _DisableBackgroundWallpaper, value);
             }
         }
@@ -488,6 +494,17 @@ namespace Xunkong.Desktop.ViewModels
                 _logger.LogError(ex, "ClearImageCacheAsync.");
                 InfoBarHelper.Error(ex);
             }
+        }
+
+
+        [ICommand]
+        private void CopyDevelopersMail()
+        {
+            var data = new DataPackage();
+            data.RequestedOperation = DataPackageOperation.Copy;
+            data.SetText("scighost@outlook.com");
+            Clipboard.SetContent(data);
+            InfoBarHelper.Success("已复制开发者的邮件（如果没收到回复，可能是被识别为垃圾邮件了）", 5000);
         }
 
 

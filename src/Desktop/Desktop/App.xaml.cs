@@ -4,6 +4,7 @@ using Serilog;
 using Serilog.Events;
 using System.Text.Encodings.Web;
 using Windows.Storage;
+using Windows.UI.StartScreen;
 using Xunkong.Core.Hoyolab;
 using Xunkong.Core.Wish;
 using Xunkong.Core.XunkongApi;
@@ -28,6 +29,7 @@ namespace Xunkong.Desktop
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Services = ConfigureServiceProvider();
             InitializeApplicationTheme();
+            InitializeJumpList();
             this.InitializeComponent();
         }
 
@@ -64,6 +66,8 @@ namespace Xunkong.Desktop
 
 
         public IServiceProvider Services { get; private set; }
+
+
 
 
 
@@ -205,20 +209,22 @@ namespace Xunkong.Desktop
         }
 
 
-        private bool CheckUserDataPath()
+        private async void InitializeJumpList()
         {
-            var userDataPath = LocalSettingHelper.GetSetting<string>(SettingKeys.UserDataPath);
-            if (string.IsNullOrWhiteSpace(userDataPath))
+            try
             {
-                return false;
+                var jumpList = await JumpList.LoadCurrentAsync();
+                jumpList.Items.Clear();
+                if (Environment.OSVersion.Version < new Version(10, 0, 22000, 0))
+                {
+                    var refreshDailyNoteTile = JumpListItem.CreateWithArguments("RefreshDailyNoteTile", "刷新磁贴");
+                    jumpList.Items.Add(refreshDailyNoteTile);
+                }
+                await jumpList.SaveAsync();
             }
-            if (File.Exists(Path.Combine(userDataPath, "XunkongRoot")))
+            catch (Exception ex)
             {
-                return true;
-            }
-            else
-            {
-                return false;
+                Log.Error(ex, "Initialize jump list.");
             }
         }
 
