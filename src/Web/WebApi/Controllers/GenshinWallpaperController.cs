@@ -42,8 +42,8 @@ namespace Xunkong.Web.Api.Controllers
             }
             else
             {
-                var count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync() - 1;
-                var index = Random.Shared.Next(count);
+                var count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
+                var index = Random.Shared.Next(count - 1);
                 info = await _dbContext.WallpaperInfos.Where(x => x.Enable && x.Id != excludeId).Skip(index).FirstOrDefaultAsync();
             }
             if (info == null)
@@ -63,6 +63,41 @@ namespace Xunkong.Web.Api.Controllers
             {
                 info = await _dbContext.WallpaperInfos.Where(x => x.Enable).OrderBy(x => x.Id).FirstOrDefaultAsync();
             }
+            return ResponseBaseWrapper.Ok(info!);
+        }
+
+
+
+        [HttpGet("list")]
+        public async Task<ResponseBaseWrapper> GetWallpapersAsync(int page = 1)
+        {
+            var infos = await _dbContext.WallpaperInfos.Where(x => x.Enable).Skip(20 * page - 20).Take(20).ToListAsync();
+            return ResponseBaseWrapper.Ok(infos);
+        }
+
+
+
+
+        [HttpPost("ChangeRecommend")]
+        public async Task<ActionResult<ResponseBaseWrapper>> ChangeRecommendWallpaperAsync(int id = 0)
+        {
+            if (HttpContext.Request.Headers["X-Secret"] != Environment.GetEnvironmentVariable("XSECRET"))
+            {
+                return BadRequest();
+            }
+            var count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
+            WallpaperInfo? info = null;
+            if (id != 0)
+            {
+                info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Id == id).FirstOrDefaultAsync();
+            }
+            if (info is null)
+            {
+                var index = Random.Shared.Next(count);
+                info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable).Skip(index).FirstOrDefaultAsync();
+            }
+            await _dbContext.Database.ExecuteSqlRawAsync("UPDATE wallpapers SET Recommend=0 WHERE Recommend=1;");
+            await _dbContext.Database.ExecuteSqlRawAsync("UPDATE wallpapers SET Recommend=1 WHERE Id={0};", info?.Id ?? 0);
             return ResponseBaseWrapper.Ok(info!);
         }
 

@@ -43,7 +43,7 @@ namespace Xunkong.Web.Api.Controllers
             }
             else
             {
-                var version = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Channel == channel).OrderByDescending(x => x.Version).FirstOrDefaultAsync();
+                var version = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Channel == channel).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
                 if (version is not null)
                 {
                     result = ResponseBaseWrapper.Ok(version);
@@ -76,10 +76,10 @@ namespace Xunkong.Web.Api.Controllers
             else
             {
                 Version.TryParse(version, out var v);
-                var vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => channel.HasFlag(x.Channel) && x.Version == v).OrderByDescending(x => x.Version).FirstOrDefaultAsync();
+                var vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => channel.HasFlag(x.Channel) && x.Version == v).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
                 if (vm is null)
                 {
-                    vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => channel.HasFlag(x.Channel)).OrderByDescending(x => x.Version).FirstOrDefaultAsync();
+                    vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => channel.HasFlag(x.Channel)).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
                 }
                 if (vm is null)
                 {
@@ -151,9 +151,10 @@ namespace Xunkong.Web.Api.Controllers
                 var vmax = new Version(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
                 var notifications = await _dbContext.NotificationItems.AsNoTracking()
                                                                       .Where(x => x.Platform == PlatformType.Desktop && x.Channel.HasFlag(channel) && x.Id > lastId && x.Enable)
-                                                                      .Where(x => (x.MinVersion ?? vmin) <= v && v < (x.MaxVersion ?? vmax))
-                                                                      .OrderByDescending(x => x.Time)
                                                                       .ToListAsync();
+                notifications = notifications.Where(x => (x.MinVersion ?? vmin) <= v && v < (x.MaxVersion ?? vmax))
+                                             .OrderByDescending(x => x.Time)
+                                             .ToList();
                 var dto = new NotificationWrapper<NotificationServerModel>
                 {
                     Platform = PlatformType.Desktop,
