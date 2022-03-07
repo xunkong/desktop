@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using AspNetCoreRateLimit;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -77,6 +78,13 @@ builder.Services.AddHttpClient<WishlogClient>()
 
 builder.Host.UseSerilog((ctx, config) => config.ReadFrom.Configuration(ctx.Configuration));
 
+builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+
+builder.Services.AddInMemoryRateLimiting();
+
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+
 
 
 var app = builder.Build();
@@ -92,16 +100,21 @@ app.UseExceptionHandler(c => c.Run(async context =>
     await context.Response.WriteAsJsonAsync(result);
 }));
 
+// 请求速率限制
+app.UseIpRateLimiting();
+
 // 阻止http请求
 app.Use(async (context, next) =>
 {
     if (context.Request.Headers["X-Forwarded-Proto"] == "http")
     {
         context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        await context.Response.WriteAsync("Please use https protocol.");
         return;
     }
     await next.Invoke();
 });
+
 
 app.UseResponseCompression();
 
