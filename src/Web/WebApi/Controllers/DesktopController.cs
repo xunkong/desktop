@@ -43,7 +43,7 @@ namespace Xunkong.Web.Api.Controllers
             }
             else
             {
-                var version = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Channel == channel).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+                var version = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Channel.HasFlag(channel)).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
                 if (version is not null)
                 {
                     result = ResponseBaseWrapper.Ok(version);
@@ -76,10 +76,10 @@ namespace Xunkong.Web.Api.Controllers
             else
             {
                 Version.TryParse(version, out var v);
-                var vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => channel.HasFlag(x.Channel) && x.Version == v).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+                var vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Version == v).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
                 if (vm is null)
                 {
-                    vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => channel.HasFlag(x.Channel)).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+                    vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Channel.HasFlag(channel)).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
                 }
                 if (vm is null)
                 {

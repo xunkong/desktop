@@ -20,13 +20,14 @@ namespace Xunkong.Web.Api.Filters
             var platform = context.HttpContext.Request.Headers["X-Platform"];
             var channel = context.HttpContext.Request.Headers["X-Channel"];
             var version = context.HttpContext.Request.Headers["X-Version"];
+            var statusCode = context.HttpContext.Response.StatusCode;
             var record = new T
             {
                 RequestId = string.IsNullOrWhiteSpace(requestId) ? Guid.NewGuid().ToString("D") : requestId,
                 DateTime = DateTimeOffset.UtcNow,
                 Path = path,
                 Method = method,
-                StatusCode = 200,
+                StatusCode = statusCode,
                 DeviceId = deviceId,
                 UserAgent = ua,
                 Ip = ip,
