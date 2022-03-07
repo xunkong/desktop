@@ -89,7 +89,7 @@
                             <LineBreak />
                             <Run FontSize="12"
                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                 Text="怎么是派蒙，荧呢？  荧在寻空。" />
+                                 Text="怎么是派蒙？  因为荧在寻空。" />
                         </TextBlock>
                         <StackPanel Grid.Row="1"
                                     Grid.Column="1"
@@ -169,7 +169,7 @@
                                 <LineBreak />
                                 <Run FontSize="12"
                                      Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                     Text="白天用还是晚上用？" />
+                                     Text="白天还是夜晚？" />
                             </TextBlock>
                         </controls:SettingCard.Content>
                         <controls:SettingCard.Selector>
@@ -388,7 +388,7 @@
                                         <LineBreak />
                                         <Run FontSize="12"
                                              Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                             Text="可能不太稳定" />
+                                             Text="可能不是很好用" />
                                     </TextBlock>
                                 </StackPanel>
                                 <ToggleSwitch HorizontalAlignment="Right"

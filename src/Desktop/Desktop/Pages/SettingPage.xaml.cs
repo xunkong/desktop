@@ -13,7 +13,6 @@ namespace Xunkong.Desktop.Pages
     {
 
 
-        private string AppVersion => XunkongEnvironment.AppVersion.ToString(3);
 
         private SettingViewModel vm => (DataContext as SettingViewModel)!;
 

@@ -73,7 +73,7 @@ namespace Xunkong.Desktop
             };
 
             User32.SetWindowPlacement(Hwnd, ref wp);
-            User32.SetWindowText(Hwnd, XunkongEnvironment.AppName);
+            User32.SetWindowText(Hwnd, XunkongEnvironment.Channel == ChannelType.Development ? "寻空 开发版" : "寻空");
         }
 
 

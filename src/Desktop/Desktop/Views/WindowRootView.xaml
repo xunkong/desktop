@@ -15,6 +15,7 @@
 
 
     <UserControl.Resources>
+        <BitmapImage x:Key="LogoImage" UriSource="ms-appx:///Assets/Logos/StoreLogo.png" />
         <Style x:Key="WallpaperPanelButtonStyle"
                BasedOn="{StaticResource DateTimePickerFlyoutButtonStyle}"
                TargetType="Button">
@@ -230,7 +231,7 @@
                            Source="{StaticResource LogoImage}" />-->
                     <TextBlock VerticalAlignment="Center"
                                Style="{ThemeResource CaptionTextBlockStyle}"
-                               Text="{x:Bind GetAppTitleFromPackage()}" />
+                               Text="寻空" />
                 </StackPanel>
             </Border>
 
