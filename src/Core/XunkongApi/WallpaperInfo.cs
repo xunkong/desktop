@@ -24,6 +24,9 @@
 
         public string? Source { get; set; }
 
+        public string? Redirect { get; set; }
+
+
         [MaxLength(255)]
         public string? FileName { get; set; }
 

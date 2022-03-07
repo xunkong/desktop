@@ -104,5 +104,32 @@ namespace Xunkong.Web.Api.Controllers
 
 
 
+        [HttpGet("redirect/recommend")]
+        public async Task<IActionResult> RedirectRecommendWallpaperAsync()
+        {
+            var info = await _dbContext.WallpaperInfos.Where(x => x.Recommend).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+            if (string.IsNullOrWhiteSpace(info?.Redirect))
+            {
+                var count = await _dbContext.WallpaperInfos.Where(x => x.Enable && !string.IsNullOrWhiteSpace(x.Redirect)).CountAsync();
+                var index = Random.Shared.Next(count);
+                info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable && !string.IsNullOrWhiteSpace(x.Redirect)).Skip(index).FirstOrDefaultAsync();
+            }
+            return Redirect(info!.Redirect!);
+        }
+
+
+
+
+        [HttpGet("redirect/random")]
+        public async Task<IActionResult> RedirectRandomWallpaperAsync()
+        {
+            var count = await _dbContext.WallpaperInfos.Where(x => x.Enable && !string.IsNullOrWhiteSpace(x.Redirect)).CountAsync();
+            var index = Random.Shared.Next(count);
+            var info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable && !string.IsNullOrWhiteSpace(x.Redirect)).Skip(index).FirstOrDefaultAsync();
+            return Redirect(info!.Redirect!);
+        }
+
+
+
     }
 }
