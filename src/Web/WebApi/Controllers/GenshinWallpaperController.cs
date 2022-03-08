@@ -38,7 +38,9 @@ namespace Xunkong.Web.Api.Controllers
             WallpaperInfo? info = null;
             if (excludeId == 0)
             {
-                info = await _dbContext.WallpaperInfos.Where(x => x.Recommend).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+                var count = await _dbContext.WallpaperInfos.Where(x => x.Recommend).CountAsync();
+                var index = Random.Shared.Next(count);
+                info = await _dbContext.WallpaperInfos.Where(x => x.Recommend).Skip(index).FirstOrDefaultAsync();
             }
             else
             {
@@ -107,11 +109,13 @@ namespace Xunkong.Web.Api.Controllers
         [HttpGet("redirect/recommend")]
         public async Task<IActionResult> RedirectRecommendWallpaperAsync()
         {
-            var info = await _dbContext.WallpaperInfos.Where(x => x.Recommend).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+            var count = await _dbContext.WallpaperInfos.Where(x => x.Recommend).CountAsync();
+            var index = Random.Shared.Next(count);
+            var info = await _dbContext.WallpaperInfos.Where(x => x.Recommend).Skip(index).FirstOrDefaultAsync();
             if (string.IsNullOrWhiteSpace(info?.Redirect))
             {
-                var count = await _dbContext.WallpaperInfos.Where(x => x.Enable && !string.IsNullOrWhiteSpace(x.Redirect)).CountAsync();
-                var index = Random.Shared.Next(count);
+                count = await _dbContext.WallpaperInfos.Where(x => x.Enable && !string.IsNullOrWhiteSpace(x.Redirect)).CountAsync();
+                index = Random.Shared.Next(count);
                 info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable && !string.IsNullOrWhiteSpace(x.Redirect)).Skip(index).FirstOrDefaultAsync();
             }
             return Redirect(info!.Redirect!);
