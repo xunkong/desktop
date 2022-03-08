@@ -50,7 +50,7 @@ public record WishlogSummary_QueryTypeStats(WishType QueryType,
 
 
 
-public record WishlogSummary_Rank5Item(string Name, int Guarantee, DateTimeOffset Time) : INotifyPropertyChanged
+public record WishlogSummary_Rank5Item(string Name, int Guarantee, DateTimeOffset Time, bool IsUp) : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string propertyName = "")

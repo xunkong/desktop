@@ -59,15 +59,16 @@ namespace Xunkong.Desktop.Pages
                 if (textblock.DataContext is WishlogSummary_Rank5Item item && textblock.Tag is WishlogSummary_QueryTypeStats stats)
                 {
                     var name = item.Name;
+                    var color = item.Color == "#808080" ? "#5470C6" : item.Color;
                     stats.Rank5Items.ForEach(x =>
                     {
                         if (x.Name == name)
                         {
-                            x.Foreground = x.Color;
+                            x.Foreground = color;
                         }
                         else
                         {
-                            x.Foreground = "#9AA0A8"; //gray
+                            x.Foreground = "#808080"; //gray
                         }
                     });
                 }

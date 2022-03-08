@@ -207,15 +207,16 @@ namespace Xunkong.Desktop.ViewModels
                         var currentGuarantee = items.Last().RankType == 5 ? 0 : items.Last().GuaranteeIndex;
                         var maxGuarantee = rank5Count == 0 ? currentGuarantee : items.Where(x => x.RankType == 5).Max(x => x.GuaranteeIndex);
                         var minGuarantee = rank5Count == 0 ? currentGuarantee : items.Where(x => x.RankType == 5).Min(x => x.GuaranteeIndex);
-                        var rank5Items = items.Where(x => x.RankType == 5).Select(x => new WishlogSummary_Rank5Item(x.Name, x.GuaranteeIndex, x.Time)).ToList();
+                        var rank5Items = items.Where(x => x.RankType == 5).Select(x => new WishlogSummary_Rank5Item(x.Name, x.GuaranteeIndex, x.Time, type == WishType.Permanent ? true : x.IsUp)).ToList();
+                        rank5Items.Where(x => !x.IsUp).ToList().ForEach(x => { x.Color = "#808080"; x.Foreground = "#808080"; });
                         var colors = ColorSet.OrderBy(x => Random.Shared.Next()).ToList();
-                        var gi = rank5Items.GroupBy(x => x.Name).OrderBy(x => x.Min(y => y.Time));
+                        var gi = rank5Items.Where(x => x.IsUp).GroupBy(x => x.Name).OrderBy(x => x.Min(y => y.Time));
                         int index = 0;
                         foreach (var g in gi)
                         {
                             var color = colors[index];
-                            g.ToList().ForEach(x => { x.Color = color; x.Foreground = color; });
                             index = (index + 1) % colors.Count;
+                            g.ToList().ForEach(x => { x.Color = color; x.Foreground = color; });
                         }
                         var stats = new WishlogSummary_QueryTypeStats(type,
                                                                       totalCount,
