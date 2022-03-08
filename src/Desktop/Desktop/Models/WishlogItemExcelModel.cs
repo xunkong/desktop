@@ -64,7 +64,11 @@ namespace Xunkong.Desktop.Models
         /// 查询类型，此值为自行添加的值
         /// </summary>
         [ExcelColumnName("query_type")]
-        public WishType QueryType { get; set; }
+        public WishType QueryType => WishType switch
+        {
+            WishType.CharacterEvent_2 => WishType.CharacterEvent,
+            _ => WishType,
+        };
 
 
 
