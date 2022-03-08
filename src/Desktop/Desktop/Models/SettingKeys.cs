@@ -42,5 +42,12 @@
 
         public const string DailyCheckInErrorNotification = nameof(DailyCheckInErrorNotification);
 
+        public const string GameExePath = nameof(GameExePath);
+
+        public const string TargetFPS = nameof(TargetFPS);
+
+        public const string IsPopupWindow = nameof(IsPopupWindow);
+
+
     }
 }

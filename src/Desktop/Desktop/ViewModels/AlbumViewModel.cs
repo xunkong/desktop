@@ -78,34 +78,49 @@ namespace Xunkong.Desktop.ViewModels
             }
             try
             {
-                var launcherPath = Registry.GetValue(REG_PATH, REG_KEY, null) as string;
-                if (string.IsNullOrWhiteSpace(launcherPath))
+                var exePath = LocalSettingHelper.GetSetting<string>(SettingKeys.GameExePath);
+                if (!string.IsNullOrWhiteSpace(exePath))
                 {
-                    InfoBarHelper.Warning("Cannot find album folder.");
-                    return;
+                    _logger.LogInformation($"Exe path: {exePath}.");
+                    var path = Path.GetDirectoryName(exePath);
+                    var screenPath = Path.Combine(path!, "ScreenShot");
+                    if (Directory.Exists(screenPath))
+                    {
+                        albumFolder = screenPath;
+                        _logger.LogInformation($"Album folder: {albumFolder}");
+                    }
                 }
-                _logger.LogTrace($"Launcher path: {launcherPath}");
-                var configPath = Path.Combine(launcherPath, "config.ini");
-                if (!File.Exists(configPath))
+                else
                 {
-                    InfoBarHelper.Warning("Cannot find config file.");
-                    return;
+                    var launcherPath = Registry.GetValue(REG_PATH, REG_KEY, null) as string;
+                    if (string.IsNullOrWhiteSpace(launcherPath))
+                    {
+                        InfoBarHelper.Warning("Cannot find genshin launcher folder.");
+                        return;
+                    }
+                    _logger.LogTrace($"Launcher path: {launcherPath}");
+                    var configPath = Path.Combine(launcherPath, "config.ini");
+                    if (!File.Exists(configPath))
+                    {
+                        InfoBarHelper.Warning("Cannot find config file.");
+                        return;
+                    }
+                    var str = await File.ReadAllTextAsync(configPath);
+                    var gamePath = Regex.Match(str, @"game_install_path=(.+)").Groups[1].Value.Trim();
+                    if (string.IsNullOrWhiteSpace(gamePath))
+                    {
+                        InfoBarHelper.Warning("Cannot find game path.");
+                        return;
+                    }
+                    _logger.LogTrace($"Game path: {gamePath}");
+                    albumFolder = Path.Combine(gamePath, "ScreenShot");
+                    if (!Directory.Exists(albumFolder))
+                    {
+                        InfoBarHelper.Warning("Cannot find screenshot foler.");
+                        return;
+                    }
+                    _logger.LogInformation($"Album folder: {albumFolder}");
                 }
-                var str = await File.ReadAllTextAsync(configPath);
-                var gamePath = Regex.Match(str, @"game_install_path=(.+)").Groups[1].Value.Trim();
-                if (string.IsNullOrWhiteSpace(gamePath))
-                {
-                    InfoBarHelper.Warning("Cannot find game path.");
-                    return;
-                }
-                _logger.LogTrace($"Game path: {gamePath}");
-                albumFolder = Path.Combine(gamePath, "ScreenShot");
-                if (!Directory.Exists(albumFolder))
-                {
-                    InfoBarHelper.Warning("Cannot find screenshot foler.");
-                    return;
-                }
-                _logger.LogInformation($"Album folder: {albumFolder}");
             }
             catch (Exception ex)
             {

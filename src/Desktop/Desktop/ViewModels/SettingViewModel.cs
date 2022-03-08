@@ -4,6 +4,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage.Pickers;
+using WinRT.Interop;
 using Xunkong.Core.Hoyolab;
 using Xunkong.Core.XunkongApi;
 
@@ -29,7 +31,7 @@ namespace Xunkong.Desktop.ViewModels
 
         private readonly HoyolabService _hoyolabService;
 
-
+        private readonly BackgroundService _backgroundService;
 
         public string AppName => XunkongEnvironment.AppName;
 
@@ -47,7 +49,8 @@ namespace Xunkong.Desktop.ViewModels
                                 HttpClient httpClient,
                                 XunkongApiService xunkongApiService,
                                 WishlogService wishlogService,
-                                HoyolabService hoyolabService)
+                                HoyolabService hoyolabService,
+                                BackgroundService backgroundService)
         {
             _logger = logger;
             _dbContextFactory = dbContextFactory;
@@ -57,6 +60,7 @@ namespace Xunkong.Desktop.ViewModels
             _xunkongApiService = xunkongApiService;
             _wishlogService = wishlogService;
             _hoyolabService = hoyolabService;
+            _backgroundService = backgroundService;
         }
 
 
@@ -586,6 +590,94 @@ namespace Xunkong.Desktop.ViewModels
             finally
             {
                 InfoBarHelper.Information("签到结束");
+            }
+        }
+
+
+
+
+        #endregion
+
+
+
+        #region Start Game
+
+
+        private string? _GameExePath = LocalSettingHelper.GetSetting<string>(SettingKeys.GameExePath, "不指定具体文件则会从注册表查找");
+        public string? GameExePath
+        {
+            get => _GameExePath;
+            set => SetProperty(ref _GameExePath, value);
+        }
+
+
+        private int _UnlockedFPS = LocalSettingHelper.GetSetting(SettingKeys.TargetFPS, 60);
+        public int UnlockedFPS
+        {
+            get => _UnlockedFPS;
+            set
+            {
+                LocalSettingHelper.SaveSetting(SettingKeys.TargetFPS, value);
+                SetProperty(ref _UnlockedFPS, value);
+            }
+        }
+
+
+        private bool _UsePopupWindow = LocalSettingHelper.GetSetting<bool>(SettingKeys.IsPopupWindow);
+        public bool UsePopupWindow
+        {
+            get => _UsePopupWindow;
+            set
+            {
+                LocalSettingHelper.SaveSetting(SettingKeys.IsPopupWindow, value);
+                SetProperty(ref _UsePopupWindow, value);
+            }
+        }
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task StartGameAsync()
+        {
+            try
+            {
+                await _backgroundService.StartGameAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Start game in app.");
+                InfoBarHelper.Error(ex);
+            }
+        }
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task ChangeGameExePathAsync()
+        {
+            try
+            {
+                var dialog = new FileOpenPicker();
+                dialog.SuggestedStartLocation = PickerLocationId.ComputerFolder;
+                dialog.FileTypeFilter.Add(".exe");
+                InitializeWithWindow.Initialize(dialog, MainWindow.Hwnd);
+                var file = await dialog.PickSingleFileAsync();
+                if (file != null)
+                {
+                    var path = file.Path;
+                    if (path.EndsWith("YuanShen.exe") || path.EndsWith("GenshinImpact.exe"))
+                    {
+                        LocalSettingHelper.SaveSetting(SettingKeys.GameExePath, path);
+                        GameExePath = file.Path;
+                    }
+                    else
+                    {
+                        InfoBarHelper.Warning("文件名不太对", 3000);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Change genshin exe file path.");
+                InfoBarHelper.Error(ex);
             }
         }
 

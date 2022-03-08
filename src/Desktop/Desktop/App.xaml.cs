@@ -202,6 +202,7 @@ namespace Xunkong.Desktop
             sc.AddSingleton<WishlogService>();
             sc.AddSingleton<XunkongApiService>();
             sc.AddSingleton<BackupService>();
+            sc.AddSingleton<BackgroundService>();
 
             sc.AddSingleton<AlbumViewModel>();
         }
@@ -233,8 +234,8 @@ namespace Xunkong.Desktop
                 jumpList.Items.Clear();
                 if (Environment.OSVersion.Version < new Version(10, 0, 22000, 0))
                 {
-                    var refreshDailyNoteTile = JumpListItem.CreateWithArguments("dailynote", "刷新便笺磁贴");
-                    refreshDailyNoteTile.Logo = new Uri("ms-appx:///Assets/Images/UI_ItemIcon_210@03059961+8b0e749c.png");
+                    var refreshDailyNoteTile = JumpListItem.CreateWithArguments("startgame", "启动游戏");
+                    refreshDailyNoteTile.Logo = new Uri("ms-appx:///Assets/Logos/StoreLogo.png");
                     jumpList.Items.Add(refreshDailyNoteTile);
                 }
                 await jumpList.SaveAsync();
@@ -260,11 +261,15 @@ namespace Xunkong.Desktop
             _timer.Start();
             Log.Information($"Launcher argurement: {arg}");
             var service = ActivatorUtilities.GetServiceOrCreateInstance<BackgroundService>(Services);
-            if (arg == "RefreshDailyNoteTile" || arg == "dailynote")
+            if (arg == "dailynote")
             {
                 await service.RefreshDailyNoteTilesAsync();
             }
-            Log.Information("Task finished, exist.");
+            if (arg == "startgame")
+            {
+                await service.StartGameAsync();
+            }
+            Log.Information("Task finished, exit.");
             Exit();
         }
 

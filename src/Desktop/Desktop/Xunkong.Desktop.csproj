@@ -11,6 +11,24 @@
 		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
 		<UseWinUI>true</UseWinUI>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">
+	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">
+	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
+	</PropertyGroup>
 	<ItemGroup>
 		<None Remove="Controls\EChartControl.xaml" />
 		<None Remove="Controls\GenshinElementLoading.xaml" />
@@ -57,7 +75,7 @@
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="2.0.0" />
-		<PackageReference Include="Syncfusion.Chart.WinUI" Version="19.4.0.54" />
+		<PackageReference Include="Syncfusion.Chart.WinUI" Version="19.4.0.55" />
 		<PackageReference Include="Vanara.PInvoke.User32" Version="3.3.15" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>

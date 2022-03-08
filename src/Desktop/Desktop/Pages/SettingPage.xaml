@@ -205,6 +205,71 @@
                     <!--  功能  -->
                     <TextBlock />
                     <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="功能" />
+
+                    <!--  启动游戏  -->
+                    <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <Expander.Header>
+                            <Grid>
+                                <StackPanel Padding="4,16,0,16" Orientation="Horizontal">
+                                    <Image Width="20" Source="ms-appx:///Assets/Logos/StoreLogo.png" />
+                                    <TextBlock Margin="20,0,0,0">
+                                        <Run Text="启动游戏" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="也可以在开始菜单的寻空图标上点击右键快速启动" />
+                                    </TextBlock>
+                                </StackPanel>
+                                <Button HorizontalAlignment="Right"
+                                        Command="{x:Bind vm.StartGameCommand, Mode=OneTime}"
+                                        Content="启动游戏" />
+                            </Grid>
+                        </Expander.Header>
+                        <Expander.Content>
+                            <StackPanel Margin="0,-16,44,-16">
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock TextWrapping="Wrap">
+                                        <Run Text="YuanShen.exe 或 GenshinImpact.exe 文件路径" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="{x:Bind vm.GameExePath}" />
+                                    </TextBlock>
+                                    <Button HorizontalAlignment="Right"
+                                            Command="{x:Bind vm.ChangeGameExePathCommand, Mode=OneTime}"
+                                            Content="选择文件" />
+                                </Grid>
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock>
+                                        <Run Text="解锁帧数上限" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="此功能会修改游戏内存，有一定的风险" />
+                                    </TextBlock>
+                                    <NumberBox MinWidth="80"
+                                               HorizontalAlignment="Right"
+                                               Minimum="60"
+                                               SmallChange="10"
+                                               SpinButtonPlacementMode="Compact"
+                                               Value="{x:Bind vm.UnlockedFPS, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                </Grid>
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock>
+                                        <Run Text="使用无边框窗口" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="这个就不用介绍了吧" />
+                                    </TextBlock>
+                                    <ToggleSwitch HorizontalAlignment="Right"
+                                                  IsOn="{x:Bind vm.UsePopupWindow, Mode=TwoWay}"
+                                                  Style="{ThemeResource RightAlignToggleSwitchStyle}" />
+                                </Grid>
+                            </StackPanel>
+                        </Expander.Content>
+                    </Expander>
+                    
                     <!--  网页小工具  -->
                     <Expander Name="_Expander_WebTool"
                               HorizontalAlignment="Stretch"
