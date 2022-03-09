@@ -146,7 +146,7 @@ namespace Xunkong.Desktop.Services
         {
             try
             {
-                var ps = Process.GetProcessesByName("YuanShen.exe").Concat(Process.GetProcessesByName("GenshinImpact.exe"));
+                var ps = Process.GetProcessesByName("YuanShen").Concat(Process.GetProcessesByName("GenshinImpact"));
                 if (ps.Any())
                 {
                     NotificationHelper.SendNotification("无法启动游戏", "已有游戏进程在运行");
