@@ -44,7 +44,7 @@ public record WishlogSummary_QueryTypeStats(WishType QueryType,
 
     public string AverageRank5Count => ((TotalCount - CurrentGuarantee) / (double)Rank5Count).ToString("F2");
 
-    public string AverageUpRank5Count => QueryType == WishType.Permanent ? "0" : ((TotalCount - CurrentGuarantee - LastRank5ItemGuarantee) / (double)UpItemCount).ToString("F2");
+    public string AverageUpRank5Count => QueryType == WishType.Permanent ? "0" : ((TotalCount - CurrentGuarantee - (LastRank5ItemIsUp ? 0 : LastRank5ItemGuarantee)) / (double)UpItemCount).ToString("F2");
 
 }
 
