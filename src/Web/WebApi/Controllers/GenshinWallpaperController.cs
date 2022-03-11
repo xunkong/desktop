@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using System.Web;
 using Xunkong.Core.XunkongApi;
 using Xunkong.Web.Api.Filters;
 using Xunkong.Web.Api.Services;
@@ -33,6 +34,7 @@ namespace Xunkong.Web.Api.Controllers
 
 
         [HttpGet("random")]
+        [ResponseCache(NoStore = true)]
         public async Task<ResponseBaseWrapper> GetRandomWallpaperAsJsonResultAsync(int excludeId = 0)
         {
             WallpaperInfo? info = null;
@@ -42,7 +44,7 @@ namespace Xunkong.Web.Api.Controllers
                 var index = Random.Shared.Next(count);
                 info = await _dbContext.WallpaperInfos.Where(x => x.Recommend).Skip(index).FirstOrDefaultAsync();
             }
-            else
+            if (info == null)
             {
                 var count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
                 var index = Random.Shared.Next(count - 1);
@@ -58,6 +60,7 @@ namespace Xunkong.Web.Api.Controllers
 
 
         [HttpGet("next")]
+        [ResponseCache(NoStore = true)]
         public async Task<ResponseBaseWrapper> GetNextWallpaperAsJsonResultAsync(int excludeId = 0)
         {
             var info = await _dbContext.WallpaperInfos.Where(x => x.Enable && x.Id > excludeId).OrderBy(x => x.Id).FirstOrDefaultAsync();
@@ -71,6 +74,7 @@ namespace Xunkong.Web.Api.Controllers
 
 
         [HttpGet("list")]
+        [ResponseCache(Duration = 3600, VaryByQueryKeys = new[] { "page" })]
         public async Task<ResponseBaseWrapper> GetWallpapersAsync(int page = 1)
         {
             var infos = await _dbContext.WallpaperInfos.Where(x => x.Enable).Skip(20 * page - 20).Take(20).ToListAsync();
@@ -81,6 +85,7 @@ namespace Xunkong.Web.Api.Controllers
 
 
         [HttpPost("ChangeRecommend")]
+        [ResponseCache(NoStore = true)]
         public async Task<ActionResult<ResponseBaseWrapper>> ChangeRecommendWallpaperAsync(int id = 0)
         {
             if (HttpContext.Request.Headers["X-Secret"] != Environment.GetEnvironmentVariable("XSECRET"))
@@ -107,30 +112,34 @@ namespace Xunkong.Web.Api.Controllers
 
 
         [HttpGet("redirect/recommend")]
+        [ResponseCache(Duration = 3600)]
         public async Task<IActionResult> RedirectRecommendWallpaperAsync()
         {
             var count = await _dbContext.WallpaperInfos.Where(x => x.Recommend).CountAsync();
             var index = Random.Shared.Next(count);
             var info = await _dbContext.WallpaperInfos.Where(x => x.Recommend).Skip(index).FirstOrDefaultAsync();
-            if (string.IsNullOrWhiteSpace(info?.Redirect))
+            if (info is null)
             {
-                count = await _dbContext.WallpaperInfos.Where(x => x.Enable && !string.IsNullOrWhiteSpace(x.Redirect)).CountAsync();
+                count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
                 index = Random.Shared.Next(count);
-                info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable && !string.IsNullOrWhiteSpace(x.Redirect)).Skip(index).FirstOrDefaultAsync();
+                info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable).Skip(index).FirstOrDefaultAsync();
             }
-            return Redirect(info!.Redirect!);
+            var url = $"https://file.xunkong.cc/wallpaper/{HttpUtility.UrlEncode(info!.FileName)}";
+            return Redirect(url);
         }
 
 
 
 
         [HttpGet("redirect/random")]
+        [ResponseCache(NoStore = true)]
         public async Task<IActionResult> RedirectRandomWallpaperAsync()
         {
-            var count = await _dbContext.WallpaperInfos.Where(x => x.Enable && !string.IsNullOrWhiteSpace(x.Redirect)).CountAsync();
+            var count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
             var index = Random.Shared.Next(count);
-            var info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable && !string.IsNullOrWhiteSpace(x.Redirect)).Skip(index).FirstOrDefaultAsync();
-            return Redirect(info!.Redirect!);
+            var info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable).Skip(index).FirstOrDefaultAsync();
+            var url = $"https://file.xunkong.cc/wallpaper/{HttpUtility.UrlEncode(info!.FileName)}";
+            return Redirect(url);
         }
 
 

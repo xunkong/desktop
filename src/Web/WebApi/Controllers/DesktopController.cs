@@ -13,6 +13,7 @@ namespace Xunkong.Web.Api.Controllers
     [ApiVersion("0.1")]
     [Route("v{version:ApiVersion}/[controller]")]
     [ServiceFilter(typeof(BaseRecordResultFilter))]
+    [ResponseCache(Duration = 3600, VaryByQueryKeys = new[] { "channel", "version", "lastId" })]
     public class DesktopController : Controller
     {
 
@@ -36,24 +37,14 @@ namespace Xunkong.Web.Api.Controllers
         [HttpGet("CheckUpdate")]
         public async Task<ResponseBaseWrapper> CheckUpdateAsync([FromQuery] ChannelType channel)
         {
-            var key = $"desktop_checkupdate_{channel}";
-            if (_cache.TryGetValue(key, out ResponseBaseWrapper result))
+            var version = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Channel.HasFlag(channel)).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+            if (version is not null)
             {
-                return result;
+                return ResponseBaseWrapper.Ok(version);
             }
             else
             {
-                var version = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Channel.HasFlag(channel)).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
-                if (version is not null)
-                {
-                    result = ResponseBaseWrapper.Ok(version);
-                    _cache.Set(key, result, TimeSpan.FromMinutes(15));
-                    return result;
-                }
-                else
-                {
-                    throw new XunkongException(ErrorCode.NoContentForVersion);
-                }
+                throw new XunkongException(ErrorCode.NoContentForVersion);
             }
         }
 
@@ -61,42 +52,24 @@ namespace Xunkong.Web.Api.Controllers
         [HttpGet("AppInstaller")]
         public async Task<ActionResult<string>> GetAppInstallerContentAsync([FromQuery] ChannelType channel = ChannelType.All, [FromQuery] string? version = null)
         {
-            var key = $"desktop_appinstaller_{channel}_{version}";
-            if (_cache.TryGetValue(key, out string result))
+            Version.TryParse(version, out var v);
+            var vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Version == v).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+            if (vm is null)
             {
-                if (string.IsNullOrWhiteSpace(result))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return result;
-                }
+                vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Channel.HasFlag(channel)).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+            }
+            if (vm is null)
+            {
+                return NotFound();
             }
             else
             {
-                Version.TryParse(version, out var v);
-                var vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Version == v).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
-                if (vm is null)
+                if (!_cache.TryGetValue("template.appinstaller", out string template))
                 {
-                    vm = await _dbContext.DesktopUpdateVersions.AsNoTracking().Where(x => x.Channel.HasFlag(channel)).OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+                    template = await System.IO.File.ReadAllTextAsync("template.appinstaller");
+                    _cache.Set("template.appinstaller", template);
                 }
-                if (vm is null)
-                {
-                    _cache.Set(key, "", TimeSpan.FromMinutes(15));
-                    return NotFound();
-                }
-                else
-                {
-                    if (!_cache.TryGetValue("template.appinstaller", out string template))
-                    {
-                        template = await System.IO.File.ReadAllTextAsync("template.appinstaller");
-                        _cache.Set("template.appinstaller", template);
-                    }
-                    result = template.Replace("{AppVersion}", vm.Version.ToString()).Replace("{PackageUrl}", vm.PackageUrl);
-                    _cache.Set(key, result, TimeSpan.FromMinutes(15));
-                    return result;
-                }
+                return template.Replace("{AppVersion}", vm.Version.ToString()).Replace("{PackageUrl}", vm.PackageUrl);
             }
         }
 
@@ -109,24 +82,14 @@ namespace Xunkong.Web.Api.Controllers
             {
                 throw new XunkongException(ErrorCode.VersionIsNull);
             }
-            var key = $"desktop_changelog_{version}";
-            if (_cache.TryGetValue(key, out ResponseBaseWrapper result))
+            var changelog = await _dbContext.DesktopChangelogs.AsNoTracking().Where(x => x.Version == v).FirstOrDefaultAsync();
+            if (changelog is not null)
             {
-                return result;
+                return ResponseBaseWrapper.Ok(changelog);
             }
             else
             {
-                var changelog = await _dbContext.DesktopChangelogs.AsNoTracking().Where(x => x.Version == v).FirstOrDefaultAsync();
-                if (changelog is not null)
-                {
-                    result = ResponseBaseWrapper.Ok(changelog);
-                    _cache.Set(key, result, TimeSpan.FromMinutes(15));
-                    return result;
-                }
-                else
-                {
-                    throw new XunkongException(ErrorCode.NoContentForVersion);
-                }
+                throw new XunkongException(ErrorCode.NoContentForVersion);
             }
         }
 
@@ -140,32 +103,22 @@ namespace Xunkong.Web.Api.Controllers
             {
                 throw new XunkongException(ErrorCode.VersionIsNull);
             }
-            var key = $"desktop_notification_{channel}_{version}";
-            if (_cache.TryGetValue(key, out ResponseBaseWrapper result))
+            var vmin = new Version(0, 0);
+            var vmax = new Version(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
+            var notifications = await _dbContext.NotificationItems.AsNoTracking()
+                                                                  .Where(x => x.Platform == PlatformType.Desktop && x.Channel.HasFlag(channel) && x.Id > lastId && x.Enable)
+                                                                  .ToListAsync();
+            notifications = notifications.Where(x => (x.MinVersion ?? vmin) <= v && v < (x.MaxVersion ?? vmax))
+                                         .OrderByDescending(x => x.Time)
+                                         .ToList();
+            var dto = new NotificationWrapper<NotificationServerModel>
             {
-                return result;
-            }
-            else
-            {
-                var vmin = new Version(0, 0);
-                var vmax = new Version(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
-                var notifications = await _dbContext.NotificationItems.AsNoTracking()
-                                                                      .Where(x => x.Platform == PlatformType.Desktop && x.Channel.HasFlag(channel) && x.Id > lastId && x.Enable)
-                                                                      .ToListAsync();
-                notifications = notifications.Where(x => (x.MinVersion ?? vmin) <= v && v < (x.MaxVersion ?? vmax))
-                                             .OrderByDescending(x => x.Time)
-                                             .ToList();
-                var dto = new NotificationWrapper<NotificationServerModel>
-                {
-                    Platform = PlatformType.Desktop,
-                    Channel = channel,
-                    Version = v,
-                    List = notifications,
-                };
-                result = ResponseBaseWrapper.Ok(dto);
-                _cache.Set(key, result, TimeSpan.FromMinutes(15));
-                return result;
-            }
+                Platform = PlatformType.Desktop,
+                Channel = channel,
+                Version = v,
+                List = notifications,
+            };
+            return ResponseBaseWrapper.Ok(dto);
         }
     }
 

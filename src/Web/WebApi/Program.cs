@@ -84,6 +84,8 @@ builder.Services.AddInMemoryRateLimiting();
 
 builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
+builder.Services.AddResponseCaching();
+
 
 
 
@@ -115,6 +117,7 @@ app.Use(async (context, next) =>
     await next.Invoke();
 });
 
+app.UseResponseCaching();
 
 app.UseResponseCompression();
 

@@ -30,6 +30,7 @@ namespace Xunkong.Web.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [ResponseCache(NoStore = true)]
         public ResponseBaseWrapper GetState()
         {
             var data = new ResponseBaseWrapper(ErrorCode.Ok, "Api instance has started.", new { LastUpdateTime = lastUpdateTime, RunningTime = DateTime.Now - StartTime });

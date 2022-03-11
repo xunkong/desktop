@@ -19,6 +19,7 @@ namespace Xunkong.Web.Api.Controllers
     [Route("v{version:ApiVersion}/[controller]")]
     [ServiceFilter(typeof(WishlogResultFilter))]
     [ServiceFilter(typeof(WishlogAuthActionFilter))]
+    [ResponseCache(NoStore = true)]
     public class WishlogController : ControllerBase
     {
         private readonly ILogger<WishlogController> _logger;
@@ -27,12 +28,9 @@ namespace Xunkong.Web.Api.Controllers
         private readonly XunkongDbContext _dbContext;
 
 
-        private readonly IMemoryCache _cache;
 
-
-        public WishlogController(ILogger<WishlogController> logger, XunkongDbContext dbContext, IMemoryCache cache)
+        public WishlogController(ILogger<WishlogController> logger, XunkongDbContext dbContext)
         {
-            _cache = cache;
             _logger = logger;
             _dbContext = dbContext;
         }

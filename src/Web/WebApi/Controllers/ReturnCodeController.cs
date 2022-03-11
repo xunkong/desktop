@@ -23,6 +23,7 @@ namespace Xunkong.Web.Api.Controllers
         /// </summary>
         /// <returns>retcode</returns>
         [HttpGet]
+        [ResponseCache(Duration = 86400)]
         public ResponseBaseWrapper Get()
         {
             var dic = Enum.GetValues<ErrorCode>().ToDictionary(x => (int)x, x => x.ToDescriptionOrString());

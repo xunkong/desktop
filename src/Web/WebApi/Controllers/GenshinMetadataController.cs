@@ -11,6 +11,7 @@ namespace Xunkong.Web.Api.Controllers
     [ApiVersion("0.1")]
     [Route("v{version:ApiVersion}/Genshin/Metadata")]
     [ServiceFilter(typeof(BaseRecordResultFilter))]
+    [ResponseCache(Duration = 3600)]
     public class GenshinMetadataController : ControllerBase
     {
         private readonly ILogger<GenshinMetadataController> _logger;

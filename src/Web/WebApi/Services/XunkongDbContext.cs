@@ -76,6 +76,7 @@ namespace Xunkong.Web.Api.Services
             modelBuilder.Entity<NotificationServerModel>().Property(x => x.MaxVersion).HasConversion(v => v.ToString(), s => new Version(s));
             modelBuilder.Entity<DesktopUpdateVersion>().Property(x => x.Version).HasConversion(v => v.ToString(), s => new Version(s));
             modelBuilder.Entity<DesktopChangelog>().Property(x => x.Version).HasConversion(v => v.ToString(), s => new Version(s));
+            modelBuilder.Entity<WallpaperInfo>().Property(x => x.Tags).HasConversion(v => v.ToString(), s => s.Split(';', StringSplitOptions.None).ToList());
         }
 
 

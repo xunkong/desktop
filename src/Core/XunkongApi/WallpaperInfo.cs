@@ -20,11 +20,11 @@
 
         public string? Description { get; set; }
 
+        public List<string> Tags { get; set; }
+
         public string Url { get; set; }
 
         public string? Source { get; set; }
-
-        public string? Redirect { get; set; }
 
 
         [MaxLength(255)]
@@ -35,4 +35,12 @@
 
 
     }
+
+
+
+    public record WallpaperInfoList(int Page, int TotalPage, int Count, List<WallpaperInfo> List);
+
+
+
+
 }
