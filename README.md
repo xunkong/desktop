@@ -1,7 +1,5 @@
 # 寻空
 
-下载地址：[传送门](https://xunkong-1306705684.file.myqcloud.com/download/Xunkong.Desktop.Installer.zip)
-
 ## 构建
 
 ### 前提条件
