@@ -99,7 +99,9 @@
                                        VerticalAlignment="Center"
                                        Text="相关链接" />
                             <HyperlinkButton Content="GitHub 存储库" NavigateUri="https://github.com/Scighost/Xunkong" />
-                            <HyperlinkButton Content="安装包发布页" NavigateUri="https://scighost.coding.net/public-artifacts/xunkong/releases/packages" />
+                            <HyperlinkButton Content="镜像下载地址"
+                                             NavigateUri="https://scighost.coding.net/public-artifacts/xunkong/releases/packages"
+                                             ToolTipService.ToolTip="每天有 50GB 流量限制" />
                             <HyperlinkButton Command="{x:Bind vm.CopyDevelopersMailCommand}" Content="联系开发者" />
                             <HyperlinkButton Content="赞助开发者" NavigateUri="https://xunkong-1306705684.file.myqcloud.com/download/donate.png" />
                         </StackPanel>
@@ -244,8 +246,8 @@
                                         <Run Text="解锁帧数上限" />
                                         <LineBreak />
                                         <Run FontSize="12"
-                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                             Text="此功能会修改游戏内存，有一定的风险" />
+                                             Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                                             Text="此功能会修改游戏内存，有一定的风险，设定值超过60才会启用" />
                                     </TextBlock>
                                     <NumberBox MinWidth="80"
                                                HorizontalAlignment="Right"
@@ -269,7 +271,7 @@
                             </StackPanel>
                         </Expander.Content>
                     </Expander>
-                    
+
                     <!--  网页小工具  -->
                     <Expander Name="_Expander_WebTool"
                               HorizontalAlignment="Stretch"

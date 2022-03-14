@@ -46,8 +46,8 @@ namespace Xunkong.Desktop.ViewModels
             catch
             {
                 const string url = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
-                RoutedEventHandler eventHandler = (_, _) => Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true, });
-                InfoBarHelper.ShowWithButton(InfoBarSeverity.Warning, "警告", "没有找到 WebView2 运行时，会影响软件必要的功能。", "下载", eventHandler);
+                Action action = () => Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true, });
+                InfoBarHelper.ShowWithButton(InfoBarSeverity.Warning, "警告", "没有找到 WebView2 运行时，会影响软件必要的功能。", "下载", action);
             }
         }
 
@@ -60,7 +60,7 @@ namespace Xunkong.Desktop.ViewModels
             {
                 try
                 {
-                    var version = await _xunkongApiService.CheckUpdateAsync(ChannelType.Development);
+                    var version = await _xunkongApiService.CheckUpdateAsync(XunkongEnvironment.Channel);
                     Version.TryParse(LocalSettingHelper.GetSetting<string>("LastTestUpdateVersion"), out var lastVersion);
                     if (version.Version > XunkongEnvironment.AppVersion && version.Version > lastVersion)
                     {
@@ -100,37 +100,63 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
-        [ICommand(AllowConcurrentExecutions = false)]
-        public async Task ChangeBackgroundWallpaperAsync(string randomOrNext)
-        {
-            if (randomOrNext == "next")
-            {
-                await ChangeBackgroundWallpaperAsync(1, true);
-            }
-            else
-            {
-                await ChangeBackgroundWallpaperAsync(0, true);
-            }
-        }
-
-        private async Task ChangeBackgroundWallpaperAsync(int randomOrNext = 0, bool showError = false)
+        public async Task InitializeBackgroundWallpaperAsync()
         {
             try
             {
-                var image = await _xunkongApiService.GetWallpaperInfoAsync(randomOrNext, BackgroundWallpaper?.Id ?? 0);
+                var lastUrl = LocalSettingHelper.GetSetting<string>("LastSavedWallpaperInfo");
+                if (!string.IsNullOrWhiteSpace(lastUrl))
+                {
+                    WeakReferenceMessenger.Default.Send(new WallpaperInfo { Url = lastUrl });
+                }
+                var image = await _xunkongApiService.GetRecommendWallpaperAsync();
+                BackgroundWallpaper = image;
+                WeakReferenceMessenger.Default.Send(image);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Initialize and get recommend wallpaper.");
+            }
+        }
+
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task GetRandomBackgroudWallpaperAsync()
+        {
+            try
+            {
+                var image = await _xunkongApiService.GetRandomWallpaperAsync();
                 if (!string.IsNullOrWhiteSpace(image?.Url))
                 {
-                    WeakReferenceMessenger.Default.Send(image);
                     BackgroundWallpaper = image;
+                    WeakReferenceMessenger.Default.Send(image);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Refresh app background image.");
-                if (showError)
+                _logger.LogError(ex, "Get random background image.");
+                InfoBarHelper.Error(ex);
+            }
+        }
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task GetNextBackgroudWallpaperAsync()
+        {
+            try
+            {
+                var image = await _xunkongApiService.GetNextWallpaperAsync(BackgroundWallpaper?.Id ?? 0);
+                if (!string.IsNullOrWhiteSpace(image?.Url))
                 {
-                    InfoBarHelper.Error(ex);
+                    BackgroundWallpaper = image;
+                    WeakReferenceMessenger.Default.Send(image);
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Get next background image.");
+                InfoBarHelper.Error(ex);
             }
         }
 
@@ -162,8 +188,8 @@ namespace Xunkong.Desktop.ViewModels
                 var destPath = Path.Combine(destFolder, fileName);
                 Directory.CreateDirectory(destFolder);
                 File.Copy(sourcePath, destPath, true);
-                RoutedEventHandler eventHandler = (_, _) => Process.Start(new ProcessStartInfo { FileName = destPath, UseShellExecute = true });
-                InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, "已保存", fileName, "打开文件", eventHandler, 3000);
+                Action action = () => Process.Start(new ProcessStartInfo { FileName = destPath, UseShellExecute = true });
+                InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, "已保存", fileName, "打开文件", action, 3000);
             }
             catch (Exception ex)
             {
@@ -184,7 +210,7 @@ namespace Xunkong.Desktop.ViewModels
         {
             if (!disabled && BackgroundWallpaper is null)
             {
-                await ChangeBackgroundWallpaperAsync(0, true);
+                await InitializeBackgroundWallpaperAsync();
             }
         }
 

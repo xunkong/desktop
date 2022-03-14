@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using System.Net;
 using System.Text;
@@ -39,6 +40,8 @@ namespace Xunkong.Desktop.Toolbox
 
 
         private bool useCompactName = false;
+
+        private bool donotOutputFile = false;
 
 
         private List<WallpaperInfo> wallpaperInfos = new();
@@ -106,45 +109,38 @@ namespace Xunkong.Desktop.Toolbox
             {
                 GetPidFromImageFile(path, out int pid, out int p);
                 var metadata = await GetMetadataFromPixivAsync(pid);
-                using var image = await IS.Image.LoadAsync(path);
-                var ep = new ExifProfile();
-                ep.SetValue(ExifTag.XPTitle, metadata.Title);
-                ep.SetValue(ExifTag.Artist, metadata.Artist);
-                ep.SetValue(ExifTag.XPAuthor, metadata.Artist);
-                ep.SetValue(ExifTag.XPComment, metadata.Description);
-                ep.SetValue(ExifTag.DateTimeOriginal, metadata.Time.LocalDateTime.ToString());
-                ep.SetValue(ExifTag.XPKeywords, string.Join(";", metadata.Tags));
-                image.Metadata.ExifProfile = ep;
+                var fileName = Path.GetFileName(path);
                 var wallpaper = new WallpaperInfo
                 {
                     Title = metadata.Title,
                     Author = metadata.Artist,
-                    Description = metadata.Description,
-                    FileName = $"[{metadata.Artist}] {metadata.Title} [{pid}_p{p}].jpg",
-                    Url = $"https://scighost-generic.pkg.coding.net/xunkong/wallpapers/{pid}_p{p}.jpg",
+                    Description = metadata.Description?.Replace("'", "\\'"),
+                    FileName = fileName,
+                    Url = $"https://file.xunkong.cc/wallpapers/{fileName}",
                     Source = $"https://www.pixiv.net/artworks/{pid}",
+                    Tags = metadata.Tags,
                 };
-                wallpaper.FileName = wallpaper.FileName.Replace("?", "？").Replace(":", "：");
-                foreach (var item in Path.GetInvalidFileNameChars())
+                if (!donotOutputFile)
                 {
-                    if (wallpaper.FileName.Contains(item))
+                    using var image = await IS.Image.LoadAsync(path);
+                    var ep = new ExifProfile();
+                    ep.SetValue(ExifTag.XPTitle, metadata.Title);
+                    ep.SetValue(ExifTag.Artist, metadata.Artist);
+                    ep.SetValue(ExifTag.XPAuthor, metadata.Artist);
+                    ep.SetValue(ExifTag.XPComment, metadata.Description);
+                    ep.SetValue(ExifTag.DateTimeOriginal, metadata.Time.LocalDateTime.ToString());
+                    ep.SetValue(ExifTag.XPKeywords, string.Join(";", metadata.Tags));
+                    image.Metadata.ExifProfile = ep;
+                    if (useCompactName)
                     {
-                        wallpaper.FileName = wallpaper.FileName.Replace(item, ' ');
+                        var file = Path.Combine(Path.GetDirectoryName(path)!, $"{pid}_p{p}.webp");
+                        await image.SaveAsWebpAsync(file, new WebpEncoder());
                     }
-                }
-                while (wallpaper.FileName.Contains("  "))
-                {
-                    wallpaper.FileName = wallpaper.FileName.Replace("  ", " ");
-                }
-                if (useCompactName)
-                {
-                    var file = Path.Combine(Path.GetDirectoryName(path)!, $"{pid}_p{p}.jpg");
-                    await image.SaveAsJpegAsync(file, new JpegEncoder { Quality = 100 });
-                }
-                else
-                {
-                    var file = Path.Combine(Path.GetDirectoryName(path)!, wallpaper.FileName);
-                    await image.SaveAsJpegAsync(file, new JpegEncoder { Quality = 100 });
+                    else
+                    {
+                        var file = Path.Combine(Path.GetDirectoryName(path)!, wallpaper.FileName);
+                        await image.SaveAsWebpAsync(file, new WebpEncoder());
+                    }
                 }
                 wallpaperInfos.Add(wallpaper);
             }
@@ -206,10 +202,10 @@ namespace Xunkong.Desktop.Toolbox
             try
             {
                 var sb = new StringBuilder();
-                sb.AppendLine("INSERT INTO wallpapers (Title, Author, Description, FileName, Url, Source) VALUES");
+                sb.AppendLine("INSERT INTO wallpapers (FileName,Title, Author, Description, Tags, Url, Source) VALUES");
                 foreach (var item in wallpaperInfos)
                 {
-                    sb.AppendLine($"('{item.Title}','{item.Author}','{item.Description}','{item.FileName}','{item.Url}','{item.Source}'),");
+                    sb.AppendLine($"('{item.FileName}','{item.Title}','{item.Author}','{item.Description}','{string.Join(';', item.Tags)}','{item.Url}','{item.Source}'),");
                 }
                 sb[sb.Length - 3] = ';';
                 var data = new DataPackage();

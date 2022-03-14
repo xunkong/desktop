@@ -343,17 +343,24 @@ namespace Xunkong.Desktop.Services
         #region Genshin Wallpaper
 
 
-        public async Task<WallpaperInfo?> GetWallpaperInfoAsync(int randomOrNext, int excludeId = 0)
+        public async Task<WallpaperInfo> GetRecommendWallpaperAsync()
         {
-            if (randomOrNext == 0)
-            {
-                return await _xunkongClient.GetRandomWallpaperAsync(excludeId);
-            }
-            else
-            {
-                return await _xunkongClient.GetNextWallpaperAsync(excludeId);
-            }
+            return await _xunkongClient.GetRecommendWallpaperAsync();
         }
+
+
+
+        public async Task<WallpaperInfo> GetRandomWallpaperAsync()
+        {
+            return await _xunkongClient.GetRandomWallpaperAsync();
+        }
+
+
+        public async Task<WallpaperInfo> GetNextWallpaperAsync(int lastId = 0)
+        {
+            return await _xunkongClient.GetNextWallpaperAsync(lastId);
+        }
+
 
 
         #endregion

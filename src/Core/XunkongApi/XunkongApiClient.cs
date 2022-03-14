@@ -41,6 +41,8 @@ namespace Xunkong.Core.XunkongApi
         }
 
 
+        #region Common Method
+
 
 
         private async Task<T> CommonGetAsync<T>(string url) where T : class
@@ -110,6 +112,7 @@ namespace Xunkong.Core.XunkongApi
             return dto.Data;
         }
 
+        #endregion
 
 
 
@@ -220,20 +223,26 @@ namespace Xunkong.Core.XunkongApi
 
 
 
-
         #region Genshin Wallpaper
 
 
-        public async Task<WallpaperInfo?> GetRandomWallpaperAsync(int excludeId = 0)
+        public async Task<WallpaperInfo> GetRecommendWallpaperAsync()
         {
-            var url = $"{BaseUrl}/{ApiVersion}/genshin/wallpaper/random?excludeId={excludeId}";
+            var url = $"{BaseUrl}/{ApiVersion}/wallpaper/recommend";
             return await CommonGetAsync<WallpaperInfo>(url);
         }
 
 
-        public async Task<WallpaperInfo?> GetNextWallpaperAsync(int excludeId = 0)
+        public async Task<WallpaperInfo> GetRandomWallpaperAsync()
         {
-            var url = $"{BaseUrl}/{ApiVersion}/genshin/wallpaper/next?excludeId={excludeId}";
+            var url = $"{BaseUrl}/{ApiVersion}/wallpaper/random";
+            return await CommonGetAsync<WallpaperInfo>(url);
+        }
+
+
+        public async Task<WallpaperInfo> GetNextWallpaperAsync(int lastId = 0)
+        {
+            var url = $"{BaseUrl}/{ApiVersion}/wallpaper/next?lastId={lastId}";
             return await CommonGetAsync<WallpaperInfo>(url);
         }
 

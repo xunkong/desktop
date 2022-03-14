@@ -12,7 +12,7 @@ namespace Xunkong.Desktop.Toolbox
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    [Toolbox("刻记牛杂店元数据", "ms-appx:///Assets/Images/KeqingNiuza.png", "导出角色、武器、卡池信息以供刻记牛杂店使用")]
+    //[Toolbox("刻记牛杂店元数据", "ms-appx:///Assets/Images/KeqingNiuza.png", "导出角色、武器、卡池信息以供刻记牛杂店使用")]
     public sealed partial class KeqingNiuzaMetadataTool : Page
     {
 

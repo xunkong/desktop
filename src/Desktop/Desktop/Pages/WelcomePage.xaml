@@ -45,7 +45,7 @@
                 <TextBlock>
                     <Run Text="您需要同意「寻空」使用" />
                     <Hyperlink NavigateUri="https://appcenter.ms/">Microsoft App Center</Hyperlink>
-                    <Run Text="进行数据统计，此功能不会收集您的个人隐私。" />
+                    <Run Text="统计导致应用崩溃的错误，，此功能不会收集您的个人数据。" />
                 </TextBlock>
 
                 <TextBlock />

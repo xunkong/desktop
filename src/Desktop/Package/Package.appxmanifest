@@ -10,7 +10,7 @@
 	<Identity
 	  Name="Xunkong.Desktop"
 	  Publisher="CN=Xunkong by Scighost"
-	  Version="0.1.1.0" />
+	  Version="0.1.2.0" />
 
 	<Properties>
 		<DisplayName>寻空 开发版</DisplayName>

@@ -124,8 +124,8 @@ namespace Xunkong.Desktop.ViewModels
                 var version = await _xunkongApiService.CheckUpdateAsync(SelectedChannel);
                 if (version.Version > XunkongEnvironment.AppVersion && !string.IsNullOrWhiteSpace(version.PackageUrl))
                 {
-                    RoutedEventHandler eventHandler = (_, _) => Process.Start(new ProcessStartInfo { FileName = version.PackageUrl, UseShellExecute = true, });
-                    InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, $"新版本 {version.Version}", version.Abstract, "下载", eventHandler);
+                    Action action = () => Process.Start(new ProcessStartInfo { FileName = version.PackageUrl, UseShellExecute = true, });
+                    InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, $"新版本 {version.Version}", version.Abstract, "下载", action);
                 }
                 else
                 {

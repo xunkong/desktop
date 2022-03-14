@@ -605,8 +605,8 @@ namespace Xunkong.Desktop.ViewModels
                 }
                 _logger.LogInformation($"Start to download wishlog in cloud and backup to loacal with uid {uid}.");
                 var file = await _xunkongApiService.GetWishlogAndBackupToLoalAsync(uid, handler);
-                RoutedEventHandler eventHandler = (_, _) => Process.Start(new ProcessStartInfo { FileName = Path.GetDirectoryName(file), UseShellExecute = true, });
-                InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, null, "云端祈愿记录已备份到本地", "打开文件夹", eventHandler, 3000);
+                Action action = () => Process.Start(new ProcessStartInfo { FileName = Path.GetDirectoryName(file), UseShellExecute = true, });
+                InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, null, "云端祈愿记录已备份到本地", "打开文件夹", action, 3000);
                 await _xunkongApiService.DeleteWishlogBackupAsync(uid, handler);
             }
             catch (XunkongException ex)

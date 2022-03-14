@@ -61,7 +61,7 @@ namespace Xunkong.Desktop.Views
             }
             else
             {
-                await vm.ChangeBackgroundWallpaperAsync("random");
+                await vm.InitializeBackgroundWallpaperAsync();
             }
         }
 
@@ -162,37 +162,45 @@ namespace Xunkong.Desktop.Views
 
         private void _NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
         {
-            if (args.InvokedItemContainer.IsSelected)
+            try
             {
-                return;
-            }
-            if (args.IsSettingsInvoked)
-            {
-                _logger.LogInformation("Navigate to {PageName}", "SettingPage");
-                _rootFrame.Navigate(typeof(SettingPage));
-            }
-            else
-            {
-                if (args.InvokedItemContainer.DataContext is WebToolItem webToolItem)
+                if (args.InvokedItemContainer.IsSelected)
                 {
-                    _logger.LogInformation("Navigate to {PageName} with title {Title} and url {Url}", "WebToolPage", webToolItem.Title, webToolItem.Url);
-                    _rootFrame.Navigate(typeof(WebToolPage), webToolItem);
+                    return;
+                }
+                if (args.IsSettingsInvoked)
+                {
+                    _logger.LogInformation("Navigate to {PageName}", "SettingPage");
+                    _rootFrame.Navigate(typeof(SettingPage));
                 }
                 else
                 {
-                    var tag = args.InvokedItemContainer.Tag as string;
-                    var asm = typeof(WindowRootView).Assembly;
-                    var type = asm.GetType($"Xunkong.Desktop.Pages.{tag}");
-                    if (type is not null)
+                    if (args.InvokedItemContainer.DataContext is WebToolItem webToolItem)
                     {
-                        _logger.LogInformation("Navigate to {PageName}", tag);
-                        _rootFrame.Navigate(type);
+                        _logger.LogInformation("Navigate to {PageName} with title {Title} and url {Url}", "WebToolPage", webToolItem.Title, webToolItem.Url);
+                        _rootFrame.Navigate(typeof(WebToolPage), webToolItem);
                     }
                     else
                     {
-                        _logger.LogWarning("Navigate to unfount page {PageName}", tag);
+                        var tag = args.InvokedItemContainer.Tag as string;
+                        var asm = typeof(WindowRootView).Assembly;
+                        var type = asm.GetType($"Xunkong.Desktop.Pages.{tag}");
+                        if (type is not null)
+                        {
+                            _logger.LogInformation("Navigate to {PageName}", tag);
+                            _rootFrame.Navigate(type);
+                        }
+                        else
+                        {
+                            _logger.LogWarning("Navigate to unfount page {PageName}", tag);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                InfoBarHelper.Error(ex, $"Naviate to page {args.InvokedItemContainer.Tag}");
+                _logger.LogError(ex, $"Naviate to page {args.InvokedItemContainer.Tag}");
             }
         }
 

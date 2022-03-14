@@ -303,7 +303,7 @@ namespace Xunkong.Desktop.Services
             }
             if (list.Any(x => x.Uid == 0))
             {
-                throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have none uid item.");
+                throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have items without uid.");
             }
             if (list.DistinctBy(x => x.Uid).Count() > 1)
             {
@@ -340,6 +340,10 @@ namespace Xunkong.Desktop.Services
             if (!list.Any())
             {
                 throw new XunkongException(ErrorCode.InternalException, "No wishlogs in the imported file.");
+            }
+            if (list.Any(x => x.Uid == 0))
+            {
+                throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have items without uid.");
             }
             if (list.DistinctBy(x => x.Uid).Count() > 1)
             {

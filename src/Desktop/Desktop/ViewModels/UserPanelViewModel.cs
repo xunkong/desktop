@@ -248,10 +248,14 @@ namespace Xunkong.Desktop.ViewModels
         private async Task HoyolabLogin_InputCookieAsync()
         {
             _logger.LogDebug("Login Input Cookie button has been pressed.");
+            var stackPanel = new StackPanel { Spacing = 12 };
+            stackPanel.Children.Add(new TextBlock { Text = "仅支持国服米游社；\n需要包含 cookie_token 值，否则会出现 HoyolabException (-100) 错误。" });
+            var textBox = new TextBox();
+            stackPanel.Children.Add(textBox);
             var dialog = new ContentDialog
             {
                 Title = "输入Cookie",
-                Content = new TextBox(),
+                Content = stackPanel,
                 PrimaryButtonText = "确认",
                 SecondaryButtonText = "取消",
                 DefaultButton = ContentDialogButton.Primary,
@@ -261,7 +265,7 @@ namespace Xunkong.Desktop.ViewModels
             HideUserPanelSelectorFlyout?.Invoke();
             if (result is ContentDialogResult.Primary)
             {
-                var cookie = (dialog.Content as TextBox)?.Text;
+                var cookie = textBox.Text;
                 if (string.IsNullOrWhiteSpace(cookie))
                 {
                     _logger.LogDebug("Input box has nothing.");

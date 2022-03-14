@@ -62,6 +62,10 @@
                     <ProgressRing Name="_PrograssRing" IsActive="False" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBlock VerticalAlignment="Center" Text="不保存新图片" />
+                    <ToggleSwitch IsOn="{x:Bind donotOutputFile, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="12">
                     <TextBlock VerticalAlignment="Center" Text="不在文件名中包含除 Pid 以外的信息" />
                     <ToggleSwitch IsOn="{x:Bind useCompactName, Mode=TwoWay}" />
                 </StackPanel>

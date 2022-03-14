@@ -82,21 +82,23 @@ namespace Xunkong.Desktop.Controls
                 {
                     address = $"https://{address}";
                 }
-                if (Uri.TryCreate(address, UriKind.RelativeOrAbsolute, out var uri))
+                try
                 {
-                    try
+                    if (Uri.TryCreate(address, UriKind.RelativeOrAbsolute, out var uri))
                     {
                         if (uri.Scheme == Uri.UriSchemeHttps)
                         {
                             _WebView2.Source = uri;
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        InfoBarHelper.Error(ex);
-                    }
+                }
+                catch (Exception ex)
+                {
+                    InfoBarHelper.Error(ex);
                 }
             }
         }
+
+
     }
 }
