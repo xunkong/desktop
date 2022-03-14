@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Xunkong.Core.XunkongApi;
 using Xunkong.Web.Api.Filters;
 using Xunkong.Web.Api.Models;
@@ -13,7 +12,7 @@ namespace Xunkong.Web.Api.Controllers
     [ApiVersion("0.1")]
     [Route("v{version:ApiVersion}/[controller]")]
     [ServiceFilter(typeof(BaseRecordResultFilter))]
-    [ResponseCache(Duration = 3600, VaryByQueryKeys = new[] { "channel", "version", "lastId" })]
+    [ResponseCache(Duration = 900)]
     public class DesktopController : Controller
     {
 
@@ -21,15 +20,11 @@ namespace Xunkong.Web.Api.Controllers
 
         private readonly XunkongDbContext _dbContext;
 
-        private readonly IMemoryCache _cache;
 
-
-
-        public DesktopController(ILogger<DesktopController> logger, XunkongDbContext dbContext, IMemoryCache cache)
+        public DesktopController(ILogger<DesktopController> logger, XunkongDbContext dbContext)
         {
             _logger = logger;
             _dbContext = dbContext;
-            _cache = cache;
         }
 
 
@@ -64,11 +59,7 @@ namespace Xunkong.Web.Api.Controllers
             }
             else
             {
-                if (!_cache.TryGetValue("template.appinstaller", out string template))
-                {
-                    template = await System.IO.File.ReadAllTextAsync("template.appinstaller");
-                    _cache.Set("template.appinstaller", template);
-                }
+                var template = await System.IO.File.ReadAllTextAsync("template.appinstaller");
                 return template.Replace("{AppVersion}", vm.Version.ToString()).Replace("{PackageUrl}", vm.PackageUrl);
             }
         }

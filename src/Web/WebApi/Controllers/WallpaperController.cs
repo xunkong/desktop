@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Xunkong.Core.XunkongApi;
 using Xunkong.Web.Api.Filters;
 using Xunkong.Web.Api.Services;
@@ -22,7 +21,7 @@ namespace Xunkong.Web.Api.Controllers
 
 
 
-        public WallpaperController(ILogger<GenshinWallpaperController> logger, XunkongDbContext dbContext, IMemoryCache cache)
+        public WallpaperController(ILogger<GenshinWallpaperController> logger, XunkongDbContext dbContext)
         {
             _logger = logger;
             _dbContext = dbContext;
@@ -32,10 +31,10 @@ namespace Xunkong.Web.Api.Controllers
 
 
         [HttpGet("{id}")]
-        [ResponseCache(Duration = 86400)]
+        [ResponseCache(Duration = 2592000)]
         public async Task<ResponseBaseWrapper> GetWallpaperInfoByIdAsync([FromRoute] int id)
         {
-            var info = await _dbContext.WallpaperInfos.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Id == id).FirstOrDefaultAsync();
             if (info is not null)
             {
                 return ResponseBaseWrapper.Ok(info);
@@ -49,10 +48,10 @@ namespace Xunkong.Web.Api.Controllers
 
 
         [HttpGet("{id}/redirect")]
-        [ResponseCache(Duration = 86400)]
+        [ResponseCache(Duration = 2592000)]
         public async Task<IActionResult> RedirectToWallpaperImageByIdAsync([FromRoute] int id)
         {
-            var info = await _dbContext.WallpaperInfos.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Id == id).FirstOrDefaultAsync();
             if (info is not null)
             {
                 return RedirectToImage(info.FileName!);
@@ -71,7 +70,7 @@ namespace Xunkong.Web.Api.Controllers
         {
             var count = await _dbContext.WallpaperInfos.Where(x => x.Recommend).CountAsync();
             var skip = Random.Shared.Next(count);
-            var info = await _dbContext.WallpaperInfos.Where(x => x.Recommend).Skip(skip).FirstOrDefaultAsync();
+            var info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Recommend).Skip(skip).FirstOrDefaultAsync();
             if (info is null)
             {
                 count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
@@ -89,7 +88,7 @@ namespace Xunkong.Web.Api.Controllers
         {
             var count = await _dbContext.WallpaperInfos.Where(x => x.Recommend).CountAsync();
             var skip = Random.Shared.Next(count);
-            var info = await _dbContext.WallpaperInfos.Where(x => x.Recommend).Skip(skip).FirstOrDefaultAsync();
+            var info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Recommend).Skip(skip).FirstOrDefaultAsync();
             if (info is null)
             {
                 count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
@@ -107,7 +106,7 @@ namespace Xunkong.Web.Api.Controllers
         {
             var count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
             var skip = Random.Shared.Next(count);
-            var info = await _dbContext.WallpaperInfos.Where(x => x.Enable).Skip(skip).FirstOrDefaultAsync();
+            var info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable).Skip(skip).FirstOrDefaultAsync();
             return ResponseBaseWrapper.Ok(info!);
         }
 
@@ -119,20 +118,34 @@ namespace Xunkong.Web.Api.Controllers
         {
             var count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
             var skip = Random.Shared.Next(count);
-            var info = await _dbContext.WallpaperInfos.Where(x => x.Enable).Skip(skip).FirstOrDefaultAsync();
+            var info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable).Skip(skip).FirstOrDefaultAsync();
             return RedirectToImage(info!.FileName!);
         }
 
 
 
+        [HttpGet("next")]
+        [ResponseCache(Duration = 86400)]
+        public async Task<ResponseBaseWrapper> GetNextWallpaperInfoAsync([FromQuery] int lastId)
+        {
+            var info = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Id > lastId).FirstOrDefaultAsync();
+            if (info == null)
+            {
+                info = await _dbContext.WallpaperInfos.AsNoTracking().FirstOrDefaultAsync();
+            }
+            return ResponseBaseWrapper.Ok(info!);
+        }
+
+
+
         [HttpGet("list")]
-        [ResponseCache(Duration = 86400, VaryByQueryKeys = new[] { "page" })]
+        [ResponseCache(Duration = 86400)]
         public async Task<ResponseBaseWrapper> GetWallpaperInfosAsync([FromQuery] int page = 1)
         {
             var count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
             var totalPage = count / 20 + 1;
             page = Math.Clamp(page, 1, totalPage);
-            var infos = await _dbContext.WallpaperInfos.Where(x => x.Enable).Skip(20 * page - 20).Take(20).ToListAsync();
+            var infos = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable).Skip(20 * page - 20).Take(20).ToListAsync();
             return ResponseBaseWrapper.Ok(new WallpaperInfoList(page, totalPage, infos.Count, infos));
         }
 

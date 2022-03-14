@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using System.Web;
 using Xunkong.Core.XunkongApi;
 using Xunkong.Web.Api.Filters;
@@ -21,14 +20,10 @@ namespace Xunkong.Web.Api.Controllers
 
         private readonly XunkongDbContext _dbContext;
 
-        private readonly IMemoryCache _cache;
-
-
-        public GenshinWallpaperController(ILogger<GenshinWallpaperController> logger, XunkongDbContext dbContext, IMemoryCache cache)
+        public GenshinWallpaperController(ILogger<GenshinWallpaperController> logger, XunkongDbContext dbContext)
         {
             _logger = logger;
             _dbContext = dbContext;
-            _cache = cache;
         }
 
 
@@ -74,7 +69,7 @@ namespace Xunkong.Web.Api.Controllers
 
 
         [HttpGet("list")]
-        [ResponseCache(Duration = 3600, VaryByQueryKeys = new[] { "page" })]
+        [ResponseCache(Duration = 3600)]
         public async Task<ResponseBaseWrapper> GetWallpapersAsync(int page = 1)
         {
             var infos = await _dbContext.WallpaperInfos.Where(x => x.Enable).Skip(20 * page - 20).Take(20).ToListAsync();

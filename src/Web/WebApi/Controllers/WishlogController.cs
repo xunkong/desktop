@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Xunkong.Core.Wish;
 using Xunkong.Core.XunkongApi;
 using Xunkong.Web.Api.Filters;

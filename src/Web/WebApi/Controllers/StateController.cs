@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Xunkong.Core.XunkongApi;
 
 namespace Xunkong.Web.Api.Controllers
@@ -17,11 +16,8 @@ namespace Xunkong.Web.Api.Controllers
         private static DateTime lastUpdateTime = new FileInfo(typeof(StateController).Assembly.Location).CreationTime;
 
 
-        private readonly IMemoryCache _cache;
-
-        public StateController(IMemoryCache cache)
+        public StateController()
         {
-            _cache = cache;
         }
 
 
@@ -41,7 +37,6 @@ namespace Xunkong.Web.Api.Controllers
         [HttpPost("ClearCache")]
         public ResponseBaseWrapper ClearCache()
         {
-            (_cache as MemoryCache)?.Compact(1);
             return new(0, "Cache cleared.");
         }
 
