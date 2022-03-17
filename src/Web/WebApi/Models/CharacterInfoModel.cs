@@ -1,8 +1,20 @@
-﻿namespace Xunkong.Core.Metadata
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Xunkong.Core.Metadata;
+
+namespace Xunkong.Web.Api.Models
 {
     [Table("Info_Character")]
-    public class CharacterInfo
+    [Index(nameof(Name))]
+    [Index(nameof(Rarity))]
+    [Index(nameof(Gender2))]
+    [Index(nameof(Element))]
+    [Index(nameof(WeaponType))]
+    public class CharacterInfoModel
     {
+
         public int Id { get; set; }
 
         [MaxLength(255)]
@@ -55,12 +67,13 @@
 
         public string? GachaSplash { get; set; }
 
+
         [MaxLength(255)]
         public string? CvChinese { get; set; }
 
         [MaxLength(255)]
         public string? CvJapanese { get; set; }
-
+        
         [MaxLength(255)]
         public string? CvEnglish { get; set; }
 
@@ -70,15 +83,34 @@
         /// <summary>
         /// 天赋
         /// </summary>
-        public List<CharacterTalentInfo> Talents { get; set; }
+        [ForeignKey("CharacterInfoId")]
+        public List<CharacterTalentInfoModel>? Talents { get; set; }
 
 
         /// <summary>
         /// 命之座
         /// </summary>
-        public List<CharacterConstellationInfo>? Constellations { get; set; }
+        [ForeignKey("CharacterInfoId")]
+        public List<CharacterConstellationInfoModel>? Constellations { get; set; }
 
 
+        public long NameTextMapHash { get; set; }
+
+        public long TitleTextMapHash { get; set; }
+
+        public long DescTextMapHash { get; set; }
+
+        public long AffiliationTextMapHash { get; set; }
+
+        public long ConstllationTextMapHash { get; set; }
+
+        public long CvChineseTextMapHash { get; set; }
+
+        public long CvJapaneseTextMapHash { get; set; }
+
+        public long CvEnglishTextMapHash { get; set; }
+
+        public long CvKoreanTextMapHash { get; set; }
 
 
 

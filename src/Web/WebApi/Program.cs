@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MySqlConnector;
 using Serilog;
 using Xunkong.Core.Wish;
 using Xunkong.Core.XunkongApi;
@@ -56,6 +57,12 @@ builder.Services.AddDbContextPool<XunkongDbContext>(options =>
     options.UseMySql(Environment.GetEnvironmentVariable("CONSTR"), new MySqlServerVersion("8.0.25"));
 #endif
 });
+
+#if DEBUG
+builder.Services.AddSingleton(new DbConnectionFactory(builder.Configuration.GetConnectionString("constr_xunkong")));
+#else
+builder.Services.AddSingleton(new DbConnectionFactory(Environment.GetEnvironmentVariable("CONSTR")));
+#endif
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

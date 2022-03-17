@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Xunkong.Web.Api.Services;
 
@@ -10,9 +11,10 @@ using Xunkong.Web.Api.Services;
 namespace Xunkong.Web.Api.Migrations
 {
     [DbContext(typeof(XunkongDbContext))]
-    partial class XunkongDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220317014653_CharacterInfo")]
+    partial class CharacterInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
