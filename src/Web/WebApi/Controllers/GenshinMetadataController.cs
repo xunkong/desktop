@@ -2,6 +2,7 @@
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using Xunkong.Core.Metadata;
 using Xunkong.Core.XunkongApi;
 using Xunkong.Web.Api.Filters;
@@ -14,7 +15,7 @@ namespace Xunkong.Web.Api.Controllers
     [ApiVersion("0.1")]
     [Route("v{version:ApiVersion}/Genshin/Metadata")]
     [ServiceFilter(typeof(BaseRecordResultFilter))]
-    [ResponseCache(Duration = 900)]
+    [ResponseCache(Duration = 3600)]
     public class GenshinMetadataController : ControllerBase
     {
         private readonly ILogger<GenshinMetadataController> _logger;
@@ -47,7 +48,7 @@ namespace Xunkong.Web.Api.Controllers
                 "ru-ru" or "ru" => "ru-ru",
                 "th-th" or "th" => "th-th",
                 "vi-vn" or "vi" => "vi-vn",
-                "zh-tw" => "zh-tw",
+                "zh-tw" or "cht" => "zh-tw",
                 _ => "zh-cn",
             };
             var characters = await _dbContext.CharacterInfos.AsNoTracking().Where(x => x.Enable).Include(x => x.Talents).Include(x => x.Constellations).ToListAsync();
@@ -113,6 +114,26 @@ namespace Xunkong.Web.Api.Controllers
                 item.Description = dic[item.DescTextMapHash];
             }
         }
+
+
+
+        [HttpGet("raw/character")]
+        public async Task<ResponseBaseWrapper> GetRawCharacterAsync()
+        {
+            var list = await _dbContext.CharacterInfos.AsNoTracking().Where(x => x.Enable).Include(x => x.Talents).Include(x => x.Constellations).ToListAsync();
+            return ResponseBaseWrapper.Ok(new { Language = "zh-cn", Count = list.Count, List = list });
+        }
+
+
+
+
+        [HttpGet("raw/i18n")]
+        public async Task<ResponseBaseWrapper> GetRawI18nModelAsync()
+        {
+            var list = await _dbContext.I18nModels.AsNoTracking().ToListAsync();
+            return ResponseBaseWrapper.Ok(new { Count = list.Count, List = list });
+        }
+
 
 
 
