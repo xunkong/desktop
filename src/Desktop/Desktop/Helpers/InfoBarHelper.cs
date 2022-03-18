@@ -140,7 +140,7 @@ namespace Xunkong.Desktop.Helpers
 
 
 
-        public static void ShowWithButton(InfoBarSeverity severity, string? title, string? message, string buttonContent, Action buttonAction, int delay = 0)
+        public static void ShowWithButton(InfoBarSeverity severity, string? title, string? message, string buttonContent, Action buttonAction, Action? closedAction = null, int delay = 0)
         {
             _container.DispatcherQueue.TryEnqueue(async () =>
             {
@@ -169,6 +169,17 @@ namespace Xunkong.Desktop.Helpers
                     ActionButton = button,
                     IsOpen = true,
                 };
+                if (closedAction is not null)
+                {
+                    infoBar.CloseButtonClick += (_, _) =>
+                    {
+                        try
+                        {
+                            closedAction();
+                        }
+                        catch { }
+                    };
+                }
                 _container.Children.Add(infoBar);
                 if (delay > 0)
                 {

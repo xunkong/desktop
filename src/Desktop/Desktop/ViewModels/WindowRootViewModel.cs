@@ -64,22 +64,9 @@ namespace Xunkong.Desktop.ViewModels
                     Version.TryParse(LocalSettingHelper.GetSetting<string>("LastTestUpdateVersion"), out var lastVersion);
                     if (version.Version > XunkongEnvironment.AppVersion && version.Version > lastVersion)
                     {
-                        var button = new Button
-                        {
-                            Content = "下载",
-                            HorizontalAlignment = HorizontalAlignment.Right,
-                            Style = Application.Current.Resources["DateTimePickerFlyoutButtonStyle"] as Style,
-                        };
-                        button.Click += (_, _) => Process.Start(new ProcessStartInfo { FileName = version.PackageUrl, UseShellExecute = true, });
-                        var infobar = new InfoBar
-                        {
-                            Severity = InfoBarSeverity.Success,
-                            Title = $"新版本 {version.Version}",
-                            Message = version.Abstract,
-                            IsOpen = true,
-                        };
-                        infobar.Closed += (_, _) => LocalSettingHelper.SaveSetting("LastTestUpdateVersion", version.Version.ToString());
-                        InfoBarHelper.Show(infobar);
+                        Action buttonAction = () => Process.Start(new ProcessStartInfo { FileName = version.PackageUrl, UseShellExecute = true, });
+                        Action closedAction = () => LocalSettingHelper.SaveSetting("LastTestUpdateVersion", version.Version.ToString());
+                        InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, $"新版本 {version.Version}", version.Abstract, "下载", buttonAction, closedAction);
                     }
                 }
                 catch (Exception ex)
@@ -189,7 +176,7 @@ namespace Xunkong.Desktop.ViewModels
                 Directory.CreateDirectory(destFolder);
                 File.Copy(sourcePath, destPath, true);
                 Action action = () => Process.Start(new ProcessStartInfo { FileName = destPath, UseShellExecute = true });
-                InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, "已保存", fileName, "打开文件", action, 3000);
+                InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, "已保存", fileName, "打开文件", action, null, 3000);
             }
             catch (Exception ex)
             {

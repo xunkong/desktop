@@ -324,6 +324,13 @@ namespace Xunkong.Desktop.Views
             }
         }
 
+        private void _rootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
+        {
+            InfoBarHelper.Error(e.Exception.Message);
+            _logger.LogError(e.Exception, "Navigation failed.");
+            e.Handled = true;
+        }
+
         private void _PaneFooter_BackgroundWallpaper_DragOver(object sender, DragEventArgs e)
         {
             e.AcceptedOperation = DataPackageOperation.Copy;
@@ -391,6 +398,7 @@ namespace Xunkong.Desktop.Views
             enableHideElement = false;
             WeakReferenceMessenger.Default.Send(new HideElementMessage(false));
         }
+
 
     }
 
