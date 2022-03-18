@@ -166,7 +166,18 @@ namespace Xunkong.Desktop.ViewModels
                 _logger.LogError(ex, "Get uids from database.");
                 InfoBarHelper.Error(ex);
             }
-
+            try
+            {
+                if (await _xunkongApiService.IsNeedToUpdateMetadataAsync())
+                {
+                    await GetMetadataAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Check whether need to update metadata.");
+                InfoBarHelper.Error(ex);
+            }
         }
 
 
@@ -606,7 +617,7 @@ namespace Xunkong.Desktop.ViewModels
                 _logger.LogInformation($"Start to download wishlog in cloud and backup to loacal with uid {uid}.");
                 var file = await _xunkongApiService.GetWishlogAndBackupToLoalAsync(uid, handler);
                 Action action = () => Process.Start(new ProcessStartInfo { FileName = Path.GetDirectoryName(file), UseShellExecute = true, });
-                InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, null, "云端祈愿记录已备份到本地", "打开文件夹", action, 3000);
+                InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, null, "云端祈愿记录已备份到本地", "打开文件夹", action, null, 3000);
                 await _xunkongApiService.DeleteWishlogBackupAsync(uid, handler);
             }
             catch (XunkongException ex)
@@ -627,6 +638,14 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+        private bool _IsRefreshPageTeachingTipOpen;
+        public bool IsRefreshPageTeachingTipOpen
+        {
+            get => _IsRefreshPageTeachingTipOpen;
+            set => SetProperty(ref _IsRefreshPageTeachingTipOpen, value);
+        }
+
+
 
         /// <summary>
         /// 获取角色、武器、卡池、国际化等信息
@@ -636,15 +655,15 @@ namespace Xunkong.Desktop.ViewModels
         private async Task GetMetadataAsync()
         {
             IsLoading = true;
-            StateText = "";
+            StateText = "正在更新元数据";
             await Task.Delay(100);
             try
             {
                 await _xunkongApiService.GetCharacterInfosFromServerAsync();
                 await _xunkongApiService.GetWeaponInfosFromServerAsync();
                 await _xunkongApiService.GetWishEventInfosFromServerAsync();
-                await _xunkongApiService.GetI18nModelsFromServerAsync();
                 StateText = "完成";
+                IsRefreshPageTeachingTipOpen = true;
             }
             catch (Exception ex)
             {

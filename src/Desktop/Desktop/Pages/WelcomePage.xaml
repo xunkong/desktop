@@ -80,7 +80,9 @@
                         Content="打开文件夹" />
 
                 <TextBlock />
-                <TextBlock FontSize="24" Text="图标缺失问题" />
+                <TextBlock FontSize="24"
+                           Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                           Text="图标缺失问题" />
                 <TextBlock Text="「寻空」使用了 Windows 11 系统上的图标字体，在 Windows 10 系统上可能会出现乱码问题。" />
                 <TextBlock Text="下行左侧是一个点赞图标，如果不是，您需要安装缺失的字体。" />
                 <StackPanel Orientation="Horizontal" Spacing="8">

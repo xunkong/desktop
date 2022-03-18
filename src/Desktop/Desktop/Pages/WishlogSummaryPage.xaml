@@ -325,7 +325,8 @@
             <StackPanel Grid.Column="1"
                         HorizontalAlignment="Right"
                         Orientation="Horizontal">
-                <AppBarButton Command="{x:Bind vm.InitializePageDataCommand, Mode=OneTime}"
+                <AppBarButton Name="_AppBarButton_RefreshPage"
+                              Command="{x:Bind vm.InitializePageDataCommand, Mode=OneTime}"
                               Icon="Refresh"
                               Label="刷新页面" />
                 <AppBarSeparator />
@@ -402,6 +403,12 @@
 
             </StackPanel>
         </Grid>
+
+        <TeachingTip Content="元数据更新完毕，请刷新界面"
+                     IsLightDismissEnabled="True"
+                     IsOpen="{x:Bind vm.IsRefreshPageTeachingTipOpen}"
+                     PreferredPlacement="BottomLeft"
+                     Target="{x:Bind _AppBarButton_RefreshPage}" />
 
         <TeachingTip Name="_TeachingTip_UpdateMetadata"
                      CloseButtonClick="_TeachingTip_UpdateMetadata_CloseButtonClick"

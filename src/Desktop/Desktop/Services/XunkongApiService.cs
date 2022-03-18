@@ -247,6 +247,34 @@ namespace Xunkong.Desktop.Services
         #region Genshin Metadata
 
 
+        public async Task<bool> IsNeedToUpdateMetadataAsync()
+        {
+            using var ctx = _ctxFactory.CreateDbContext();
+            if (!await ctx.CharacterInfos.AnyAsync())
+            {
+                return true;
+            }
+            if (!await ctx.WeaponInfos.AnyAsync())
+            {
+                return true;
+            }
+            if (!await ctx.WishEventInfos.AnyAsync())
+            {
+                return true;
+            }
+            var lastWishlogItem = await ctx.WishlogItems.AsNoTracking().OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+            if (lastWishlogItem is not null)
+            {
+                var lastWishEvent = await ctx.WishEventInfos.AsNoTracking().OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+                if (lastWishlogItem.Time > lastWishEvent!.EndTime)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+
         public async Task<IEnumerable<CharacterInfo>> GetCharacterInfosFromServerAsync()
         {
             var characterInfos = await _xunkongClient.GetCharacterInfosAsync();
