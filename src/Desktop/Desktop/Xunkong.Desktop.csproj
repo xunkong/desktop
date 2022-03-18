@@ -40,7 +40,6 @@
 		<None Remove="Pages\WebViewPage.xaml" />
 		<None Remove="Pages\WelcomePage.xaml" />
 		<None Remove="Pages\WishlogSummaryPage.xaml" />
-		<None Remove="Toolbox\KeqingNiuzaMetadataTool.xaml" />
 		<None Remove="Toolbox\PixivMetadataTool.xaml" />
 	</ItemGroup>
 	<ItemGroup>
@@ -55,7 +54,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AngleSharp" Version="0.16.1" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0-preview1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0-preview2" />
 		<PackageReference Include="CommunityToolkit.WinUI.Notifications" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Behaviors" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
@@ -66,17 +65,17 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.3" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-		<PackageReference Include="Microsoft.Windows.CsWinRT" Version="1.5.0" />
+		<PackageReference Include="Microsoft.Windows.CsWinRT" Version="1.6.1" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
-		<PackageReference Include="MiniExcel" Version="1.24.0" />
+		<PackageReference Include="MiniExcel" Version="1.24.1" />
 		<PackageReference Include="Serilog.Expressions" Version="3.3.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-		<PackageReference Include="SixLabors.ImageSharp" Version="2.0.0" />
-		<PackageReference Include="Syncfusion.Chart.WinUI" Version="19.4.0.55" />
-		<PackageReference Include="Vanara.PInvoke.User32" Version="3.3.15" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="2.1.0" />
+		<PackageReference Include="Syncfusion.Chart.WinUI" Version="19.4.0.56" />
+		<PackageReference Include="Vanara.PInvoke.User32" Version="3.4.0" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
@@ -101,12 +100,6 @@
 	  <Page Update="Themes\Generic.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Page Update="Toolbox\KeqingNiuzaMetadataTool.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</Page>
 	</ItemGroup>
 
 	<ItemGroup>
