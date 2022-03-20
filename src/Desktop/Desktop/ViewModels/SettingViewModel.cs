@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Pickers;
+using Windows.UI.StartScreen;
 using WinRT.Interop;
 using Xunkong.Core.Hoyolab;
 using Xunkong.Core.XunkongApi;
@@ -17,11 +18,9 @@ namespace Xunkong.Desktop.ViewModels
 
         private readonly ILogger<SettingViewModel> _logger;
 
-        private readonly IDbContextFactory<XunkongDbContext> _dbContextFactory;
+        private readonly IDbContextFactory<XunkongDbContext> _ctxFactory;
 
-        private readonly DbConnectionFactory<SqliteConnection> _dbConnectionFactory;
-
-        private readonly XunkongDbContext _webToolItemDbContext;
+        private readonly DbConnectionFactory<SqliteConnection> _cntFactory;
 
         private readonly HttpClient _httpClient;
 
@@ -53,9 +52,8 @@ namespace Xunkong.Desktop.ViewModels
                                 BackgroundService backgroundService)
         {
             _logger = logger;
-            _dbContextFactory = dbContextFactory;
-            _dbConnectionFactory = dbConnectionFactory;
-            _webToolItemDbContext = dbContextFactory.CreateDbContext();
+            _ctxFactory = dbContextFactory;
+            _cntFactory = dbConnectionFactory;
             _httpClient = httpClient;
             _xunkongApiService = xunkongApiService;
             _wishlogService = wishlogService;
@@ -65,18 +63,8 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
-        public async Task InitializeDataAsync()
+        public void InitializeData()
         {
-            try
-            {
-                var list = await _webToolItemDbContext.WebToolItems.OrderBy(x => x.Order).ToListAsync();
-                _WebToolItemList = new(list);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error when init webtool setting items.");
-                InfoBarHelper.Error(ex, "无法加载网页小工具的数据");
-            }
             try
             {
                 var allTasks = BackgroundTaskRegistration.AllTasks;
@@ -96,7 +84,6 @@ namespace Xunkong.Desktop.ViewModels
                 _logger.LogError(ex, "Error when get background task setting.");
                 InfoBarHelper.Error(ex, "无法获取后台任务的设置");
             }
-
         }
 
 
@@ -179,9 +166,10 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
-
         #region WebTool Setting
 
+
+        private XunkongDbContext _webToolItemDbContext;
 
 
         private ObservableCollection<WebToolItem> _WebToolItemList;
@@ -197,6 +185,25 @@ namespace Xunkong.Desktop.ViewModels
         {
             get => _SelectedWebToolItem;
             set => SetProperty(ref _SelectedWebToolItem, value);
+        }
+
+
+        public async Task InitializeWebToolItemsAsync()
+        {
+            if (_webToolItemDbContext is null)
+            {
+                try
+                {
+                    _webToolItemDbContext = _ctxFactory.CreateDbContext();
+                    var list = await _webToolItemDbContext.WebToolItems.OrderBy(x => x.Order).ToListAsync();
+                    _WebToolItemList = new(list);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error when init webtool setting items.");
+                    InfoBarHelper.Error(ex, "无法加载网页小工具的数据");
+                }
+            }
         }
 
 
@@ -603,7 +610,7 @@ namespace Xunkong.Desktop.ViewModels
         #region Start Game
 
 
-        private string? _GameExePath = LocalSettingHelper.GetSetting<string>(SettingKeys.GameExePath, "不指定具体文件则会从注册表查找");
+        private string? _GameExePath = LocalSettingHelper.GetSetting(SettingKeys.GameExePath, "不指定具体文件则会从注册表查找");
         public string? GameExePath
         {
             get => _GameExePath;
@@ -682,6 +689,149 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+        private ObservableCollection<GenshinUserAccount> _UserAccounts;
+        public ObservableCollection<GenshinUserAccount> UserAccounts
+        {
+            get => _UserAccounts;
+            set => SetProperty(ref _UserAccounts, value);
+        }
+
+
+        private GenshinUserAccount? _SelectedUserAccount;
+        public GenshinUserAccount? SelectedUserAccount
+        {
+            get => _SelectedUserAccount;
+            set => SetProperty(ref _SelectedUserAccount, value);
+        }
+
+
+
+        public async Task InitializeGenshinUserAccountsAsync(bool fource = false)
+        {
+            if (fource || UserAccounts == null)
+            {
+                try
+                {
+                    using var ctx = _ctxFactory.CreateDbContext();
+                    var accounts = await ctx.GenshinUsersAccounts.AsNoTracking().ToListAsync();
+                    UserAccounts = new(accounts);
+                }
+                catch (Exception ex)
+                {
+                    InfoBarHelper.Error(ex);
+                    _logger.LogError(ex, "Initialze genshin user account.");
+                }
+            }
+            try
+            {
+                var jumpList = await JumpList.LoadCurrentAsync();
+                var deleting = jumpList.Items.Where(x => x.Arguments.StartsWith("startgame_")).ToList();
+                foreach (var item in deleting)
+                {
+                    jumpList.Items.Remove(item);
+                }
+                if (UserAccounts is not null)
+                {
+                    foreach (var item in UserAccounts)
+                    {
+                        var jumpitem = JumpListItem.CreateWithArguments($"startgame_{item.UserName}", item.UserName);
+                        jumpitem.Logo = new Uri("ms-appx:///Assets/Images/Transparent.png");
+                        jumpitem.GroupName = "启动游戏";
+                        jumpList.Items.Add(jumpitem);
+                    }
+                }
+                await jumpList.SaveAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Refresh jumplist for start game.");
+            }
+        }
+
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task AddGenshinUserAccountAsync(bool isOversea)
+        {
+            try
+            {
+                var ADLPROD = BackgroundService.GetEncryptedADLPROD(isOversea);
+                using var ctx = _ctxFactory.CreateDbContext();
+                var account = await ctx.GenshinUsersAccounts.AsNoTracking().Where(x => x.ADLPROD == ADLPROD).FirstOrDefaultAsync();
+                if (account != null)
+                {
+                    InfoBarHelper.Warning("该账号已存在", 5000);
+                    return;
+                }
+                var dialog = new ContentDialog
+                {
+                    Title = "起一个好记的名字吧",
+                    Content = new TextBox(),
+                    PrimaryButtonText = "确认",
+                    SecondaryButtonText = "取消",
+                    DefaultButton = ContentDialogButton.Primary,
+                    XamlRoot = MainWindow.XamlRoot,
+                };
+                var result = await dialog.ShowAsync();
+                if (result == ContentDialogResult.Primary)
+                {
+                    var userName = (dialog.Content as TextBox)?.Text;
+                    if (string.IsNullOrWhiteSpace(userName))
+                    {
+                        InfoBarHelper.Warning("用户名不可为空");
+                        return;
+                    }
+                    if (await ctx.GenshinUsersAccounts.AnyAsync(x => x.UserName == userName))
+                    {
+                        InfoBarHelper.Warning("用户名与已保存账号重复");
+                        return;
+                    }
+                    var now = DateTimeOffset.Now;
+                    account = new GenshinUserAccount
+                    {
+                        UserName = userName,
+                        IsOversea = isOversea,
+                        ADLPROD = ADLPROD,
+                        CreateTime = now,
+                        LastAccessTime = now,
+                    };
+                    ctx.Add(account);
+                    await ctx.SaveChangesAsync();
+                    InfoBarHelper.Success("账号已保存，在开始菜单的图标上使用右键快速切换账号", 10000);
+                    await InitializeGenshinUserAccountsAsync(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                InfoBarHelper.Error(ex);
+                _logger.LogError(ex, "Save current genshin user account.");
+            }
+        }
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task DeleteSelectedGenshinUserAccountAsync()
+        {
+            if (SelectedUserAccount is null)
+            {
+                return;
+            }
+            try
+            {
+                using var cnt = _cntFactory.CreateDbConnection();
+                var userName = SelectedUserAccount.UserName;
+                await cnt.ExecuteAsync($"DELETE FROM GenshinUserAccounts WHERE UserName=@UserName", SelectedUserAccount);
+                SelectedUserAccount = null;
+                InfoBarHelper.Success($"账号 {userName} 已删除");
+                await InitializeGenshinUserAccountsAsync(true);
+            }
+            catch (Exception ex)
+            {
+                InfoBarHelper.Error(ex);
+                _logger.LogError(ex, "Delete selected genshin user account.");
+            }
+        }
+
 
 
         #endregion
@@ -715,7 +865,7 @@ namespace Xunkong.Desktop.ViewModels
         {
             try
             {
-                using var ctx = _dbContextFactory.CreateDbContext();
+                using var ctx = _ctxFactory.CreateDbContext();
                 await ctx.Database.MigrateAsync();
                 InfoBarHelper.Success($"成功");
             }

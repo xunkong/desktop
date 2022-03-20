@@ -24,10 +24,15 @@ namespace Xunkong.Desktop.Pages
         {
             this.InitializeComponent();
             DataContext = ActivatorUtilities.CreateInstance<SettingViewModel>(App.Current.Services);
-            Loaded += async (_, _) => await vm.InitializeDataAsync();
+            Loaded += (_, _) => vm.InitializeData();
             SetNumberBoxNumberFormatter();
         }
 
+
+        private async void _Expander_WebTool_Expanding(Expander sender, ExpanderExpandingEventArgs args)
+        {
+            await vm.InitializeWebToolItemsAsync();
+        }
 
 
         private void _Expander_WebTool_Collapsed(Expander sender, ExpanderCollapsedEventArgs args)
@@ -49,6 +54,11 @@ namespace Xunkong.Desktop.Pages
             _NumberBox_HomeCoinThreshold.NumberFormatter = formatter;
         }
 
+
+        private async void _Expander_StartGame_Expanding(Expander sender, ExpanderExpandingEventArgs args)
+        {
+            await vm.InitializeGenshinUserAccountsAsync();
+        }
 
 
     }

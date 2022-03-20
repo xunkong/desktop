@@ -137,7 +137,7 @@ namespace Xunkong.Desktop
                 else
                 {
                     _Image_Background.Source = image.Url;
-                    LocalSettingHelper.SaveSetting("LastSavedWallpaperInfo", image.Url);
+                    //LocalSettingHelper.SaveSetting("LastSavedWallpaperInfo", image.Url);
                 }
             });
             _logger.LogInformation($"Change background image:\n{image.Url}");

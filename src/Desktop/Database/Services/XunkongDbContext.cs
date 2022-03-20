@@ -42,6 +42,8 @@ namespace Xunkong.Desktop.Services
 
         public DbSet<DailyCheckInItem> DailyCheckInItems { get; set; }
 
+        public DbSet<GenshinUserAccount> GenshinUsersAccounts { get; set; }
+
 
         public XunkongDbContext(DbContextOptions<XunkongDbContext> options) : base(options)
         {

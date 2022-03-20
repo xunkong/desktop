@@ -470,9 +470,8 @@
             </Pivot.RightHeader>
 
             <PivotItem Header="数据统计">
-                <ScrollViewer Padding="48,12,48,12">
-                    <StackPanel Padding="0,0,0,12" Spacing="16">
-
+                <ScrollViewer Padding="48,0,48,0">
+                    <StackPanel Margin="0,12,0,24" Spacing="16">
                         <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
                                    Style="{ThemeResource SubtitleTextBlockStyle}"
                                    Text="卡池统计"

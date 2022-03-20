@@ -10,9 +10,17 @@
         [global::System.STAThreadAttribute]
         static void Main(string[] args)
         {
-            if (args.Any() && args[0] == "startgame")
+            if (args.Any() && args[0].Contains("startgame"))
             {
-                BackgroundService.StartGameWishoutLogAsync().Wait();
+                if (args[0] == "startgame")
+                {
+                    BackgroundService.StartGameWishoutLogAsync().Wait();
+                }
+                else
+                {
+                    var userName = args[0].Split('_')[1];
+                    BackgroundService.StartGameWishAccountAsync(userName).Wait();
+                }
             }
             else
             {

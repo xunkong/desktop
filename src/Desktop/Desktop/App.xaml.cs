@@ -231,10 +231,14 @@ namespace Xunkong.Desktop
             try
             {
                 var jumpList = await JumpList.LoadCurrentAsync();
-                jumpList.Items.Clear();
-                var refreshDailyNoteTile = JumpListItem.CreateWithArguments("startgame", "启动游戏");
-                refreshDailyNoteTile.Logo = new Uri("ms-appx:///Assets/Logos/StoreLogo.png");
-                jumpList.Items.Add(refreshDailyNoteTile);
+                if (jumpList.Items.Any(x => x.Arguments == "startgame"))
+                {
+                    return;
+                }
+                var item = JumpListItem.CreateWithArguments("startgame", "启动游戏");
+                item.GroupName = "启动游戏";
+                item.Logo = new Uri("ms-appx:///Assets/Logos/StoreLogo.png");
+                jumpList.Items.Add(item);
                 await jumpList.SaveAsync();
             }
             catch (Exception ex)
