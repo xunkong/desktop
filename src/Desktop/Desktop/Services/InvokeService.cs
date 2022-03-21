@@ -4,19 +4,20 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using Windows.ApplicationModel;
+using Windows.Storage;
 using Xunkong.Core.Hoyolab;
 using Xunkong.Core.XunkongApi;
 
 namespace Xunkong.Desktop.Services
 {
-    internal class BackgroundService
+    internal class InvokeService
     {
 
-        private readonly ILogger<BackgroundService> _logger;
+        private readonly ILogger<InvokeService> _logger;
 
         private HoyolabService _hoyolabService;
 
-        public BackgroundService(ILogger<BackgroundService> logger, HoyolabService hoyolabService)
+        public InvokeService(ILogger<InvokeService> logger, HoyolabService hoyolabService)
         {
             _logger = logger;
             _hoyolabService = hoyolabService;
@@ -265,7 +266,7 @@ namespace Xunkong.Desktop.Services
                     NotificationHelper.SendNotification("无法启动游戏", "没有找到对应的账号");
                     return;
                 }
-                SetEncryptedADLPROD(account.ADLPROD, account.IsOversea);
+                await SetADLPROD(account.ADLPROD, account.IsOversea);
                 await dapper.ExecuteAsync("UPDATE GenshinUserAccounts SET LastAccessTime=@LastAccessTime WHERE UserName=@UserName", new { UserName = userName, LastAccessTime = DateTimeOffset.Now });
                 var fps = LocalSettingHelper.GetSetting(SettingKeys.TargetFPS, 60);
                 var isPopup = LocalSettingHelper.GetSetting<bool>(SettingKeys.IsPopupWindow);
@@ -307,61 +308,69 @@ namespace Xunkong.Desktop.Services
         }
 
 
-        public static byte[] GetEncryptedADLPROD(bool isOversea = false)
+        public static async Task<byte[]> GetADLPROD(bool isOversea = false)
         {
-            byte[]? raw = null;
+            return await RegInvokeAsync("GetADLPROD", isOversea);
+        }
+
+
+        public static async Task SetADLPROD(byte[] bytes, bool isOversea = false)
+        {
+            await RegInvokeAsync("SetADLPROD", isOversea, bytes);
+        }
+
+
+        private static async Task<byte[]> RegInvokeAsync(string command, bool isOversea, byte[]? ADLPROD = null)
+        {
+            var path = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, $"Extension/RegInvoke/{XunkongEnvironment.AppVersion}/Xunkong.Desktop.RegInvoke.exe");
+#if !DEBUG
+            if (!File.Exists(path))
+#endif
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                File.Copy(Path.Combine(Package.Current.InstalledPath, "Xunkong.Desktop.RegInvoke/Xunkong.Desktop.RegInvoke.exe"), path, true);
+            }
+            var sb = new StringBuilder();
+            sb.Append(command);
             if (isOversea)
             {
-                raw = Registry.GetValue(@"HKEY_CURRENT_USER\Software\miHoYo\Genshin Impact", "MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810", null) as byte[];
+                sb.Append(" --isSea");
+            }
+            if (ADLPROD is { Length: > 0 })
+            {
+                sb.Append(" --ADLPROD ");
+                sb.Append(Convert.ToHexString(ADLPROD));
+            }
+            var p = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = path,
+                    Arguments = sb.ToString(),
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    StandardOutputEncoding = Encoding.UTF8,
+                },
+            };
+            p.Start();
+            using var sw = p.StandardOutput;
+            await p.WaitForExitAsync();
+            var message = sw.ReadToEnd().Trim();
+            byte[] data;
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new Exception("Return message is null.");
+            }
+            if (p.ExitCode == 0)
+            {
+                data = Convert.FromHexString(message);
+                return data;
             }
             else
             {
-                raw = Registry.GetValue(@"HKEY_CURRENT_USER\Software\miHoYo\原神", "MIHOYOSDK_ADL_PROD_CN_h3123967166", null) as byte[];
-            }
-            if (raw is null or { Length: 0 })
-            {
-                throw new XunkongException(ErrorCode.InternalException, "Cannot get ADLPROD for current user.");
-            }
-            return Encrypt(raw);
-        }
-
-
-        public static void SetEncryptedADLPROD(byte[] bytes, bool isOversea = false)
-        {
-            if (bytes is null or { Length: 0 })
-            {
-                throw new ArgumentNullException(nameof(bytes));
-            }
-            byte[] raw = Decrypt(bytes);
-            if (isOversea)
-            {
-                Registry.SetValue(@"HKEY_CURRENT_USER\Software\miHoYo\Genshin Impact", "MIHOYOSDK_ADL_PROD_OVERSEA_h1158948810", raw);
-            }
-            else
-            {
-                Registry.SetValue(@"HKEY_CURRENT_USER\Software\miHoYo\原神", "MIHOYOSDK_ADL_PROD_CN_h3123967166", raw);
+                throw new Exception(message);
             }
         }
-
-
-        private static byte[] Encrypt(byte[] bytes)
-        {
-            using var aes = Aes.Create();
-            aes.Key = SHA256.HashData(Encoding.UTF8.GetBytes(XunkongEnvironment.DeviceId));
-            aes.IV = SHA256.HashData(aes.Key).Take(16).ToArray();
-            return aes.EncryptCbc(bytes, aes.IV);
-        }
-
-
-        private static byte[] Decrypt(byte[] bytes)
-        {
-            using var aes = Aes.Create();
-            aes.Key = SHA256.HashData(Encoding.UTF8.GetBytes(XunkongEnvironment.DeviceId));
-            aes.IV = SHA256.HashData(aes.Key).Take(16).ToArray();
-            return aes.DecryptCbc(bytes, aes.IV);
-        }
-
-
 
 
     }

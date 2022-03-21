@@ -77,6 +77,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Desktop\Xunkong.Desktop.csproj" />
     <ProjectReference Include="..\FpsUnlocker\Xunkong.Desktop.FpsUnlocker.vcxproj" />
+    <ProjectReference Include="..\RegInvoke\Xunkong.Desktop.RegInvoke.vcxproj" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>

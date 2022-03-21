@@ -202,7 +202,7 @@ namespace Xunkong.Desktop
             sc.AddSingleton<WishlogService>();
             sc.AddSingleton<XunkongApiService>();
             sc.AddSingleton<BackupService>();
-            sc.AddSingleton<BackgroundService>();
+            sc.AddSingleton<InvokeService>();
 
             sc.AddSingleton<AlbumViewModel>();
         }
@@ -231,15 +231,16 @@ namespace Xunkong.Desktop
             try
             {
                 var jumpList = await JumpList.LoadCurrentAsync();
-                if (jumpList.Items.Any(x => x.Arguments == "startgame"))
+                var item = jumpList.Items.FirstOrDefault(x => x.Arguments == "startgame");
+                if (item?.GroupName != "启动游戏")
                 {
-                    return;
+                    jumpList.Items.Remove(item);
+                    item = JumpListItem.CreateWithArguments("startgame", "启动游戏");
+                    item.GroupName = "启动游戏";
+                    item.Logo = new Uri("ms-appx:///Assets/Logos/StoreLogo.png");
+                    jumpList.Items.Add(item);
+                    await jumpList.SaveAsync();
                 }
-                var item = JumpListItem.CreateWithArguments("startgame", "启动游戏");
-                item.GroupName = "启动游戏";
-                item.Logo = new Uri("ms-appx:///Assets/Logos/StoreLogo.png");
-                jumpList.Items.Add(item);
-                await jumpList.SaveAsync();
             }
             catch (Exception ex)
             {
@@ -261,7 +262,7 @@ namespace Xunkong.Desktop
             _timer.Elapsed += BackgroundTaskTimeout;
             _timer.Start();
             Log.Information($"Launcher argurement: {arg}");
-            var service = ActivatorUtilities.GetServiceOrCreateInstance<BackgroundService>(Services);
+            var service = ActivatorUtilities.GetServiceOrCreateInstance<InvokeService>(Services);
             if (arg == "dailynote")
             {
                 await service.RefreshDailyNoteTilesAsync();

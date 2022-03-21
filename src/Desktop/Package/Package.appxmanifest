@@ -5,8 +5,7 @@
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
-  xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
-  IgnorableNamespaces="uap rescap desktop6">
+  IgnorableNamespaces="uap rescap">
 
 	<Identity
 	  Name="Xunkong.Desktop"
@@ -14,10 +13,9 @@
 	  Version="0.1.3.0" />
 
 	<Properties>
-		<DisplayName>寻空 开发版</DisplayName>
+		<DisplayName>寻空 预览版</DisplayName>
 		<PublisherDisplayName>Scighost</PublisherDisplayName>
 		<Logo>Assets\Logos\StoreLogo.png</Logo>
-		<desktop6:RegistryWriteVirtualization>disabled</desktop6:RegistryWriteVirtualization>
 	</Properties>
 
 	<Dependencies>
@@ -73,7 +71,6 @@
 
 	<Capabilities>
 		<rescap:Capability Name="runFullTrust" />
-		<rescap:Capability Name="unvirtualizedResources"/>
 	</Capabilities>
 
 	<Extensions>

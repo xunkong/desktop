@@ -14,12 +14,12 @@
             {
                 if (args[0] == "startgame")
                 {
-                    BackgroundService.StartGameWishoutLogAsync().Wait();
+                    InvokeService.StartGameWishoutLogAsync().Wait();
                 }
                 else
                 {
                     var userName = args[0].Split('_')[1];
-                    BackgroundService.StartGameWishAccountAsync(userName).Wait();
+                    InvokeService.StartGameWishAccountAsync(userName).Wait();
                 }
             }
             else

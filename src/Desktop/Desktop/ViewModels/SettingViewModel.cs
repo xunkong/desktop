@@ -1,6 +1,5 @@
 ﻿using AngleSharp;
 using CommunityToolkit.WinUI.UI;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.DataTransfer;
@@ -30,7 +29,7 @@ namespace Xunkong.Desktop.ViewModels
 
         private readonly HoyolabService _hoyolabService;
 
-        private readonly BackgroundService _backgroundService;
+        private readonly InvokeService _invokeService;
 
         public string AppName => XunkongEnvironment.AppName;
 
@@ -49,7 +48,7 @@ namespace Xunkong.Desktop.ViewModels
                                 XunkongApiService xunkongApiService,
                                 WishlogService wishlogService,
                                 HoyolabService hoyolabService,
-                                BackgroundService backgroundService)
+                                InvokeService backgroundService)
         {
             _logger = logger;
             _ctxFactory = dbContextFactory;
@@ -58,7 +57,7 @@ namespace Xunkong.Desktop.ViewModels
             _xunkongApiService = xunkongApiService;
             _wishlogService = wishlogService;
             _hoyolabService = hoyolabService;
-            _backgroundService = backgroundService;
+            _invokeService = backgroundService;
         }
 
 
@@ -647,7 +646,7 @@ namespace Xunkong.Desktop.ViewModels
         {
             try
             {
-                await _backgroundService.StartGameAsync();
+                await _invokeService.StartGameAsync();
             }
             catch (Exception ex)
             {
@@ -755,7 +754,7 @@ namespace Xunkong.Desktop.ViewModels
         {
             try
             {
-                var ADLPROD = BackgroundService.GetEncryptedADLPROD(isOversea);
+                var ADLPROD = await InvokeService.GetADLPROD(isOversea);
                 using var ctx = _ctxFactory.CreateDbContext();
                 var account = await ctx.GenshinUsersAccounts.AsNoTracking().Where(x => x.ADLPROD == ADLPROD).FirstOrDefaultAsync();
                 if (account != null)
