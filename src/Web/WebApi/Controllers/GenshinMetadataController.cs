@@ -2,7 +2,6 @@
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using Xunkong.Core.Metadata;
 using Xunkong.Core.XunkongApi;
 using Xunkong.Web.Api.Filters;
@@ -31,11 +30,9 @@ namespace Xunkong.Web.Api.Controllers
         }
 
 
-
-        [HttpGet("character")]
-        public async Task<ResponseBaseWrapper> GetCharacterInfos([FromQuery] string? language = null)
+        private string ParseLanguage(string? language)
         {
-            var lang = language?.ToLower() switch
+            return language?.ToLower() switch
             {
                 "de-de" or "de" => "de-de",
                 "en-us" or "en" => "en-us",
@@ -51,6 +48,13 @@ namespace Xunkong.Web.Api.Controllers
                 "zh-tw" or "cht" => "zh-tw",
                 _ => "zh-cn",
             };
+        }
+
+
+        [HttpGet("character")]
+        public async Task<ResponseBaseWrapper> GetCharacterInfos([FromQuery] string? language = null)
+        {
+            var lang = ParseLanguage(language);
             var characters = await _dbContext.CharacterInfos.AsNoTracking().Where(x => x.Enable).Include(x => x.Talents).Include(x => x.Constellations).ToListAsync();
             if (lang != "zh-cn")
             {
@@ -62,10 +66,16 @@ namespace Xunkong.Web.Api.Controllers
 
 
         [HttpGet("weapon")]
-        public async Task<ResponseBaseWrapper> GetWeaponInfos()
+        public async Task<ResponseBaseWrapper> GetWeaponInfos([FromQuery] string? language = null)
         {
-            var list = await _dbContext.WeaponInfos.AsNoTracking().Where(x => x.Enable).ToListAsync();
-            return ResponseBaseWrapper.Ok(new { Count = list.Count, List = list });
+            var lang = ParseLanguage(language);
+            var weapons = await _dbContext.WeaponInfos.AsNoTracking().Where(x => x.Enable).Include(x => x.Skills).ToListAsync();
+            if (lang != "zh-cn")
+            {
+                await ConverterToAnotherLanguage(weapons, lang);
+            }
+            var list = weapons.Adapt<List<WeaponInfo>>();
+            return ResponseBaseWrapper.Ok(new { Language = lang, Count = list.Count, List = list });
         }
 
 
@@ -89,7 +99,7 @@ namespace Xunkong.Web.Api.Controllers
         private async Task ConverterToAnotherLanguage(IEnumerable<CharacterInfoModel> characterInfoModels, string lang)
         {
             using var dapper = _dbFactory.CreateDbConnection();
-            var dy = await dapper.QueryAsync<(long Id, string? Text)>($"SELECT Id,{lang.Replace('-', '_')} FROM i18n;");
+            var dy = await dapper.QueryAsync<(long Id, string? Text)>($"SELECT Id,{lang.Replace('-', '_')} FROM textmaps WHERE Type & 0x0F;");
             var dic = dy.ToDictionary(x => x.Id, x => x.Text);
             foreach (var item in characterInfoModels)
             {
@@ -112,6 +122,31 @@ namespace Xunkong.Web.Api.Controllers
             {
                 item.Name = dic[item.NameTextMapHash];
                 item.Description = dic[item.DescTextMapHash];
+            }
+        }
+
+
+        private async Task ConverterToAnotherLanguage(IEnumerable<WeaponInfoModel> weaponInfoModels, string lang)
+        {
+            using var dapper = _dbFactory.CreateDbConnection();
+            lang = lang.Replace('-', '_');
+            var dy = await dapper.QueryAsync<(long Id, string? Text)>($"SELECT Id,{lang} FROM textmaps WHERE Type & 0xF0;");
+            var dic = dy.ToDictionary(x => x.Id, x => x.Text);
+            foreach (var item in weaponInfoModels)
+            {
+                item.Name = dic[item.NameTextMapHash];
+                item.Description = dic[item.DescTextMapHash];
+            }
+            foreach (var item in weaponInfoModels.SelectMany(x => x.Skills ?? new()))
+            {
+                item.Name = dic[item.NameTextMapHash];
+                item.Description = dic[item.DescTextMapHash];
+            }
+            var dy2 = await dapper.QueryAsync<(int Id, string? Text)>($"select r.Id,t.{lang} from readables r left join readabletextmaps t on r.ContentId=t.Id;");
+            var dic2 = dy2.ToDictionary(x => x.Id, x => x.Text);
+            foreach (var item in weaponInfoModels)
+            {
+                item.Story = dic2[item.StoryId];
             }
         }
 

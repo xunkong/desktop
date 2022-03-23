@@ -19,13 +19,21 @@ namespace Xunkong.Web.Api.Services
 
         public DbSet<WishlogRecordModel> WishlogRecords { get; set; }
 
+        public DbSet<TextMap> TextMaps { get; set; }
+
+        public DbSet<ReadableModel> Readables { get; set; }
+
+        public DbSet<ReadableTextMap> ReadableTextMaps { get; set; }
+
         public DbSet<CharacterInfoModel> CharacterInfos { get; set; }
 
         public DbSet<CharacterConstellationInfoModel> CharacterConstellationInfos { get; set; }
 
         public DbSet<CharacterTalentInfoModel> CharacterTalentInfos { get; set; }
 
-        public DbSet<WeaponInfo> WeaponInfos { get; set; }
+        public DbSet<WeaponInfoModel> WeaponInfos { get; set; }
+
+        public DbSet<WeaponSkillModel> WeaponSkills { get; set; }
 
         public DbSet<WishEventInfo> WishEventInfos { get; set; }
 
@@ -80,8 +88,6 @@ namespace Xunkong.Web.Api.Services
             modelBuilder.Entity<DesktopUpdateVersion>().Property(x => x.Version).HasConversion(v => v.ToString(), s => new Version(s));
             modelBuilder.Entity<DesktopChangelog>().Property(x => x.Version).HasConversion(v => v.ToString(), s => new Version(s));
             modelBuilder.Entity<WallpaperInfo>().Property(x => x.Tags).HasConversion(v => v.ToString(), s => s.Split(';', StringSplitOptions.None).ToList());
-            //modelBuilder.Entity<CharacterConstellationInfoModel>().HasOne<CharacterInfoModel>().WithMany().HasForeignKey(x => x.CharacterInfoId);
-            //modelBuilder.Entity<CharacterTalentInfoModel>().HasOne<CharacterInfoModel>().WithMany().HasForeignKey(x => x.CharacterInfoId);
         }
 
 

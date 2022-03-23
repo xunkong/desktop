@@ -66,6 +66,7 @@ builder.Services.AddSingleton(new DbConnectionFactory(Environment.GetEnvironment
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
+    options.JsonSerializerOptions.WriteIndented = true;
     options.JsonSerializerOptions.AllowTrailingCommas = true;
     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     options.JsonSerializerOptions.ReadCommentHandling = System.Text.Json.JsonCommentHandling.Skip;

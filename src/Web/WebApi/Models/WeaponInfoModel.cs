@@ -1,9 +1,12 @@
-﻿namespace Xunkong.Core.Metadata
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using Xunkong.Core.Metadata;
+
+namespace Xunkong.Web.Api.Models
 {
     [Table("Info_Weapon")]
-    public class WeaponInfo
+    public class WeaponInfoModel
     {
-
         public int Id { get; set; }
 
         public bool Enable { get; set; }
@@ -25,8 +28,14 @@
 
         public string? Story { get; set; }
 
-        public List<WeaponSkill> Skills { get; set; }
+        [ForeignKey("WeaponInfoId")]
+        public List<WeaponSkillModel> Skills { get; set; }
 
+        public long NameTextMapHash { get; set; }
+
+        public long DescTextMapHash { get; set; }
+
+        public int StoryId { get; set; }
 
     }
 }
