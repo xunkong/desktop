@@ -35,6 +35,7 @@
 		<None Remove="Controls\NotificationControl.xaml" />
 		<None Remove="Controls\WebToolContentControl.xaml" />
 		<None Remove="Pages\AlbumPage.xaml" />
+		<None Remove="Pages\CharacterInfoPage.xaml" />
 		<None Remove="Pages\ToolboxPage.xaml" />
 		<None Remove="Pages\TravelNotesPage.xaml" />
 		<None Remove="Pages\WebViewPage.xaml" />
@@ -66,9 +67,9 @@
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Windows.CsWinRT" Version="1.6.1" />
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.1" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
-		<PackageReference Include="MiniExcel" Version="1.24.1" />
+		<PackageReference Include="MiniExcel" Version="1.24.3" />
 		<PackageReference Include="Serilog.Expressions" Version="3.3.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
@@ -85,6 +86,12 @@
 		<ProjectReference Include="..\Database\Xunkong.Desktop.Database.csproj" />
 		<ProjectReference Include="..\Extension\Xunkong.Desktop.Extension.csproj" />
 		<ProjectReference Include="..\Secret\Xunkong.Desktop.Secret.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Pages\CharacterInfoPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 
 	<ItemGroup>

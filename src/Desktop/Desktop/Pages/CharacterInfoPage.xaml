@@ -1,0 +1,487 @@
+﻿<Page x:Class="Xunkong.Desktop.Pages.CharacterInfoPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:cc="using:CommunityToolkit.WinUI.UI.Controls"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:hoyolab="using:Xunkong.Core.Hoyolab"
+      xmlns:local="using:Xunkong.Desktop.Pages"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:meta="using:Xunkong.Core.Metadata"
+      xmlns:models="using:Xunkong.Desktop.Models"
+      x:DefaultBindMode="OneWay"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+      mc:Ignorable="d">
+
+    <Page.Resources>
+        <SolidColorBrush x:Key="CircleStrokeBrush"
+                         Opacity="0.2"
+                         Color="{ThemeResource SystemAccentColor}" />
+        <SolidColorBrush x:Key="CirclePointerOverBackgroudBrush"
+                         Opacity="0.5"
+                         Color="{ThemeResource SystemAccentColor}" />
+        <SolidColorBrush x:Key="CircleSelectedBackgroudBrush"
+                         Opacity="0.8"
+                         Color="{ThemeResource SystemAccentColor}" />
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+
+        <Grid Padding="48,0,48,0"
+              Background="{ThemeResource CustomControlBackgroundAcrylicBrush}"
+              CornerRadius="4,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <TextBlock HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Style="{ThemeResource SubtitleTextBlockStyle}"
+                       Text="角色信息" />
+        </Grid>
+
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <ToggleButton Name="_ToggleButton_LeftPanel"
+                          Width="36"
+                          Height="36"
+                          Margin="24,0,16,4"
+                          Padding="0"
+                          VerticalAlignment="Bottom"
+                          Style="{ThemeResource DateTimePickerFlyoutButtonStyle}">
+                <Path Width="20"
+                      Data="M155 459.9h319.9V140c0-30.4-24.7-55.1-55.1-55.1H155c-30.4 0-55.1 24.7-55.1 55.1v264.8c0 30.4 24.7 55.1 55.1 55.1z m-11.1-320c0-6 5.1-11.1 11.1-11.1l264.9 0.1c6 0 11.1 5.1 11.1 11.1v275.8H155c-6 0-11.1-5.1-11.1-11.1V139.9zM875 84.9H610.2c-30.4 0-55.1 24.7-55.1 55.1v319.9H875c30.4 0 55.1-24.7 55.1-55.1V140c0-30.4-24.7-55.1-55.1-55.1z m11.1 319.9c0 6-5.1 11.1-11.1 11.1H599.1V140c0-6 5.1-11.1 11.1-11.1H875c6 0 11.1 5.1 11.1 11.1v264.8zM99.9 595.1V860c0 30.4 24.7 55.1 55.1 55.1h264.9c30.3 0 55.1-24.8 55.1-55.1V540H155c-30.4 0-55.1 24.7-55.1 55.1z m331 264.9c0 6-5.1 11.1-11.1 11.1H155c-6 0-11.1-5.1-11.1-11.1V595.1c0-6 5.1-11.1 11.1-11.1h275.9v276zM875 540H555.1v320c0 30.4 24.7 55.1 55.1 55.1H875c30.4 0 55.1-24.8 55.1-55.1V595.1c0-30.4-24.7-55.1-55.1-55.1z m11.1 320c0 6-5.1 11.1-11.1 11.1H610.2c-6 0-11.1-5.1-11.1-11.1V584H875c6 0 11.1 5.1 11.1 11.1V860z"
+                      Fill="{ThemeResource TextFillColorTertiaryBrush}"
+                      Stretch="Uniform" />
+            </ToggleButton>
+
+
+            <ListBox Name="_ListBox_SideIcon"
+                     Grid.Column="1"
+                     Margin="0,0,48,0"
+                     Background="Transparent"
+                     ItemsSource="{x:Bind vm.Characters}"
+                     PointerWheelChanged="_ListBox_SideIcon_PointerWheelChanged"
+                     ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                     ScrollViewer.HorizontalScrollMode="Enabled"
+                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                     ScrollViewer.VerticalScrollMode="Disabled"
+                     SelectedItem="{x:Bind vm.SelectedCharacter, Mode=TwoWay}"
+                     SelectionChanged="_Character_SelectionChanged"
+                     Visibility="{x:Bind _ToggleButton_LeftPanel.IsChecked, Converter={StaticResource BoolToVisibilityReversedConverter}}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ItemsStackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="0" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Grid x:Name="LayoutRoot"
+                                          Width="60"
+                                          Background="{TemplateBinding Background}"
+                                          BorderThickness="{TemplateBinding BorderThickness}">
+                                        <Grid.Resources>
+                                            <Style x:Key="BaseContentPresenterStyle" TargetType="ContentPresenter">
+                                                <Setter Property="FontFamily" Value="XamlAutoFontFamily" />
+                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                                <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+                                                <Setter Property="TextWrapping" Value="Wrap" />
+                                                <Setter Property="LineStackingStrategy" Value="MaxHeight" />
+                                                <Setter Property="TextLineBounds" Value="Full" />
+                                                <Setter Property="OpticalMarginAlignment" Value="TrimSideBearings" />
+                                            </Style>
+                                            <Style x:Key="BodyContentPresenterStyle"
+                                                   BasedOn="{StaticResource BaseContentPresenterStyle}"
+                                                   TargetType="ContentPresenter">
+                                                <Setter Property="FontWeight" Value="Normal" />
+                                                <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+                                            </Style>
+                                        </Grid.Resources>
+                                        <Ellipse x:Name="PressedBackground"
+                                                 Width="40"
+                                                 Height="40"
+                                                 Margin="0,4,0,0"
+                                                 Stroke="{ThemeResource CircleStrokeBrush}"
+                                                 StrokeThickness="2" />
+                                        <ContentPresenter x:Name="ContentPresenter"
+                                                          Margin="{TemplateBinding Padding}"
+                                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                          Content="{TemplateBinding Content}"
+                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                          ContentTransitions="{TemplateBinding ContentTransitions}"
+                                                          Style="{StaticResource BodyContentPresenterStyle}"
+                                                          TextWrapping="NoWrap" />
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <VisualState x:Name="Normal" />
+                                                <VisualState x:Name="Disabled">
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="PointerOver">
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PressedBackground" Storyboard.TargetProperty="Fill">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CirclePointerOverBackgroudBrush}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="Pressed">
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PressedBackground" Storyboard.TargetProperty="Fill">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CirclePointerOverBackgroudBrush}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Opacity">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="0.6" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="Selected">
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PressedBackground" Storyboard.TargetProperty="Fill">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CircleSelectedBackgroudBrush}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="SelectedPointer" Storyboard.TargetProperty="Fill">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CircleSelectedBackgroudBrush}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="SelectedUnfocused">
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PressedBackground" Storyboard.TargetProperty="Fill">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CircleSelectedBackgroudBrush}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="SelectedPointerOver">
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PressedBackground" Storyboard.TargetProperty="Fill">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CircleSelectedBackgroudBrush}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </VisualState>
+                                                <VisualState x:Name="SelectedPressed">
+                                                    <Storyboard>
+                                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PressedBackground" Storyboard.TargetProperty="Fill">
+                                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource CircleSelectedBackgroudBrush}" />
+                                                        </ObjectAnimationUsingKeyFrames>
+                                                    </Storyboard>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+                                    </Grid>
+
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="models:CharacterInfo_Character">
+                        <cc:ImageEx Width="56"
+                                    Margin="0,0,0,16"
+                                    Source="{x:Bind SideIcon}"
+                                    Stretch="UniformToFill" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+
+            <GridView Name="_GridView_Character"
+                      Grid.Row="1"
+                      Width="480"
+                      Padding="20,0,12,0"
+                      Background="{ThemeResource CustomControlBackgroundAcrylicBrush}"
+                      Canvas.ZIndex="1"
+                      CornerRadius="0 8 8 0"
+                      ItemsSource="{x:Bind vm.Characters}"
+                      SelectedItem="{x:Bind vm.SelectedCharacter, Mode=TwoWay}"
+                      SelectionChanged="_Character_SelectionChanged"
+                      Visibility="{x:Bind _ToggleButton_LeftPanel.IsChecked, Converter={StaticResource BoolToVisibilityConverter}}">
+                <GridView.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                        <Setter Property="Margin" Value="4" />
+                    </Style>
+                </GridView.ItemContainerStyle>
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="models:CharacterInfo_Character">
+                        <Grid Width="80" CornerRadius="4">
+                            <cc:ImageEx Source="{x:Bind Rarity, Converter={StaticResource RarityToBackgroundImageConverter}}" />
+                            <cc:ImageEx VerticalAlignment="Top"
+                                        CornerRadius="4,4,16,0"
+                                        Source="{x:Bind FaceIcon}" />
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Bottom"
+                                       FontWeight="SemiBold"
+                                       Foreground="#84603D">
+                                <Run Text="Lv." /><Run Text="{x:Bind Level}" />
+                            </TextBlock>
+                            <Rectangle Fill="#60000000" Visibility="{x:Bind IsOwn, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
+                        </Grid>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+
+
+
+            <ScrollViewer Grid.Row="1"
+                          Grid.ColumnSpan="2"
+                          Padding="24,12,48,0">
+                <StackPanel Width="1280"
+                            Padding="0,0,0,24"
+                            Spacing="16">
+
+                    <Grid Name="_Grid_GachaSplash"
+                          Width="1280"
+                          Height="640">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <cc:ImageEx Grid.RowSpan="2"
+                                    Grid.ColumnSpan="4"
+                                    VerticalAlignment="Top"
+                                    Source="{x:Bind vm.SelectedCharacter.GachaSplash}"
+                                    Stretch="Uniform" />
+                        <ItemsControl Name="_ItemsControl_Talents"
+                                      Grid.Row="0"
+                                      Grid.Column="1"
+                                      VerticalAlignment="Center"
+                                      ItemsSource="{x:Bind vm.SelectedCharacter.Talents}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="6" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:CharacterInfo_Talent">
+                                    <StackPanel Height="36"
+                                                Background="Transparent"
+                                                Orientation="Horizontal"
+                                                Spacing="16"
+                                                Tapped="ShowAttachedFlyout">
+                                        <Border Width="36"
+                                                Height="36"
+                                                BorderBrush="{ThemeResource CircleStrokeBrush}"
+                                                BorderThickness="2"
+                                                CornerRadius="36">
+                                            <cc:ImageEx Source="{x:Bind Icon}" />
+                                        </Border>
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{x:Bind Name}" />
+                                            <TextBlock FontSize="12"
+                                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                                       Visibility="{x:Bind ShowSkillLevel, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                <Run Text="Lv." /><Run Text="{x:Bind CurrentLevel}" />
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <FlyoutBase.AttachedFlyout>
+                                            <Flyout OverlayInputPassThroughElement="{Binding ElementName=_Grid_GachaSplash}" Placement="LeftEdgeAlignedTop">
+                                                <TextBlock Text="{x:Bind Description}" TextWrapping="Wrap" />
+                                            </Flyout>
+                                        </FlyoutBase.AttachedFlyout>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <ItemsControl Name="_ItemsControl_Constellations"
+                                      Grid.Row="1"
+                                      Grid.Column="1"
+                                      VerticalAlignment="Center"
+                                      ItemsSource="{x:Bind vm.SelectedCharacter.Constellations}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Spacing="6" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:CharacterInfo_Constellation">
+                                    <StackPanel Height="36"
+                                                Background="Transparent"
+                                                Orientation="Horizontal"
+                                                Spacing="16"
+                                                Tapped="ShowAttachedFlyout">
+                                        <Grid Width="36"
+                                              Height="36"
+                                              BorderBrush="{ThemeResource CircleStrokeBrush}"
+                                              BorderThickness="2"
+                                              CornerRadius="36">
+                                            <cc:ImageEx Source="{x:Bind Icon}" />
+                                            <Ellipse Fill="#80000000" Visibility="{x:Bind IsActive, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
+                                        </Grid>
+                                        <TextBlock VerticalAlignment="Center" Text="{x:Bind Name}" />
+                                        <FlyoutBase.AttachedFlyout>
+                                            <Flyout OverlayInputPassThroughElement="{Binding ElementName=_Grid_GachaSplash}" Placement="LeftEdgeAlignedTop">
+                                                <TextBlock Text="{x:Bind Description}" />
+                                            </Flyout>
+                                        </FlyoutBase.AttachedFlyout>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+
+                        <StackPanel Grid.RowSpan="2"
+                                    Margin="24,0,0,40"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Bottom"
+                                    Spacing="16"
+                                    Visibility="{x:Bind vm.SelectedCharacter, Converter={StaticResource ObjectToVisibilityConverter}}">
+                            <cc:ImageEx Width="40"
+                                        HorizontalAlignment="Left"
+                                        Source="{x:Bind vm.SelectedCharacter.Element, Converter={StaticResource ElementToElementImageConverter}}" />
+                            <TextBlock HorizontalTextAlignment="Left">
+                                <Run FontFamily="楷体" Text="{x:Bind vm.SelectedCharacter.Title}" />
+                                <LineBreak />
+                                <Run FontSize="36" Text="{x:Bind vm.SelectedCharacter.Name}" />
+                            </TextBlock>
+                            <cc:ImageEx Height="20"
+                                        Margin="0,-16,0,0"
+                                        HorizontalAlignment="Left"
+                                        Source="{x:Bind vm.SelectedCharacter.Rarity, Converter={StaticResource RarityToIconStarConverter}}" />
+                            <TextBlock FontSize="20">
+                                <Run Text="Lv." /><Run Text="{x:Bind vm.SelectedCharacter.Level}" />
+                            </TextBlock>
+                            <TextBlock FontSize="20">
+                                <Run Text="好感度：" />
+                                <Run Text="{x:Bind vm.SelectedCharacter.Fetter}" />
+                            </TextBlock>
+                            <TextBlock FontSize="20">
+                                <Run Text="生日：" />
+                                <Run Text="{x:Bind vm.SelectedCharacter.Birthday}" />
+                            </TextBlock>
+                            <TextBlock FontSize="20">
+                                <Run Text="命之座：" />
+                                <Run Text="{x:Bind vm.SelectedCharacter.ConstllationName}" />
+                            </TextBlock>
+                            <TextBlock FontSize="20">
+                                <Run Text="所属势力：" />
+                                <Run Text="{x:Bind vm.SelectedCharacter.Affiliation}" />
+                            </TextBlock>
+                            <TextBlock Margin="0,4,0,0"
+                                       FontFamily="楷体"
+                                       Text="{Binding SelectedCharacter.Description}" />
+                        </StackPanel>
+
+                    </Grid>
+
+                    <MenuFlyoutSeparator Visibility="{x:Bind vm.SelectedCharacter.IsOwn, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+
+
+                    <StackPanel Height="120"
+                                Margin="24,0,0,0"
+                                Orientation="Horizontal"
+                                Spacing="16"
+                                Visibility="{x:Bind vm.SelectedCharacter.IsOwn, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+                        <cc:ImageEx Width="60" Source="{x:Bind vm.SelectedCharacter.Weapon.GachaIcon}" />
+                        <StackPanel Width="400">
+                            <TextBlock>
+                                <Run FontSize="16" Text="{x:Bind vm.SelectedCharacter.Weapon.Name}" />
+                                <LineBreak />
+                                <Run FontSize="12" Text="精炼" /><Run FontSize="12" Text="{x:Bind vm.SelectedCharacter.Weapon.AffixLevel}" /><Run FontSize="12" Text="阶" />
+                                <Run FontSize="12" Text="Lv." /><Run FontSize="12" Text="{x:Bind vm.SelectedCharacter.Weapon.Level}" />
+                            </TextBlock>
+                            <cc:ImageEx Height="20"
+                                        HorizontalAlignment="Left"
+                                        Source="{x:Bind vm.SelectedCharacter.Weapon.Rarity, Converter={StaticResource RarityToIconStarConverter}}" />
+                            <TextBlock Text="{x:Bind vm.SelectedCharacter.Weapon.Description}" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <AppBarSeparator />
+                        <ItemsControl ItemsSource="{x:Bind vm.SelectedCharacter.Reliquaries}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="16" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="hoyolab:AvatarReliquary">
+                                    <Grid VerticalAlignment="Center">
+                                        <cc:ImageEx Width="80"
+                                                    VerticalAlignment="Top"
+                                                    Source="{x:Bind Rarity, Converter={StaticResource RarityToBackgroundImageConverter}}" />
+                                        <cc:ImageEx Width="80"
+                                                    VerticalAlignment="Top"
+                                                    Source="{x:Bind Icon}" />
+                                        <TextBlock HorizontalAlignment="Center"
+                                                   VerticalAlignment="Bottom"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#84603D">
+                                            <Run Text="Lv." /><Run Text="{x:Bind Level}" />
+                                        </TextBlock>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <MenuFlyoutSeparator Visibility="{x:Bind vm.SelectedCharacter.IsOwn, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
+                    <TextBlock Margin="24,0,0,0"
+                               FontSize="20"
+                               Text="抽卡记录"
+                               Visibility="{x:Bind vm.SelectedCharacter.Wishlogs, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
+                    <StackPanel Margin="24,0,0,0"
+                                Orientation="Horizontal"
+                                Visibility="{x:Bind vm.SelectedCharacter.Wishlogs, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
+                        <TextBlock Width="140" Text="卡池" />
+                        <TextBlock Width="180" Text="时间" />
+                        <TextBlock Width="80" Text="保底内抽数" />
+                    </StackPanel>
+                    <ItemsRepeater Margin="24,0,0,0" ItemsSource="{x:Bind vm.SelectedCharacter.Wishlogs}">
+                        <ItemsRepeater.Layout>
+                            <StackLayout Spacing="8" />
+                        </ItemsRepeater.Layout>
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate x:DataType="models:WishlogItemEx">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Width="140" Text="{x:Bind VersionAndName}" />
+                                    <TextBlock Width="180" Text="{x:Bind Time, Converter={StaticResource DateTimeOffsetToDateTimeStringConverter}}" />
+                                    <TextBlock Width="80" Text="{x:Bind GuaranteeIndex}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
+
+                </StackPanel>
+            </ScrollViewer>
+
+
+
+
+
+        </Grid>
+
+
+
+
+
+
+
+    </Grid>
+</Page>

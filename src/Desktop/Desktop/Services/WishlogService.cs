@@ -396,18 +396,34 @@ namespace Xunkong.Desktop.Services
                     }
                 }
                 var queryType = group.FirstOrDefault()?.QueryType;
+                if (queryType is WishType.Novice or WishType.Permanent)
+                {
+                    var eventName = queryType switch
+                    {
+                        WishType.Novice => "新手祈愿",
+                        WishType.Permanent => "常驻祈愿",
+                        _ => "",
+                    };
+                    group.ToList().ForEach(x => x.WishEventName = eventName);
+                }
                 if (queryType is WishType.CharacterEvent or WishType.WeaponEvent)
                 {
-                    var eventGroup = events.Where(x => x.QueryType == queryType).GroupBy(x => x.StartTime);
-                    var rank45Items = group.Where(x => x.RankType > 3).ToList();
-                    Parallel.ForEach(eventGroup, eg =>
+                    var thisEvents = events.Where(x => x.QueryType == queryType).ToList();
+                    Parallel.ForEach(thisEvents, e =>
                     {
-                        var upNames = eg.SelectMany(x => x.Rank5UpItems).Concat(eg.SelectMany(x => x.Rank4UpItems).Distinct()).ToList();
-                        var firstEvent = eg.First();
-                        var queryUp = rank45Items.Where(x => firstEvent.StartTime <= x.Time && x.Time <= firstEvent.EndTime).Where(x => upNames.Contains(x.Name));
-                        foreach (var item in queryUp)
+                        var eventItems = group.Where(x => x.WishType == e.WishType && x.Time >= e.StartTime && x.Time <= e.EndTime).ToList();
+                        foreach (var eventItem in eventItems)
                         {
-                            item.IsUp = true;
+                            eventItem.Version = e.Version;
+                            eventItem.WishEventName = e.Name;
+                            if (eventItem.RankType == 5 && e.Rank5UpItems.Contains(eventItem.Name))
+                            {
+                                eventItem.IsUp = true;
+                            }
+                            if (eventItem.RankType == 4 && e.Rank4UpItems.Contains(eventItem.Name))
+                            {
+                                eventItem.IsUp = true;
+                            }
                         }
                     });
                 }

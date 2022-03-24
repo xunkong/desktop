@@ -66,6 +66,7 @@
             <xdc:ListViewIndexConerter x:Key="ListViewIndexConerter" />
             <xdc:RarityToBackgroundImageConverter x:Key="RarityToBackgroundImageConverter" />
             <xdc:ElementToElementImageConverter x:Key="ElementToElementImageConverter" />
+            <xdc:RarityToIconStarConverter x:Key="RarityToIconStarConverter" />
 
 
             <Style TargetType="cc:ImageEx">

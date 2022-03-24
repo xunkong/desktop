@@ -286,6 +286,20 @@ namespace Xunkong.Desktop.Services
         }
 
 
+        public async Task<List<AvatarDetail>> GetAvatarDetailsAsync(UserGameRoleInfo? role)
+        {
+            if (role is null)
+            {
+                return new();
+            }
+            var player = await _hoyolabClient.GetPlayerSummaryInfoAsync(role);
+            return await _hoyolabClient.GetAvatarDetailsAsync(role, player);
+        }
+
+        public async Task<List<AvatarSkill>> GetAvatarSkillLevelAsync(UserGameRoleInfo role, int characterId)
+        {
+            return await _hoyolabClient.GetAvatarSkillLevelAsync(role, characterId);
+        }
 
 
         public async Task<DailyNoteInfo?> GetDailyNoteInfoAsync(UserGameRoleInfo role)

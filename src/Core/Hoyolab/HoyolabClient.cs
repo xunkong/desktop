@@ -338,6 +338,19 @@ namespace Xunkong.Core.Hoyolab
         }
 
 
+        public async Task<List<AvatarSkill>> GetAvatarSkillLevelAsync(UserGameRoleInfo role, int characterId)
+        {
+            var url = $"{ApiTakumi}/event/e20200928calculate/v1/sync/avatar/detail?avatar_id={characterId}&uid={role.Uid}&region={role.Region.ToDescriptionOrString()}";
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add(Accept, Application_Json);
+            request.Headers.Add(UserAgent, UA2101);
+            request.Headers.Add(Cookie, role.Cookie);
+            request.Headers.Add(X_Reuqest_With, com_mihoyo_hyperion);
+            request.Headers.Add(Referer, "https://webstatic.mihoyo.com/ys/event/e20200923adopt_calculator/index.html?bbs_presentation_style=fullscreen&bbs_auth_required=true&mys_source=GameRecord");
+            var data = await CommonSendAsync<AvatarCalculate>(request);
+            return data.Skills;
+        }
+
 
         /// <summary>
         /// 活动记录
