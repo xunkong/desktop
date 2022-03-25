@@ -1,20 +1,12 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI;
 using Xunkong.Core.Metadata;
 
@@ -39,6 +31,7 @@ namespace Xunkong.Desktop.Pages
         {
             this.InitializeComponent();
             DataContext = ActivatorUtilities.GetServiceOrCreateInstance<CharacterInfoViewModel>(App.Current.Services);
+            vm.ArcList = ArcList;
             Loaded += CharacterInfoPage_Loaded;
         }
 
@@ -46,8 +39,6 @@ namespace Xunkong.Desktop.Pages
         {
             _ScrollViewer_SideIcon = (VisualTreeHelper.GetChild(_ListBox_SideIcon, 0) as Border)?.Child as ScrollViewer;
             await vm.InitializeDataAsync();
-            await Task.Delay(100);
-            ArcList();
         }
 
         private void _ListBox_SideIcon_PointerWheelChanged(object sender, PointerRoutedEventArgs e)
@@ -75,7 +66,7 @@ namespace Xunkong.Desktop.Pages
                 }
                 var pos = element.TransformToVisual(_Grid_GachaSplash).TransformPoint(new Point());
                 var x = pos.X - 400 - element.Translation.X;
-                var y = height / 2 - pos.Y ;
+                var y = height / 2 - pos.Y;
                 var deltaX = Math.Sqrt(Math.Pow(x, 2) - Math.Pow(y, 2)) - x;
                 element.Translation = new Vector3((float)deltaX, 0, 0);
             }
@@ -92,7 +83,7 @@ namespace Xunkong.Desktop.Pages
                 }
                 var pos = element.TransformToVisual(_Grid_GachaSplash).TransformPoint(new Point());
                 var x = pos.X - 550 - element.Translation.X;
-                var y = pos.Y - height / 2 ;
+                var y = pos.Y - height / 2;
                 var deltaX = Math.Sqrt(Math.Pow(x, 2) - Math.Pow(y, 2)) - x;
                 element.Translation = new Vector3((float)deltaX, 0, 0);
             }

@@ -1,5 +1,4 @@
-﻿using Windows.Media.Protection.PlayReady;
-using Xunkong.Core.Hoyolab;
+﻿using Xunkong.Core.Hoyolab;
 using Xunkong.Core.SpiralAbyss;
 using Xunkong.Core.TravelRecord;
 using Xunkong.Core.XunkongApi;

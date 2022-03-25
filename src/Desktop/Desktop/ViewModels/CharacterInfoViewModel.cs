@@ -13,6 +13,7 @@ namespace Xunkong.Desktop.ViewModels
 
         private readonly WishlogService _wishlogService;
 
+        private readonly XunkongApiService _xunkongApiService;
 
 
         static CharacterInfoViewModel()
@@ -21,14 +22,21 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
-        public CharacterInfoViewModel(ILogger<CharacterInfoViewModel> logger, IDbContextFactory<XunkongDbContext> ctxFactory, HoyolabService houselabService, WishlogService wishlogService)
+        public CharacterInfoViewModel(ILogger<CharacterInfoViewModel> logger,
+                                      IDbContextFactory<XunkongDbContext> ctxFactory,
+                                      HoyolabService houselabService,
+                                      WishlogService wishlogService,
+                                      XunkongApiService xunkongApiService)
         {
             _logger = logger;
             _ctxFactory = ctxFactory;
             _houselabService = houselabService;
             _wishlogService = wishlogService;
+            _xunkongApiService = xunkongApiService;
+
         }
 
+        public Action ArcList;
 
         private UserGameRoleInfo? _role;
 
@@ -54,7 +62,16 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+        private bool _IsRefreshPageTeachingTipOpen;
+        public bool IsRefreshPageTeachingTipOpen
+        {
+            get => _IsRefreshPageTeachingTipOpen;
+            set => SetProperty(ref _IsRefreshPageTeachingTipOpen, value);
+        }
 
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
         public async Task InitializeDataAsync()
         {
             try
@@ -65,7 +82,7 @@ namespace Xunkong.Desktop.ViewModels
                 var avatars = await _houselabService.GetAvatarDetailsAsync(role);
                 var info_characters = await ctx.CharacterInfos.AsNoTracking().Include(x => x.Talents).Include(x => x.Constellations).ToListAsync();
                 var characters = info_characters.Adapt<List<CharacterInfo_Character>>();
-                var weaponDic = await ctx.WeaponInfos.AsNoTracking().ToDictionaryAsync(x => x.Id, x => x.GachaIcon);
+                var weaponDic = await ctx.WeaponInfos.AsNoTracking().ToDictionaryAsync(x => x.Id, x => x.AwakenIcon);
                 var wishlogs = await _wishlogService.GetWishlogItemExByUidAsync(role?.Uid ?? 0);
                 var matches = from a in avatars join c in characters on a.Id equals c.Id select (a, c);
                 int exceptId = 0;
@@ -76,8 +93,9 @@ namespace Xunkong.Desktop.ViewModels
                     item.c.Fetter = item.a.Fetter;
                     item.c.ActivedConstellationNumber = item.a.ActivedConstellationNumber;
                     item.c.Weapon = item.a.Weapon.Adapt<CharacterInfo_Weapon>();
+                    item.c.Weapon.Description = item.c.Weapon.Description.Replace("\\n", "\n");
                     weaponDic.TryGetValue(item.c.Weapon.Id, out var gachaIcon);
-                    item.c.Weapon.GachaIcon = gachaIcon!;
+                    item.c.Weapon.AwakenIcon = gachaIcon!;
                     item.c.Reliquaries = item.a.Reliquaries;
                     var cons = item.c.Constellations.OrderBy(x => x.Id).ToList();
                     cons.Take(item.a.ActivedConstellationNumber).ToList().ForEach(x => x.IsActived = true);
@@ -112,13 +130,18 @@ namespace Xunkong.Desktop.ViewModels
                 InfoBarHelper.Error(ex);
                 _logger.LogError(ex, "Initialize data.");
             }
+            finally
+            {
+                await Task.Delay(100);
+                ArcList();
+            }
         }
 
 
 
         private async void GetCharacterSkillLevelAsync(CharacterInfo_Character? character)
         {
-            if (_role is null || !character.IsOwn || character.GotSkillLevel || character.IsGettingSkillLevel || character is null)
+            if (_role is null || character is null || !character.IsOwn || character.GotSkillLevel || character.IsGettingSkillLevel)
             {
                 return;
             }
@@ -160,6 +183,22 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task GetMetadataAsync()
+        {
+            try
+            {
+                await _xunkongApiService.GetCharacterInfosFromServerAsync();
+                await _xunkongApiService.GetWeaponInfosFromServerAsync();
+                await _xunkongApiService.GetWishEventInfosFromServerAsync();
+                IsRefreshPageTeachingTipOpen = true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Get metadata.");
+                InfoBarHelper.Error(ex);
+            }
+        }
 
 
     }

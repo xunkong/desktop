@@ -406,7 +406,7 @@
 
         <TeachingTip Content="元数据更新完毕，请刷新界面"
                      IsLightDismissEnabled="True"
-                     IsOpen="{x:Bind vm.IsRefreshPageTeachingTipOpen}"
+                     IsOpen="{x:Bind vm.IsRefreshPageTeachingTipOpen, Mode=TwoWay}"
                      PreferredPlacement="BottomLeft"
                      Target="{x:Bind _AppBarButton_RefreshPage}" />
 

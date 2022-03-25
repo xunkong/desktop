@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Xunkong.Core.Metadata;
 
 namespace Xunkong.Web.Api.Models
 {

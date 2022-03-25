@@ -42,6 +42,24 @@
                        VerticalAlignment="Center"
                        Style="{ThemeResource SubtitleTextBlockStyle}"
                        Text="角色信息" />
+            <StackPanel Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <AppBarButton Name="_AppBarButton_RefreshPage"
+                              Command="{x:Bind vm.InitializeDataCommand, Mode=OneTime}"
+                              Icon="Refresh"
+                              Label="刷新页面" />
+                <AppBarButton Name="_AppBarButton_UpdateMetadata"
+                              Command="{x:Bind vm.GetMetadataCommand, Mode=OneTime}"
+                              Icon="ContactInfo"
+                              Label="更新元数据"
+                              ToolTipService.ToolTip="更新角色、武器、卡池等信息" />
+                <TeachingTip Content="元数据更新完毕，请刷新界面"
+                             IsLightDismissEnabled="True"
+                             IsOpen="{x:Bind vm.IsRefreshPageTeachingTipOpen, Mode=TwoWay}"
+                             Target="{x:Bind _AppBarButton_RefreshPage}" />
+
+            </StackPanel>
         </Grid>
 
 
@@ -395,18 +413,32 @@
                     <MenuFlyoutSeparator Visibility="{x:Bind vm.SelectedCharacter.IsOwn, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
 
 
-                    <StackPanel Height="120"
+                    <StackPanel Height="100"
                                 Margin="24,0,0,0"
                                 Orientation="Horizontal"
                                 Spacing="16"
                                 Visibility="{x:Bind vm.SelectedCharacter.IsOwn, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
-                        <cc:ImageEx Width="60" Source="{x:Bind vm.SelectedCharacter.Weapon.GachaIcon}" />
-                        <StackPanel Width="400">
+                        <Grid VerticalAlignment="Center">
+                            <cc:ImageEx Width="80"
+                                        VerticalAlignment="Top"
+                                        Source="{x:Bind vm.SelectedCharacter.Weapon.Rarity, Converter={StaticResource RarityToBackgroundImageConverter}}" />
+                            <cc:ImageEx Width="80"
+                                        VerticalAlignment="Top"
+                                        Source="{x:Bind vm.SelectedCharacter.Weapon.AwakenIcon}" />
+                            <TextBlock HorizontalAlignment="Center"
+                                       VerticalAlignment="Bottom"
+                                       FontWeight="SemiBold"
+                                       Foreground="#84603D">
+                                <Run Text="Lv." /><Run Text="{x:Bind vm.SelectedCharacter.Weapon.Level}" />
+                            </TextBlock>
+                        </Grid>
+                        <StackPanel Width="480">
                             <TextBlock>
                                 <Run FontSize="16" Text="{x:Bind vm.SelectedCharacter.Weapon.Name}" />
                                 <LineBreak />
-                                <Run FontSize="12" Text="精炼" /><Run FontSize="12" Text="{x:Bind vm.SelectedCharacter.Weapon.AffixLevel}" /><Run FontSize="12" Text="阶" />
-                                <Run FontSize="12" Text="Lv." /><Run FontSize="12" Text="{x:Bind vm.SelectedCharacter.Weapon.Level}" />
+                                <Run FontSize="12" Text="精炼" />
+                                <Run FontSize="12" Text="{x:Bind vm.SelectedCharacter.Weapon.AffixLevel}" />
+                                <Run FontSize="12" Text="阶" />
                             </TextBlock>
                             <cc:ImageEx Height="20"
                                         HorizontalAlignment="Left"

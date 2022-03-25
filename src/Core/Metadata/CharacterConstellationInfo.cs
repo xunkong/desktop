@@ -25,7 +25,7 @@
         /// </summary>
         public int PreviewConstellationId { get; set; }
 
-       
+
 
     }
 }

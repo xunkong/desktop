@@ -65,6 +65,6 @@ internal class CharacterInfo_Constellation : CharacterConstellationInfo
 internal class CharacterInfo_Weapon : AvatarWeapon
 {
 
-    public string GachaIcon { get; set; }
+    public string AwakenIcon { get; set; }
 
 }

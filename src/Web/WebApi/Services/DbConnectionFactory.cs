@@ -1,5 +1,4 @@
 ﻿using MySqlConnector;
-using System.Data.Common;
 
 namespace Xunkong.Web.Api.Services
 {

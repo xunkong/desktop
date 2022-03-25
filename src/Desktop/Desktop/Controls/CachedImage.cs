@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.WinUI.UI;
 using CommunityToolkit.WinUI.UI.Controls;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
 namespace Xunkong.Desktop.Controls

@@ -142,7 +142,7 @@ namespace Xunkong.Web.Api.Controllers
                 item.Name = dic[item.NameTextMapHash];
                 item.Description = dic[item.DescTextMapHash];
             }
-            var dy2 = await dapper.QueryAsync<(int Id, string? Text)>($"select r.Id,t.{lang} from readables r left join readabletextmaps t on r.ContentId=t.Id;");
+            var dy2 = await dapper.QueryAsync<(int Id, string? Text)>($"SELECT r.Id,t.{lang} FROM readables r LEFT JOIN readabletextmaps t ON r.ContentId=t.Id;");
             var dic2 = dy2.ToDictionary(x => x.Id, x => x.Text);
             foreach (var item in weaponInfoModels)
             {

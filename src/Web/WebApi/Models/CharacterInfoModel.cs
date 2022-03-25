@@ -73,7 +73,7 @@ namespace Xunkong.Web.Api.Models
 
         [MaxLength(255)]
         public string? CvJapanese { get; set; }
-        
+
         [MaxLength(255)]
         public string? CvEnglish { get; set; }
 

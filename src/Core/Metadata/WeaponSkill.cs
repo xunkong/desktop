@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Xunkong.Core.Metadata
+﻿namespace Xunkong.Core.Metadata
 {
     [Table("Info_Weapon_Skill")]
     public class WeaponSkill
