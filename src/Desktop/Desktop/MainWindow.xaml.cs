@@ -42,6 +42,12 @@ namespace Xunkong.Desktop
             InfoBarHelper.Initialize(_InfoBarContainer);
             Hwnd = WindowNative.GetWindowHandle(this);
             InitializeWindowSize();
+            RegisterMessage();
+        }
+
+
+        private void RegisterMessage()
+        {
             WeakReferenceMessenger.Default.Register<WallpaperInfo>(this, (_, e) => ChangeBackgroundWallpaper(e));
             WeakReferenceMessenger.Default.Register<ChangeApplicationThemeMessage>(this, (_, e) => ChangeApplicationTheme(e.ThemeIndex));
             WeakReferenceMessenger.Default.Register<DisableBackgroundWallpaperMessage>(this, (_, e) => DisableBackgroundWallpaper(e.Disabled));
@@ -92,52 +98,27 @@ namespace Xunkong.Desktop
         }
 
 
-        private void _chromeButton_Tapped(object sender, TappedRoutedEventArgs e)
-        {
-            var point = e.GetPosition(_chromeButton);
-            var x = Math.Round(point.X, 0);
-            if (x < 40)
-            {
-                // 最小化
-                User32.PostMessage(Hwnd, (uint)User32.WindowMessage.WM_SYSCOMMAND, (IntPtr)0xF020, (IntPtr)0);
-            }
-            else if (x < 80)
-            {
-                // 最大化或还原
-                var wp = new User32.WINDOWPLACEMENT();
-                User32.GetWindowPlacement(Hwnd, ref wp);
-                if (wp.showCmd == ShowWindowCommand.SW_MAXIMIZE)
-                {
-                    User32.PostMessage(Hwnd, (uint)User32.WindowMessage.WM_SYSCOMMAND, (IntPtr)0xF120, (IntPtr)0);
-                }
-                else
-                {
-                    User32.PostMessage(Hwnd, (uint)User32.WindowMessage.WM_SYSCOMMAND, (IntPtr)0xF030, (IntPtr)0);
-                }
-            }
-            else
-            {
-                // 关闭
-                Close();
-            }
-        }
-
-
 
         private void ChangeBackgroundWallpaper(WallpaperInfo image)
         {
             DispatcherQueue.TryEnqueue(() =>
             {
-                var uri = new Uri(image.Url);
-                if (uri.Scheme == Uri.UriSchemeFile)
+                if (string.IsNullOrWhiteSpace(image.Url))
                 {
-                    var source = new BitmapImage { UriSource = uri };
-                    _Image_Background.Source = source;
+                    _Image_Background.Source = null;
                 }
                 else
                 {
-                    _Image_Background.Source = image.Url;
-                    //LocalSettingHelper.SaveSetting("LastSavedWallpaperInfo", image.Url);
+                    var uri = new Uri(image.Url);
+                    if (uri.Scheme == Uri.UriSchemeFile)
+                    {
+                        var source = new BitmapImage { UriSource = uri };
+                        _Image_Background.Source = source;
+                    }
+                    else
+                    {
+                        _Image_Background.Source = image.Url;
+                    }
                 }
             });
             _logger.LogInformation($"Change background image:\n{image.Url}");
@@ -156,7 +137,6 @@ namespace Xunkong.Desktop
             _onImageBackgroud.RequestedTheme = theme;
             _rootView.RequestedTheme = theme;
             _InfoBarContainer.RequestedTheme = theme;
-            _chromeButton.RequestedTheme = theme;
         }
 
 
@@ -175,18 +155,23 @@ namespace Xunkong.Desktop
 
         private void HideUIElement(bool hide)
         {
+            if (_Image_Background.Visibility == Visibility.Collapsed)
+            {
+                _onImageBackgroud.Opacity = 1;
+                _InfoBarContainer.Opacity = 1;
+                _rootView.Opacity = 1;
+                return;
+            }
             if (hide)
             {
                 _onImageBackgroud.Opacity = 0;
                 _InfoBarContainer.Opacity = 0;
-                _chromeButton.Opacity = 0;
                 _rootView.Opacity = 0;
             }
             else
             {
                 _onImageBackgroud.Opacity = 1;
                 _InfoBarContainer.Opacity = 1;
-                _chromeButton.Opacity = 1;
                 _rootView.Opacity = 1;
             }
         }

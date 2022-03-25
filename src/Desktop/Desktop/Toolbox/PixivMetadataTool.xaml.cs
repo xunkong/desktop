@@ -116,7 +116,7 @@ namespace Xunkong.Desktop.Toolbox
                     Author = metadata.Artist,
                     Description = metadata.Description?.Replace("'", "\\'"),
                     FileName = fileName,
-                    Url = $"https://file.xunkong.cc/wallpapers/{fileName}",
+                    Url = $"https://file.xunkong.cc/wallpaper/{fileName}",
                     Source = $"https://www.pixiv.net/artworks/{pid}",
                     Tags = metadata.Tags,
                 };
@@ -174,7 +174,7 @@ namespace Xunkong.Desktop.Toolbox
             {
                 var title = obj["title"]?.ToString();
                 var artist = obj["userName"]?.ToString();
-                var description = obj["description"]?.ToString();
+                var description = obj["description"]?.ToString()?.Replace("<br />", "\\n");
                 DateTimeOffset.TryParse(obj["createDate"]?.ToString(), out var time);
                 var tags = new List<string>();
                 if (obj["tags"]?["tags"] is JsonArray tagArray)

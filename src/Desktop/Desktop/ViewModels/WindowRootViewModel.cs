@@ -91,11 +91,6 @@ namespace Xunkong.Desktop.ViewModels
         {
             try
             {
-                //var lastUrl = LocalSettingHelper.GetSetting<string>("LastSavedWallpaperInfo");
-                //if (!string.IsNullOrWhiteSpace(lastUrl))
-                //{
-                //    WeakReferenceMessenger.Default.Send(new WallpaperInfo { Url = lastUrl });
-                //}
                 var image = await _xunkongApiService.GetRecommendWallpaperAsync();
                 BackgroundWallpaper = image;
                 WeakReferenceMessenger.Default.Send(image);

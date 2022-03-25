@@ -113,6 +113,9 @@
                                     UriSource="ms-appx:///Assets/Images/Ui_SystemOpenIcon_Gacha.png" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="角色信息"
+                                    Icon="Contact"
+                                    Tag="CharacterInfoPage" />
                 <NavigationViewItem Content="旅行札记"
                                     Icon="PhoneBook"
                                     Tag="TravelNotesPage" />
@@ -166,12 +169,43 @@
                                         PointerExited="_Button_ResizeWindow_PointerExited"
                                         Style="{ThemeResource WallpaperPanelButtonStyle}"
                                         ToolTipService.ToolTip="调整窗口大小适应图片" />
-                                <Button Command="{x:Bind vm.GetRandomBackgroudWallpaperCommand, Mode=OneTime}"
-                                        CommandParameter="random"
-                                        Content="&#xE895;"
-                                        FontSize="14"
+                                <!--  通知  -->
+                                <Button Name="_Button_Notification"
                                         Style="{ThemeResource WallpaperPanelButtonStyle}"
-                                        ToolTipService.ToolTip="随机切换一张" />
+                                        ToolTipService.ToolTip="通知">
+                                    <Grid Margin="2">
+                                        <Path Width="16"
+                                              Data="M904 176H120c-30.9 0-56 25.1-56 56v560c0 30.9 25.1 56 56 56h784c30.9 0 56-25.1 56-56V232c0-30.9-25.1-56-56-56z m0 56v81.6L522.9 476.8c-6.9 2.9-14.9 3-21.9-0.1L120 313.6V232h784zM120 792V374.5l358.9 153.8c10.6 4.5 21.9 6.8 33.1 6.8 11.3 0 22.6-2.3 33.1-6.8L904 374.5V792H120z"
+                                              Fill="{ThemeResource TextFillColorSecondaryBrush}"
+                                              Stretch="Uniform" />
+                                        <Ellipse Name="_Badge_Notification"
+                                                 Width="8"
+                                                 Height="8"
+                                                 Margin="0,-3,-3,0"
+                                                 HorizontalAlignment="Right"
+                                                 VerticalAlignment="Top"
+                                                 Fill="{ThemeResource AccentFillColorDefaultBrush}"
+                                                 Visibility="Collapsed" />
+                                    </Grid>
+                                    <Button.Flyout>
+                                        <Flyout x:Name="_Flyout_Notification"
+                                                Opened="_Flyout_Notification_Opened"
+                                                Placement="Top">
+                                            <Flyout.FlyoutPresenterStyle>
+                                                <Style TargetType="FlyoutPresenter">
+                                                    <Setter Property="Padding" Value="12,8,12,8" />
+                                                    <Setter Property="CornerRadius" Value="4" />
+                                                </Style>
+                                            </Flyout.FlyoutPresenterStyle>
+                                            <controls:NotificationControl />
+                                        </Flyout>
+                                    </Button.Flyout>
+                                </Button>
+                                <TeachingTip Name="_TeachingTip_NewNotification"
+                                             Content="收到了新的消息"
+                                             IsLightDismissEnabled="True"
+                                             PreferredPlacement="Right"
+                                             Target="{x:Bind _Button_Notification}" />
                                 <Button Content="&#xE76C;"
                                         Flyout="{StaticResource WallpaperInfoFlyout}"
                                         FontSize="14"
@@ -209,8 +243,9 @@
 
 
         <!--  Window Header  -->
-        <Grid Height="{Binding ElementName=_NavigationView, Path=CompactPaneLength}"
-              Margin="0,0,120,0"
+        <Grid x:Name="_appTitleBar"
+              Height="{Binding ElementName=_NavigationView, Path=CompactPaneLength}"
+              Margin="0,0,0,0"
               VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -218,8 +253,7 @@
             </Grid.ColumnDefinitions>
 
             <!--  Title Bar  -->
-            <Border x:Name="_appTitleBar"
-                    Grid.Column="0"
+            <Border Grid.Column="0"
                     Height="{Binding ElementName=_NavigationView, Path=CompactPaneLength}"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Top">
@@ -237,69 +271,12 @@
             </Border>
 
 
-            <StackPanel Grid.Column="1"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Top"
-                        Orientation="Horizontal">
-
-
-                <!--<Button Height="28" Style="{StaticResource DateTimePickerFlyoutButtonStyle}">
-                    <Path Margin="2"
-                          Data="M96 896h832c17.673 0 32 14.327 32 32 0 17.673-14.327 32-32 32H96c-17.673 0-32-14.327-32-32 0-17.673 14.327-32 32-32z m448.906-132.192l276.45-276.45c12.497-12.496 32.758-12.496 45.255 0 12.497 12.497 12.497 32.759 0 45.255L535.597 863.627c-12.497 12.497-32.758 12.497-45.255 0L148.546 524.483c-12.497-12.496-12.497-32.758 0-45.254 12.496-12.497 32.758-12.497 45.254 0l287.106 284.453 0.032-667.427c0-17.673 14.327-32 32-32 17.673 0 32 14.327 32 32l-0.032 667.553z"
-                          Fill="Gray"
-                          Stretch="Uniform" />
-                    <Button.Flyout>
-                        <Flyout Placement="BottomEdgeAlignedRight">
-                            <Border Width="200"
-                                    Height="300"
-                                    BorderThickness="0" />
-                        </Flyout>
-                    </Button.Flyout>
-                </Button>-->
-
-
-                <!--  通知  -->
-                <Button Name="_Button_Notification"
-                        Height="28"
-                        Style="{ThemeResource DateTimePickerFlyoutButtonStyle}">
-                    <Grid Margin="2">
-                        <Path Data="M904 176H120c-30.9 0-56 25.1-56 56v560c0 30.9 25.1 56 56 56h784c30.9 0 56-25.1 56-56V232c0-30.9-25.1-56-56-56z m0 56v81.6L522.9 476.8c-6.9 2.9-14.9 3-21.9-0.1L120 313.6V232h784zM120 792V374.5l358.9 153.8c10.6 4.5 21.9 6.8 33.1 6.8 11.3 0 22.6-2.3 33.1-6.8L904 374.5V792H120z"
-                              Fill="{ThemeResource TextFillColorTertiaryBrush}"
-                              Stretch="Uniform" />
-                        <Ellipse Name="_Badge_Notification"
-                                 Width="8"
-                                 Height="8"
-                                 Margin="0,-3,-3,0"
-                                 HorizontalAlignment="Right"
-                                 VerticalAlignment="Top"
-                                 Fill="{ThemeResource AccentFillColorDefaultBrush}"
-                                 Visibility="Collapsed" />
-                    </Grid>
-                    <Button.Flyout>
-                        <Flyout x:Name="_Flyout_Notification"
-                                Opened="_Flyout_Notification_Opened"
-                                Placement="BottomEdgeAlignedRight">
-                            <Flyout.FlyoutPresenterStyle>
-                                <Style TargetType="FlyoutPresenter">
-                                    <Setter Property="Padding" Value="12,8,12,8" />
-                                    <Setter Property="CornerRadius" Value="4" />
-                                </Style>
-                            </Flyout.FlyoutPresenterStyle>
-                            <controls:NotificationControl />
-                        </Flyout>
-                    </Button.Flyout>
-                </Button>
-
-
-                <TeachingTip Name="_TeachingTip_NewNotification"
-                             Content="收到了新的消息"
-                             IsLightDismissEnabled="True"
-                             PreferredPlacement="BottomLeft"
-                             Target="{x:Bind _Button_Notification}" />
 
 
 
-            </StackPanel>
+
+
+
 
         </Grid>
 

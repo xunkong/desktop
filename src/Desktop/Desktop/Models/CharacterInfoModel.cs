@@ -57,7 +57,7 @@ internal partial class CharacterInfo_Talent : CharacterTalentInfo
 internal class CharacterInfo_Constellation : CharacterConstellationInfo
 {
 
-    public bool IsActive { get; set; }
+    public bool IsActived { get; set; }
 
 }
 

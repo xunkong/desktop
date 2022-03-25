@@ -47,15 +47,6 @@
             </StackPanel.Transitions>
         </StackPanel>
 
-        <Button Name="_chromeButton"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                Style="{ThemeResource WindowChromeStyle}"
-                Tapped="_chromeButton_Tapped">
-            <Button.OpacityTransition>
-                <ScalarTransition />
-            </Button.OpacityTransition>
-        </Button>
 
     </Grid>
 

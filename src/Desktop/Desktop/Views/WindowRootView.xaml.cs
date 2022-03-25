@@ -41,7 +41,7 @@ namespace Xunkong.Desktop.Views
         {
             WeakReferenceMessenger.Default.Register<RefreshWebToolNavItemMessage>(this, async (_, _) => await RefreshWebToolNavItemAsync());
             WeakReferenceMessenger.Default.Register<NavigateMessage>(this, (_, m) => NavigateTo(m));
-            WeakReferenceMessenger.Default.Register<DisableBackgroundWallpaperMessage>(this, (_, m) => DisableBackgroundWallpaper(m.Disabled));
+            //WeakReferenceMessenger.Default.Register<DisableBackgroundWallpaperMessage>(this, (_, m) => DisableBackgroundWallpaper(m.Disabled));
             WeakReferenceMessenger.Default.Register<OpenOrCloseNavigationPaneMessage>(this, (_, _) =>
             {
                 _NavigationView.IsPaneOpen = !_NavigationView.IsPaneOpen;
@@ -55,11 +55,7 @@ namespace Xunkong.Desktop.Views
             {
                 _NavigationView.IsPaneOpen = false;
             }
-            if (LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundWallpaper))
-            {
-                _PaneFooter_BackgroundWallpaper.Visibility = Visibility.Collapsed;
-            }
-            else
+            if (!LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundWallpaper))
             {
                 await vm.InitializeBackgroundWallpaperAsync();
             }

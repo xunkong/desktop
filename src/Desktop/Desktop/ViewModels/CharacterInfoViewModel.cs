@@ -13,6 +13,14 @@ namespace Xunkong.Desktop.ViewModels
 
         private readonly WishlogService _wishlogService;
 
+
+
+        static CharacterInfoViewModel()
+        {
+            TypeAdapterConfig<AvatarConstellation, CharacterInfo_Constellation>.NewConfig().Map(dest => dest.Description, src => src.Effect);
+        }
+
+
         public CharacterInfoViewModel(ILogger<CharacterInfoViewModel> logger, IDbContextFactory<XunkongDbContext> ctxFactory, HoyolabService houselabService, WishlogService wishlogService)
         {
             _logger = logger;
@@ -60,6 +68,7 @@ namespace Xunkong.Desktop.ViewModels
                 var weaponDic = await ctx.WeaponInfos.AsNoTracking().ToDictionaryAsync(x => x.Id, x => x.GachaIcon);
                 var wishlogs = await _wishlogService.GetWishlogItemExByUidAsync(role?.Uid ?? 0);
                 var matches = from a in avatars join c in characters on a.Id equals c.Id select (a, c);
+                int exceptId = 0;
                 foreach (var item in matches)
                 {
                     item.c.IsOwn = true;
@@ -71,12 +80,27 @@ namespace Xunkong.Desktop.ViewModels
                     item.c.Weapon.GachaIcon = gachaIcon!;
                     item.c.Reliquaries = item.a.Reliquaries;
                     var cons = item.c.Constellations.OrderBy(x => x.Id).ToList();
-                    cons.Take(item.a.ActivedConstellationNumber).ToList().ForEach(x => x.IsActive = true);
+                    cons.Take(item.a.ActivedConstellationNumber).ToList().ForEach(x => x.IsActived = true);
                     item.c.Constellations = cons;
                     var thisWishlog = wishlogs.Where(x => x.Name == item.c.Name).OrderByDescending(x => x.Id).ToList();
                     item.c.Wishlogs = thisWishlog.Any() ? thisWishlog : null;
+                    if (item.c.Id is 10000005 or 10000007)
+                    {
+                        item.c.Element = item.a.Element;
+                        item.c.Talents = new();
+                        item.c.Constellations = item.a.Constellations.Adapt<List<CharacterInfo_Constellation>>();
+                        if (item.c.Id is 10000005)
+                        {
+                            exceptId = 10000007;
+                        }
+                        else
+                        {
+                            exceptId = 10000005;
+                        }
+                    }
                 }
-                Characters = characters.OrderByDescending(x => x.Level)
+                Characters = characters.Where(x => x.Id != exceptId)
+                                       .OrderByDescending(x => x.Level)
                                        .ThenByDescending(x => x.Fetter)
                                        .ThenByDescending(x => x.ActivedConstellationNumber)
                                        .ThenByDescending(x => x.Rarity)

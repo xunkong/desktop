@@ -267,7 +267,7 @@
                         </Grid.ColumnDefinitions>
                         <cc:ImageEx Grid.RowSpan="2"
                                     Grid.ColumnSpan="4"
-                                    VerticalAlignment="Top"
+                                    EnableLazyLoading="False"
                                     Source="{x:Bind vm.SelectedCharacter.GachaSplash}"
                                     Stretch="Uniform" />
                         <ItemsControl Name="_ItemsControl_Talents"
@@ -334,7 +334,7 @@
                                               BorderThickness="2"
                                               CornerRadius="36">
                                             <cc:ImageEx Source="{x:Bind Icon}" />
-                                            <Ellipse Fill="#80000000" Visibility="{x:Bind IsActive, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
+                                            <Ellipse Fill="#80000000" Visibility="{x:Bind IsActived, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
                                         </Grid>
                                         <TextBlock VerticalAlignment="Center" Text="{x:Bind Name}" />
                                         <FlyoutBase.AttachedFlyout>
@@ -387,7 +387,7 @@
                             </TextBlock>
                             <TextBlock Margin="0,4,0,0"
                                        FontFamily="楷体"
-                                       Text="{Binding SelectedCharacter.Description}" />
+                                       Text="{x:Bind vm.SelectedCharacter.Description}" />
                         </StackPanel>
 
                     </Grid>
@@ -442,10 +442,7 @@
                     </StackPanel>
 
                     <MenuFlyoutSeparator Visibility="{x:Bind vm.SelectedCharacter.IsOwn, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}" />
-                    <TextBlock Margin="24,0,0,0"
-                               FontSize="20"
-                               Text="抽卡记录"
-                               Visibility="{x:Bind vm.SelectedCharacter.Wishlogs, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}" />
+
                     <StackPanel Margin="24,0,0,0"
                                 Orientation="Horizontal"
                                 Visibility="{x:Bind vm.SelectedCharacter.Wishlogs, Converter={StaticResource ObjectToVisibilityConverter}, FallbackValue=Collapsed}">
