@@ -307,6 +307,7 @@
                                                 Tapped="ShowAttachedFlyout">
                                         <Border Width="36"
                                                 Height="36"
+                                                Background="#80000000"
                                                 BorderBrush="{ThemeResource CircleStrokeBrush}"
                                                 BorderThickness="2"
                                                 CornerRadius="36">
@@ -348,11 +349,19 @@
                                                 Tapped="ShowAttachedFlyout">
                                         <Grid Width="36"
                                               Height="36"
+                                              Background="#80000000"
                                               BorderBrush="{ThemeResource CircleStrokeBrush}"
                                               BorderThickness="2"
                                               CornerRadius="36">
                                             <cc:ImageEx Source="{x:Bind Icon}" />
-                                            <Ellipse Fill="#80000000" Visibility="{x:Bind IsActived, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
+                                            <Ellipse Fill="#60000000" Visibility="{x:Bind IsActived, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
+                                            <Image Width="20"
+                                                   Height="20"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Source="ms-appx:///Assets/Images/UI_Icon_Locked.png"
+                                                   Visibility="{x:Bind IsActived, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
+                                            <Ellipse Fill="#20000000" Visibility="{x:Bind IsActived, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
                                         </Grid>
                                         <TextBlock VerticalAlignment="Center" Text="{x:Bind Name}" />
                                         <FlyoutBase.AttachedFlyout>
