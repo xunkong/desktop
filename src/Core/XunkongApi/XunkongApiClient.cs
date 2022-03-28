@@ -182,13 +182,13 @@ namespace Xunkong.Core.XunkongApi
 
 
 
-        #region Genshin Metadata
+        #region Genshin Data
 
 
 
         public async Task<IEnumerable<CharacterInfo>> GetCharacterInfosAsync()
         {
-            var url = $"{BaseUrl}/{ApiVersion}/genshin/metadata/character";
+            var url = $"{BaseUrl}/{ApiVersion}/genshindata/character";
             var result = await CommonGetAsync<MetadataDto<CharacterInfo>>(url);
             return result?.List!;
         }
@@ -196,7 +196,7 @@ namespace Xunkong.Core.XunkongApi
 
         public async Task<IEnumerable<WeaponInfo>> GetWeaponInfosAsync()
         {
-            var url = $"{BaseUrl}/{ApiVersion}/genshin/metadata/weapon";
+            var url = $"{BaseUrl}/{ApiVersion}/genshindata/weapon";
             var result = await CommonGetAsync<MetadataDto<WeaponInfo>>(url);
             return result?.List!;
         }
@@ -204,18 +204,18 @@ namespace Xunkong.Core.XunkongApi
 
         public async Task<IEnumerable<WishEventInfo>> GetWishEventInfosAsync()
         {
-            var url = $"{BaseUrl}/{ApiVersion}/genshin/metadata/wishevent";
+            var url = $"{BaseUrl}/{ApiVersion}/genshindata/wishevent";
             var result = await CommonGetAsync<MetadataDto<WishEventInfo>>(url);
             return result?.List!;
         }
 
 
-        public async Task<IEnumerable<I18nModel>> GetI18nModelsAsync()
-        {
-            var url = $"{BaseUrl}/{ApiVersion}/genshin/metadata/i18n";
-            var result = await CommonGetAsync<MetadataDto<I18nModel>>(url);
-            return result?.List!;
-        }
+        //public async Task<IEnumerable<I18nModel>> GetI18nModelsAsync()
+        //{
+        //    var url = $"{BaseUrl}/{ApiVersion}/genshin/metadata/i18n";
+        //    var result = await CommonGetAsync<MetadataDto<I18nModel>>(url);
+        //    return result?.List!;
+        //}
 
 
 

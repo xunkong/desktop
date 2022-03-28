@@ -7,13 +7,13 @@ namespace Xunkong.Desktop.Controls
     internal class CachedImage : ImageEx
     {
 
-        [ThreadStatic]
+        
         private int randomId;
 
 
         static CachedImage()
         {
-            ImageCache.Instance.CacheDuration = TimeSpan.FromDays(7);
+            ImageCache.Instance.CacheDuration = TimeSpan.FromDays(30);
             ImageCache.Instance.RetryCount = 3;
         }
 

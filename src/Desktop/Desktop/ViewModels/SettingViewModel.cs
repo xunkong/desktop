@@ -7,6 +7,7 @@ using Windows.Storage.Pickers;
 using Windows.UI.StartScreen;
 using WinRT.Interop;
 using Xunkong.Core.Hoyolab;
+using Xunkong.Core.Metadata;
 using Xunkong.Core.XunkongApi;
 
 namespace Xunkong.Desktop.ViewModels
@@ -901,6 +902,74 @@ namespace Xunkong.Desktop.ViewModels
             Clipboard.SetContent(data);
             InfoBarHelper.Success("已复制开发者的邮件（如果没收到回复，可能是被识别为垃圾邮件了）", 5000);
         }
+
+
+
+        private int _PrecacheImage_TotalCount;
+        public int PrecacheImage_TotalCount
+        {
+            get => _PrecacheImage_TotalCount;
+            set => SetProperty(ref _PrecacheImage_TotalCount, value);
+        }
+
+
+
+        private int _PrecacheImage_FinishCount;
+        public int PrecacheImage_FinishCount
+        {
+            get => _PrecacheImage_FinishCount;
+            set => SetProperty(ref _PrecacheImage_FinishCount, value);
+        }
+
+
+        private object _precacheImage_lock = new();
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task PrecacheAllImagesAsync()
+        {
+            try
+            {
+                var images = new List<string>();
+                using var ctx = _ctxFactory.CreateDbContext();
+                var list = await ctx.CharacterInfos.Where(x => !string.IsNullOrWhiteSpace(x.FaceIcon)).Select(x => x.FaceIcon).ToListAsync();
+                images.AddRange(list!);
+                list = await ctx.CharacterInfos.Where(x => !string.IsNullOrWhiteSpace(x.SideIcon)).Select(x => x.SideIcon).ToListAsync();
+                images.AddRange(list!);
+                list = await ctx.CharacterInfos.Where(x => !string.IsNullOrWhiteSpace(x.GachaSplash)).Select(x => x.GachaSplash).ToListAsync();
+                images.AddRange(list!);
+                list = await ctx.WeaponInfos.Where(x => !string.IsNullOrWhiteSpace(x.Icon)).Select(x => x.Icon).ToListAsync();
+                images.AddRange(list!);
+                list = await ctx.WeaponInfos.Where(x => !string.IsNullOrWhiteSpace(x.AwakenIcon)).Select(x => x.AwakenIcon).ToListAsync();
+                images.AddRange(list!);
+                list = await ctx.Set<CharacterTalentInfo>().Where(x => !string.IsNullOrWhiteSpace(x.Icon)).Select(x => x.Icon).ToListAsync();
+                images.AddRange(list!);
+                list = await ctx.Set<CharacterConstellationInfo>().Where(x => !string.IsNullOrWhiteSpace(x.Icon)).Select(x => x.Icon).ToListAsync();
+                images.AddRange(list!);
+                _PrecacheImage_FinishCount = 0;
+                PrecacheImage_TotalCount = images.Count;
+                await Parallel.ForEachAsync(images, async (url, _) =>
+                {
+                    try
+                    {
+                        var uri = new Uri(url!);
+                        await ImageCache.Instance.PreCacheAsync(uri);
+                        lock (_precacheImage_lock)
+                        {
+                            MainWindow.Current.DispatcherQueue.TryEnqueue(() => PrecacheImage_FinishCount++);
+                        }
+                    }
+                    catch { }
+                });
+                await Task.Delay(3000);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Precache all images.");
+                InfoBarHelper.Error(ex);
+            }
+        }
+
 
 
         #endregion

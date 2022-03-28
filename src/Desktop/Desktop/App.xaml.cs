@@ -267,10 +267,6 @@ namespace Xunkong.Desktop
             {
                 await service.RefreshDailyNoteTilesAsync();
             }
-            if (arg == "startgame")
-            {
-                await service.StartGameAsync();
-            }
             Log.Information("Task finished, exit.");
             Exit();
         }

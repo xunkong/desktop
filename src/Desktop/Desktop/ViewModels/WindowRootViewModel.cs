@@ -196,6 +196,10 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+        public async void GetAllGenshinData()
+        {
+            await _xunkongApiService.GetAllGenshinDataFromServerAsync(false);
+        }
 
 
 

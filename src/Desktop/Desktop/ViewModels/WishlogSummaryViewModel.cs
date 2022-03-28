@@ -165,18 +165,6 @@ namespace Xunkong.Desktop.ViewModels
                 _logger.LogError(ex, "Get uids from database.");
                 InfoBarHelper.Error(ex);
             }
-            try
-            {
-                if (await _xunkongApiService.IsNeedToUpdateMetadataAsync())
-                {
-                    await GetMetadataAsync();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Check whether need to update metadata.");
-                InfoBarHelper.Error(ex);
-            }
         }
 
 
@@ -658,9 +646,7 @@ namespace Xunkong.Desktop.ViewModels
             await Task.Delay(100);
             try
             {
-                await _xunkongApiService.GetCharacterInfosFromServerAsync();
-                await _xunkongApiService.GetWeaponInfosFromServerAsync();
-                await _xunkongApiService.GetWishEventInfosFromServerAsync();
+                await _xunkongApiService.GetAllGenshinDataFromServerAsync();
                 StateText = "完成";
                 IsRefreshPageTeachingTipOpen = true;
             }

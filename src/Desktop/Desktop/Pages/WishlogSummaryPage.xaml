@@ -159,10 +159,10 @@
                   Height="97"
                   CornerRadius="4">
                 <cc:ImageEx Source="{x:Bind Rarity, Converter={StaticResource RarityToBackgroundImageConverter}}" Stretch="Uniform" />
-                <cc:ImageEx VerticalAlignment="Top"
-                            CornerRadius="4,4,16,4"
-                            Source="{x:Bind Icon}"
-                            Stretch="Uniform" />
+                <controls:CachedImage VerticalAlignment="Top"
+                                      CornerRadius="4,4,16,4"
+                                      Source="{x:Bind Icon}"
+                                      Stretch="Uniform" />
                 <cc:ImageEx Width="18"
                             Height="18"
                             Margin="1"
@@ -246,10 +246,10 @@
                                   Height="78"
                                   CornerRadius="4">
                                 <cc:ImageEx Source="{x:Bind Rarity, Converter={StaticResource RarityToBackgroundImageConverter}}" Stretch="Uniform" />
-                                <cc:ImageEx VerticalAlignment="Top"
-                                            CornerRadius="4,4,16,4"
-                                            Source="{x:Bind Icon}"
-                                            Stretch="Uniform" />
+                                <controls:CachedImage VerticalAlignment="Top"
+                                                      CornerRadius="4,4,16,4"
+                                                      Source="{x:Bind Icon}"
+                                                      Stretch="Uniform" />
                                 <cc:ImageEx Width="16"
                                             Height="16"
                                             Margin="1"

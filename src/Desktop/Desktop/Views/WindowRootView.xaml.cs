@@ -49,15 +49,12 @@ namespace Xunkong.Desktop.Views
             });
         }
 
-        private async void WindowRootView_Loading(FrameworkElement sender, object args)
+
+        private void WindowRootView_Loading(FrameworkElement sender, object args)
         {
             if (LocalSettingHelper.GetSetting<bool>(SettingKeys.NavigationViewPaneClose))
             {
                 _NavigationView.IsPaneOpen = false;
-            }
-            if (!LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundWallpaper))
-            {
-                await vm.InitializeBackgroundWallpaperAsync();
             }
         }
 
@@ -65,13 +62,19 @@ namespace Xunkong.Desktop.Views
         private async void WindowRootView_Loaded(object sender, RoutedEventArgs e)
         {
             await RefreshWebToolNavItemAsync();
-            CheckNotifications();
-            vm.CheckVersionUpdateAsync();
-            vm.CheckWebView2Runtime();
             if (!LocalSettingHelper.GetSetting<bool>(SettingKeys.HasShownWelcomePage))
             {
                 NavigationHelper.NavigateTo(typeof(WelcomePage));
             }
+            await Task.Delay(100);
+            CheckNotifications();
+            vm.CheckVersionUpdateAsync();
+            vm.CheckWebView2Runtime();
+            if (!LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundWallpaper))
+            {
+                await vm.InitializeBackgroundWallpaperAsync();
+            }
+            vm.GetAllGenshinData();
         }
 
 

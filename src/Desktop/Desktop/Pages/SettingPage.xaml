@@ -597,9 +597,6 @@
                     <!--  其他  -->
                     <TextBlock />
                     <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="其他" />
-                    <TextBlock FontSize="12"
-                               Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                               Text="点击下面的按钮可以把相关信息保存到本地，供以后分析使用" />
                     <StackPanel Orientation="Horizontal" Spacing="16">
                         <Button Command="{x:Bind vm.GetSpiralAbyssInfoSummaryCommand, Mode=OneTime}" Content="获取深渊记录" />
                         <controls:GenshinElementLoading Height="24"
@@ -611,6 +608,18 @@
                         <controls:GenshinElementLoading Height="24"
                                                         IsActive="{x:Bind vm.MigrateDatabaseCommand.IsRunning}"
                                                         SyncActiveAndVisibility="True" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <Button Command="{x:Bind vm.PrecacheAllImagesCommand, Mode=OneTime}" Content="预缓存所需图片" />
+                        <ProgressBar Width="160"
+                                     Maximum="{x:Bind vm.PrecacheImage_TotalCount}"
+                                     Visibility="{x:Bind vm.PrecacheAllImagesCommand.IsRunning, Converter={StaticResource BoolToVisibilityConverter}}"
+                                     Value="{x:Bind vm.PrecacheImage_FinishCount}" />
+                        <TextBlock VerticalAlignment="Center" Visibility="{x:Bind vm.PrecacheAllImagesCommand.IsRunning, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Run Text="{x:Bind vm.PrecacheImage_FinishCount}" />
+                            <Run Text="/" />
+                            <Run Text="{x:Bind vm.PrecacheImage_TotalCount}" />
+                        </TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="16">
                         <Button Command="{x:Bind vm.ClearImageCacheCommand, Mode=OneTime}" Content="清理图片缓存" />

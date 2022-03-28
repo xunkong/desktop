@@ -2,6 +2,7 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:cc="using:CommunityToolkit.WinUI.UI.Controls"
+      xmlns:controls="using:Xunkong.Desktop.Controls"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:hoyolab="using:Xunkong.Core.Hoyolab"
       xmlns:local="using:Xunkong.Desktop.Pages"
@@ -219,10 +220,10 @@
                 </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="models:CharacterInfo_Character">
-                        <cc:ImageEx Width="56"
-                                    Margin="0,0,0,16"
-                                    Source="{x:Bind SideIcon}"
-                                    Stretch="UniformToFill" />
+                        <controls:CachedImage Width="56"
+                                              Margin="0,0,0,16"
+                                              Source="{x:Bind SideIcon}"
+                                              Stretch="UniformToFill" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -248,9 +249,9 @@
                     <DataTemplate x:DataType="models:CharacterInfo_Character">
                         <Grid Width="80" CornerRadius="4">
                             <cc:ImageEx Source="{x:Bind Rarity, Converter={StaticResource RarityToBackgroundImageConverter}}" />
-                            <cc:ImageEx VerticalAlignment="Top"
-                                        CornerRadius="4,4,16,0"
-                                        Source="{x:Bind FaceIcon}" />
+                            <controls:CachedImage VerticalAlignment="Top"
+                                                  CornerRadius="4,4,16,0"
+                                                  Source="{x:Bind FaceIcon}" />
                             <TextBlock HorizontalAlignment="Center"
                                        VerticalAlignment="Bottom"
                                        FontWeight="SemiBold"
@@ -283,11 +284,11 @@
                             <ColumnDefinition Width="5*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <cc:ImageEx Grid.RowSpan="2"
-                                    Grid.ColumnSpan="4"
-                                    EnableLazyLoading="False"
-                                    Source="{x:Bind vm.SelectedCharacter.GachaSplash}"
-                                    Stretch="Uniform" />
+                        <controls:CachedImage Grid.RowSpan="2"
+                                              Grid.ColumnSpan="4"
+                                              EnableLazyLoading="False"
+                                              Source="{x:Bind vm.SelectedCharacter.GachaSplash}"
+                                              Stretch="Uniform" />
                         <ItemsControl Name="_ItemsControl_Talents"
                                       Grid.Row="0"
                                       Grid.Column="1"
@@ -311,7 +312,7 @@
                                                 BorderBrush="{ThemeResource CircleStrokeBrush}"
                                                 BorderThickness="2"
                                                 CornerRadius="36">
-                                            <cc:ImageEx Source="{x:Bind Icon}" />
+                                            <controls:CachedImage Source="{x:Bind Icon}" />
                                         </Border>
                                         <StackPanel VerticalAlignment="Center">
                                             <TextBlock Text="{x:Bind Name}" />
@@ -353,7 +354,7 @@
                                               BorderBrush="{ThemeResource CircleStrokeBrush}"
                                               BorderThickness="2"
                                               CornerRadius="36">
-                                            <cc:ImageEx Source="{x:Bind Icon}" />
+                                            <controls:CachedImage Source="{x:Bind Icon}" />
                                             <Ellipse Fill="#60000000" Visibility="{x:Bind IsActived, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
                                             <Image Width="20"
                                                    Height="20"
@@ -431,9 +432,9 @@
                             <cc:ImageEx Width="80"
                                         VerticalAlignment="Top"
                                         Source="{x:Bind vm.SelectedCharacter.Weapon.Rarity, Converter={StaticResource RarityToBackgroundImageConverter}}" />
-                            <cc:ImageEx Width="80"
-                                        VerticalAlignment="Top"
-                                        Source="{x:Bind vm.SelectedCharacter.Weapon.AwakenIcon}" />
+                            <controls:CachedImage Width="80"
+                                                  VerticalAlignment="Top"
+                                                  Source="{x:Bind vm.SelectedCharacter.Weapon.AwakenIcon}" />
                             <TextBlock HorizontalAlignment="Center"
                                        VerticalAlignment="Bottom"
                                        FontWeight="SemiBold"
@@ -467,9 +468,9 @@
                                         <cc:ImageEx Width="80"
                                                     VerticalAlignment="Top"
                                                     Source="{x:Bind Rarity, Converter={StaticResource RarityToBackgroundImageConverter}}" />
-                                        <cc:ImageEx Width="80"
-                                                    VerticalAlignment="Top"
-                                                    Source="{x:Bind Icon}" />
+                                        <controls:CachedImage Width="80"
+                                                              VerticalAlignment="Top"
+                                                              Source="{x:Bind Icon}" />
                                         <TextBlock HorizontalAlignment="Center"
                                                    VerticalAlignment="Bottom"
                                                    FontWeight="SemiBold"
