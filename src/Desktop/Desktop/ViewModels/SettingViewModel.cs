@@ -3,6 +3,7 @@ using CommunityToolkit.WinUI.UI;
 using Microsoft.UI.Xaml.Controls;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.StartScreen;
 using WinRT.Interop;
@@ -877,13 +878,19 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
-        [ICommand(AllowConcurrentExecutions = false)]
-        private async Task ClearImageCacheAsync()
+        [ICommand]
+        private void ClearImageCache()
         {
             try
             {
-                await ImageCache.Instance.ClearAsync();
-                InfoBarHelper.Success($"成功");
+                var tempState = ApplicationData.Current.TemporaryFolder.Path;
+                var imageCacheFolder = Path.Combine(tempState, "ImageCache");
+                if (Directory.Exists(imageCacheFolder))
+                {
+                    Directory.Delete(imageCacheFolder, true);
+                }
+                Directory.CreateDirectory(imageCacheFolder);
+                InfoBarHelper.Success($"完成");
             }
             catch (Exception ex)
             {
@@ -930,6 +937,19 @@ namespace Xunkong.Desktop.ViewModels
         {
             try
             {
+                _PrecacheImage_FinishCount = 0;
+                var tempState = ApplicationData.Current.TemporaryFolder.Path;
+                var imageCacheFolder = Path.Combine(tempState, "ImageCache");
+                var cacheFiles = Directory.EnumerateFiles(imageCacheFolder);
+                foreach (var file in cacheFiles)
+                {
+                    using var fs = File.Open(file, FileMode.Open);
+                    if (fs.Length == 0)
+                    {
+                        fs.Dispose();
+                        File.Delete(file);
+                    }
+                }
                 var images = new List<string>();
                 using var ctx = _ctxFactory.CreateDbContext();
                 var list = await ctx.CharacterInfos.Where(x => !string.IsNullOrWhiteSpace(x.FaceIcon)).Select(x => x.FaceIcon).ToListAsync();
@@ -946,7 +966,6 @@ namespace Xunkong.Desktop.ViewModels
                 images.AddRange(list!);
                 list = await ctx.Set<CharacterConstellationInfo>().Where(x => !string.IsNullOrWhiteSpace(x.Icon)).Select(x => x.Icon).ToListAsync();
                 images.AddRange(list!);
-                _PrecacheImage_FinishCount = 0;
                 PrecacheImage_TotalCount = images.Count;
                 await Parallel.ForEachAsync(images, async (url, _) =>
                 {
@@ -961,7 +980,7 @@ namespace Xunkong.Desktop.ViewModels
                     }
                     catch { }
                 });
-                await Task.Delay(3000);
+                await Task.Delay(1000);
             }
             catch (Exception ex)
             {

@@ -623,9 +623,6 @@
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Spacing="16">
                         <Button Command="{x:Bind vm.ClearImageCacheCommand, Mode=OneTime}" Content="清理图片缓存" />
-                        <controls:GenshinElementLoading Height="24"
-                                                        IsActive="{x:Bind vm.ClearImageCacheCommand.IsRunning}"
-                                                        SyncActiveAndVisibility="True" />
                     </StackPanel>
 
                 </StackPanel>
