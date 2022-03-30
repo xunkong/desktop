@@ -19,6 +19,7 @@
         <x:String x:Key="Domain_64">ms-appx:///Assets/Images/Domain_64.png</x:String>
         <x:String x:Key="Resin_64">ms-appx:///Assets/Images/UI_ItemIcon_210@03059961+8b0e749c.png</x:String>
         <x:String x:Key="HomeCoin_64">ms-appx:///Assets/Images/UI_ItemIcon_204@03059961+d17bc741.png</x:String>
+        <x:String x:Key="Transformer_64">ms-appx:///Assets/Images/UI_ItemIcon_220021_64.png</x:String>
     </UserControl.Resources>
 
     <Grid>
@@ -463,6 +464,28 @@
                                                 <Run Text="/" />
                                                 <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.ResinDiscountLimitedNumber}" />
                                             </TextBlock>
+                                        </StackPanel>
+                                        <!--  参量质变仪  -->
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Width="20"
+                                                   Height="20"
+                                                   Margin="4,0,0,0"
+                                                   Source="{StaticResource Transformer_64}"
+                                                   Stretch="Uniform" />
+                                            <StackPanel Width="200" Margin="12,0,0,0">
+                                                <TextBlock Text="参量质变仪" />
+                                                <TextBlock Style="{ThemeResource CaptionTextBlockStyle}">
+                                                    <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.Transformer.RecoveryTime.Day}" />
+                                                    <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="天" />
+                                                    <Run Text="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.Transformer.RecoveryTime.Hour}" />
+                                                    <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="小时后可再次使用" />
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <TextBlock Width="80"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="OrangeRed"
+                                                       Text="未获得"
+                                                       Visibility="{x:Bind vm.SelectedUserPanelModel.DailyNoteInfo.Transformer.Obtained, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
                                         </StackPanel>
                                         <MenuFlyoutSeparator />
                                         <!--  探索派遣  -->

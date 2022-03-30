@@ -138,7 +138,7 @@ namespace Xunkong.Desktop.Services
         }
 
 
-        public static async Task StartGameWishoutLogAsync()
+        public static async Task<bool> StartGameWishoutLogAsync()
         {
             try
             {
@@ -146,7 +146,7 @@ namespace Xunkong.Desktop.Services
                 if (ps.Any())
                 {
                     NotificationHelper.SendNotification("无法启动游戏", "已有游戏进程在运行");
-                    return;
+                    return false;
                 }
                 var exePath = LocalSettingHelper.GetSetting<string>(SettingKeys.GameExePath);
                 if (!File.Exists(exePath))
@@ -167,13 +167,13 @@ namespace Xunkong.Desktop.Services
                     if (!File.Exists(exePath))
                     {
                         NotificationHelper.SendNotification("无法启动游戏", "没有找到 YuanShen.exe");
-                        return;
+                        return false;
                     }
                 }
                 if (!(exePath.EndsWith("YuanShen.exe") || exePath.EndsWith("GenshinImpact.exe")))
                 {
                     NotificationHelper.SendNotification("无法启动游戏", "文件名不为 YuanShen.exe 或 GenshinImpact.exe");
-                    return;
+                    return false;
                 }
                 var fps = LocalSettingHelper.GetSetting(SettingKeys.TargetFPS, 60);
                 var isPopup = LocalSettingHelper.GetSetting<bool>(SettingKeys.IsPopupWindow);
@@ -194,6 +194,7 @@ namespace Xunkong.Desktop.Services
                     Verb = "runas",
                 };
                 Process.Start(info);
+                return true;
             }
             catch (Exception ex)
             {
@@ -202,10 +203,11 @@ namespace Xunkong.Desktop.Services
                     if (ex32.NativeErrorCode == 1223)
                     {
                         NotificationHelper.SendNotification("无法启动游戏", "操作已取消");
-                        return;
+                        return false;
                     }
                 }
                 NotificationHelper.SendNotification("无法启动游戏", ex.Message);
+                return false;
             }
             finally
             {
@@ -215,7 +217,7 @@ namespace Xunkong.Desktop.Services
         }
 
 
-        public static async Task StartGameWishAccountAsync(string userName)
+        public static async Task<bool> StartGameWishAccountAsync(string userName)
         {
             try
             {
@@ -223,13 +225,13 @@ namespace Xunkong.Desktop.Services
                 if (ps.Any())
                 {
                     NotificationHelper.SendNotification("无法启动游戏", "已有游戏进程在运行");
-                    return;
+                    return false;
                 }
                 var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"Xunkong\Data\XunkongData.db");
                 if (!File.Exists(dbPath))
                 {
                     NotificationHelper.SendNotification("无法启动游戏", "数据库文件不存在");
-                    return;
+                    return false;
                 }
                 var exePath = LocalSettingHelper.GetSetting<string>(SettingKeys.GameExePath);
                 if (!File.Exists(exePath))
@@ -250,20 +252,20 @@ namespace Xunkong.Desktop.Services
                     if (!File.Exists(exePath))
                     {
                         NotificationHelper.SendNotification("无法启动游戏", "没有找到 YuanShen.exe");
-                        return;
+                        return false;
                     }
                 }
                 if (!(exePath.EndsWith("YuanShen.exe") || exePath.EndsWith("GenshinImpact.exe")))
                 {
                     NotificationHelper.SendNotification("无法启动游戏", "文件名不为 YuanShen.exe 或 GenshinImpact.exe");
-                    return;
+                    return false;
                 }
                 using var dapper = new SqliteConnection($"Data Source={dbPath};");
                 var account = await dapper.QueryFirstOrDefaultAsync<GenshinUserAccount>("SELECT UserName,IsOversea,ADLPROD FROM GenshinUserAccounts WHERE UserName=@UserName", new { UserName = userName });
                 if (account == null)
                 {
                     NotificationHelper.SendNotification("无法启动游戏", "没有找到对应的账号");
-                    return;
+                    return false;
                 }
                 await SetADLPROD(account.ADLPROD, account.IsOversea);
                 await dapper.ExecuteAsync("UPDATE GenshinUserAccounts SET LastAccessTime=@LastAccessTime WHERE UserName=@UserName", new { UserName = userName, LastAccessTime = DateTimeOffset.Now });
@@ -286,6 +288,7 @@ namespace Xunkong.Desktop.Services
                     Verb = "runas",
                 };
                 Process.Start(info);
+                return true;
             }
             catch (Exception ex)
             {
@@ -294,10 +297,11 @@ namespace Xunkong.Desktop.Services
                     if (ex32.NativeErrorCode == 1223)
                     {
                         NotificationHelper.SendNotification("无法启动游戏", "操作已取消");
-                        return;
+                        return false;
                     }
                 }
                 NotificationHelper.SendNotification("无法启动游戏", ex.Message);
+                return false;
             }
             finally
             {
@@ -370,6 +374,50 @@ namespace Xunkong.Desktop.Services
                 throw new Exception(message);
             }
         }
+
+
+
+        public static async Task CheckTransformerReachedAsync()
+        {
+            try
+            {
+                var dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"Xunkong\Data\XunkongData.db");
+                if (!File.Exists(dbPath))
+                {
+                    return;
+                }
+                var dapper = new SqliteConnection($"Data Source={dbPath};");
+                var users = await dapper.QueryAsync<UserGameRoleInfo>("SELECT * FROM Genshin_Users;");
+                if (!users.Any())
+                {
+                    return;
+                }
+                var client = new HoyolabClient();
+                var nicknames = new List<string>(users.Count());
+                foreach (var user in users)
+                {
+                    try
+                    {
+                        var dailynote = await client.GetDailyNoteInfoAsync(user);
+                        if (dailynote.Transformer.Obtained && dailynote.Transformer.RecoveryTime.Reached)
+                        {
+                            nicknames.Add(user.Nickname!);
+                        }
+                    }
+                    catch { }
+                }
+                if (nicknames.Any())
+                {
+                    NotificationHelper.SendNotification("您有以下账号可以使用参量质变仪", string.Join("\n", nicknames));
+                }
+            }
+            finally
+            {
+                await Task.Delay(100);
+            }
+
+        }
+
 
 
     }

@@ -102,6 +102,7 @@ namespace Xunkong.Desktop
         {
             DispatcherQueue.TryEnqueue(() =>
             {
+                _Image_Background.Visibility = Visibility.Visible;
                 if (string.IsNullOrWhiteSpace(image.Url))
                 {
                     _Image_Background.Source = null;

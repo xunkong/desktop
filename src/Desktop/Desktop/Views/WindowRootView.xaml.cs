@@ -66,14 +66,22 @@ namespace Xunkong.Desktop.Views
             {
                 NavigationHelper.NavigateTo(typeof(WelcomePage));
             }
+            if (LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundWallpaper))
+            {
+                var customPath = LocalSettingHelper.GetSetting<string>("CustomWallpaperPathWhenDisableXunkongWallpaper");
+                if (File.Exists(customPath))
+                {
+                    WeakReferenceMessenger.Default.Send(new WallpaperInfo { Url = customPath });
+                }
+            }
+            else
+            {
+                await vm.InitializeBackgroundWallpaperAsync();
+            }
             await Task.Delay(100);
             CheckNotifications();
             vm.CheckVersionUpdateAsync();
             vm.CheckWebView2Runtime();
-            if (!LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundWallpaper))
-            {
-                await vm.InitializeBackgroundWallpaperAsync();
-            }
             vm.GetAllGenshinData();
         }
 
@@ -354,6 +362,10 @@ namespace Xunkong.Desktop.Views
                             if (format.Result is not null)
                             {
                                 WeakReferenceMessenger.Default.Send(new WallpaperInfo { Url = file });
+                                if (LocalSettingHelper.GetSetting<bool>(SettingKeys.DisableBackgroundWallpaper))
+                                {
+                                    LocalSettingHelper.SaveSetting("CustomWallpaperPathWhenDisableXunkongWallpaper", file);
+                                }
                             }
                         }
                         catch (Exception ex)

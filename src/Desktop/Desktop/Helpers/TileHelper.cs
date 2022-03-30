@@ -80,7 +80,7 @@ namespace Xunkong.Desktop.Helpers
             {
                 do
                 {
-                    info.Expeditions.Add(new Expedition { AvatarSideIcon = Transparent });
+                    info.Expeditions.Add(new DailyNote_Expedition { AvatarSideIcon = Transparent });
                 } while (info.Expeditions.Count != 5);
             }
             var updater = TileUpdateManager.CreateTileUpdaterForSecondaryTile($"DailyNote_{info.Uid}");

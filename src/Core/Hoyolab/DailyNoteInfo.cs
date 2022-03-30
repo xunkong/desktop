@@ -91,7 +91,7 @@
         /// 探索派遣
         /// </summary>
         [JsonPropertyName("expeditions"), NotMapped]
-        public List<Expedition> Expeditions { get; set; }
+        public List<DailyNote_Expedition> Expeditions { get; set; }
 
         /// <summary>
         /// 当前洞天宝钱
@@ -110,6 +110,11 @@
         /// </summary>
         [JsonPropertyName("home_coin_recovery_time"), JsonConverter(typeof(RemainedTimeJsonConverter))]
         public TimeSpan HomeCoinRecoveryTime { get; set; }
+
+
+        [JsonPropertyName("transformer"), NotMapped]
+        public DailyNote_Transformer Transformer { get; set; }
+
 
         [JsonIgnore, NotMapped]
         public bool IsHomeCoinFull => HomeCoinRecoveryTime == TimeSpan.Zero;
@@ -145,7 +150,7 @@
         public DailyNoteInfo Copy()
         {
             var info = (DailyNoteInfo)MemberwiseClone();
-            info.Expeditions = new List<Expedition>(Expeditions);
+            info.Expeditions = new List<DailyNote_Expedition>(Expeditions);
             return info;
         }
 
@@ -154,7 +159,36 @@
 
     }
 
-    public class Expedition
+
+    public class DailyNote_Transformer
+    {
+        [JsonPropertyName("obtained")]
+        public bool Obtained { get; set; }
+
+        [JsonPropertyName("recovery_time")]
+        public DailyNote_Transformer_RecoveryTime RecoveryTime { get; set; }
+
+        //[JsonPropertyName("wiki")]
+        //public string Wiki { get; set; }
+    }
+
+
+    public class DailyNote_Transformer_RecoveryTime
+    {
+        public int Day { get; set; }
+
+        public int Hour { get; set; }
+
+        public int Minute { get; set; }
+
+        public int Second { get; set; }
+
+        [JsonPropertyName("reached")]
+        public bool Reached { get; set; }
+    }
+
+
+    public class DailyNote_Expedition
     {
         /// <summary>
         /// 角色侧面图

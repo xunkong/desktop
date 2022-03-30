@@ -12,14 +12,19 @@
         {
             if (args.Any() && args[0].Contains("startgame"))
             {
+                bool result = false;
                 if (args[0] == "startgame")
                 {
-                    InvokeService.StartGameWishoutLogAsync().Wait();
+                    result = InvokeService.StartGameWishoutLogAsync().Result;
                 }
                 else
                 {
                     var userName = args[0].Split('_')[1];
-                    InvokeService.StartGameWishAccountAsync(userName).Wait();
+                    result = InvokeService.StartGameWishAccountAsync(userName).Result;
+                }
+                if (result)
+                {
+                    InvokeService.CheckTransformerReachedAsync().Wait();
                 }
             }
             else

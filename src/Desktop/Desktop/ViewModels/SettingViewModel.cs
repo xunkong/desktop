@@ -938,6 +938,7 @@ namespace Xunkong.Desktop.ViewModels
             try
             {
                 _PrecacheImage_FinishCount = 0;
+                await Task.Delay(100);
                 var tempState = ApplicationData.Current.TemporaryFolder.Path;
                 var imageCacheFolder = Path.Combine(tempState, "ImageCache");
                 var cacheFiles = Directory.EnumerateFiles(imageCacheFolder);

@@ -50,6 +50,7 @@ public class TravelNotes_DayOrMonthStats
             > 0 => $"+{value:P0}",
             0 => "0%",
             <= 0 => value.ToString("P0"),
+            _ => "NAN",
         };
     }
 
@@ -78,3 +79,21 @@ public class TravelNotes_MonthData : TravelRecordMonthData
 
 
 public record TravelNotes_DayData(string Date, int Primogems, int Mora);
+
+
+public record TravelNotes_VersionData(string Version, int Primogems, int Mora, int PrimogemsChangeRate, int MoraChangeRate)
+{
+    public string PrimogemsChangeRateString => PrimogemsChangeRate switch
+    {
+        > 0 => $"+{PrimogemsChangeRate}%",
+        0 => "0%",
+        < 0 => $"{PrimogemsChangeRate}%",
+    };
+
+    public string MoraChangeRateString => MoraChangeRate switch
+    {
+        > 0 => $"+{MoraChangeRate}%",
+        0 => "0%",
+        < 0 => $"{MoraChangeRate}%",
+    };
+}
