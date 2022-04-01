@@ -1,6 +1,7 @@
 ﻿using AngleSharp;
 using CommunityToolkit.WinUI.UI;
 using Microsoft.UI.Xaml.Controls;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
@@ -990,6 +991,20 @@ namespace Xunkong.Desktop.ViewModels
             }
         }
 
+
+        [ICommand]
+        private void StartMapTool()
+        {
+            try
+            {
+                var maptoolPath = Path.Combine(Package.Current.InstalledPath, @"Xunkong.Desktop.MapTool\Xunkong.Desktop.MapTool.exe");
+                Process.Start(maptoolPath);
+            }
+            catch (Exception ex)
+            {
+                InfoBarHelper.Error(ex);
+            }
+        }
 
 
         #endregion

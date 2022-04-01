@@ -1,4 +1,7 @@
-﻿namespace Xunkong.Desktop
+﻿
+using Windows.ApplicationModel;
+
+namespace Xunkong.Desktop
 {
     public static class Program
     {
@@ -26,19 +29,24 @@
                 {
                     InvokeService.CheckTransformerReachedAsync().Wait();
                 }
+                return;
             }
-            else
+            if (args.Any() && args[0] == "maptool")
             {
-                XamlCheckProcessRequirements();
-
-                global::WinRT.ComWrappersSupport.InitializeComWrappers();
-                global::Microsoft.UI.Xaml.Application.Start((p) =>
-                {
-                    var context = new global::Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext(global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread());
-                    global::System.Threading.SynchronizationContext.SetSynchronizationContext(context);
-                    new App();
-                });
+                var maptoolPath = Path.Combine(Package.Current.InstalledPath, @"Xunkong.Desktop.MapTool\Xunkong.Desktop.MapTool.exe");
+                Process.Start(maptoolPath);
+                return;
             }
+
+            XamlCheckProcessRequirements();
+
+            global::WinRT.ComWrappersSupport.InitializeComWrappers();
+            global::Microsoft.UI.Xaml.Application.Start((p) =>
+            {
+                var context = new global::Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext(global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread());
+                global::System.Threading.SynchronizationContext.SetSynchronizationContext(context);
+                new App();
+            });
         }
     }
 

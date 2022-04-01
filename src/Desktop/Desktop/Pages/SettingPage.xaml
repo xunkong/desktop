@@ -621,9 +621,8 @@
                             <Run Text="{x:Bind vm.PrecacheImage_TotalCount}" />
                         </TextBlock>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="16">
-                        <Button Command="{x:Bind vm.ClearImageCacheCommand, Mode=OneTime}" Content="清理图片缓存" />
-                    </StackPanel>
+                    <Button Command="{x:Bind vm.ClearImageCacheCommand, Mode=OneTime}" Content="清理图片缓存" />
+                    <Button Command="{x:Bind vm.StartMapToolCommand, Mode=OneTime}" Content="启动小地图" />
 
                 </StackPanel>
 
