@@ -1,9 +1,9 @@
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 using System.Windows.Forms;
 using static Xunkong.Desktop.MapTool.NativeMethod;
 
@@ -28,7 +28,7 @@ namespace Xunkong.Desktop.MapTool
             Instance = this;
             _hwnd = this.Handle;
             this.TopMost = true;
-            this.FormBorderStyle = FormBorderStyle.None;
+            //this.FormBorderStyle = FormBorderStyle.None;
             var pros = Process.GetProcessesByName("YuanShen").Concat(Process.GetProcessesByName("GenshinImpact")).FirstOrDefault();
             if (pros != null)
             {
@@ -42,10 +42,14 @@ namespace Xunkong.Desktop.MapTool
                 {
                     var str = File.ReadAllText(iniFile);
                     Setting = JsonConvert.DeserializeObject<Setting>(str);
-                    Left = Setting.Left;
-                    Top = Setting.Top;
-                    Width = Setting.Width;
-                    Height = Setting.Height;
+                    var workingArea = Screen.PrimaryScreen.WorkingArea;
+                    if (Setting.Width < workingArea.Width && Setting.Height < workingArea.Height)
+                    {
+                        Left = Setting.Left;
+                        Top = Setting.Top;
+                        Width = Setting.Width;
+                        Height = Setting.Height;
+                    }
                     if (Setting.DontShowTitleBarWhenActived)
                     {
                         titleBar.Visible = false;
@@ -252,6 +256,17 @@ namespace Xunkong.Desktop.MapTool
             File.WriteAllText(iniFile, str);
         }
 
+        private void titleBar_DoubleClick(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Normal)
+            {
+                WindowState = FormWindowState.Maximized;
+            }
+            else
+            {
+                WindowState = FormWindowState.Normal;
+            }
+        }
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.WinUI.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System.Drawing;
 using System.Net.Http.Json;
 using Windows.Storage;
@@ -46,6 +47,12 @@ namespace Xunkong.Desktop.Toolbox
         private string bg;
 
         private List<string> emos;
+
+        private BitmapImage bitmapImage = new();
+
+        private string? imageFileName;
+
+        private MemoryStream ms_image = new();
 
 
         private async void TravelNoteTool_Loaded(object sender, RoutedEventArgs e)
@@ -315,16 +322,37 @@ namespace Xunkong.Desktop.Toolbox
                 }
                 g.DrawLine(pen_tick, 165, 1270, 165 + 10.5f * groupbyday.Count - 0.5f, 1270);
 
-
                 g.Save();
+                ms_image = new();
+                image_bg.Save(ms_image, System.Drawing.Imaging.ImageFormat.Png);
+                ms_image.Position = 0;
+                await bitmapImage.SetSourceAsync(ms_image.AsRandomAccessStream());
+                imageFileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $@"Xunkong\Export\TravelNotes\TravelNotes_{uid}_v{version}_{DateTime.Now:yyMMddHHmmss}.png");
+            }
+            catch (Exception ex)
+            {
+                InfoBarHelper.Error(ex);
+            }
+        }
 
-                var savedFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $@"Xunkong\Export\TravelNotes\TravelNotes_{uid}_v{version}_{DateTime.Now:yyMMddHHmmss}.png");
-                Directory.CreateDirectory(Path.GetDirectoryName(savedFile)!);
-                image_bg.Save(savedFile);
 
-                Action action = () => Process.Start(new ProcessStartInfo { FileName = savedFile, UseShellExecute = true });
-                InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, "已保存", Path.GetFileName(savedFile), "打开图片", action, null, 3000);
-
+        [ICommand(AllowConcurrentExecutions = false)]
+        private async Task SaveImageAsync()
+        {
+            if (ms_image.Length == 0)
+            {
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(imageFileName))
+            {
+                return;
+            }
+            try
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(imageFileName)!);
+                await File.WriteAllBytesAsync(imageFileName, ms_image.ToArray());
+                Action action = () => Process.Start(new ProcessStartInfo { FileName = imageFileName, UseShellExecute = true });
+                InfoBarHelper.ShowWithButton(InfoBarSeverity.Success, "已保存", Path.GetFileName(imageFileName), "打开图片", action, null, 3000);
             }
             catch (Exception ex)
             {

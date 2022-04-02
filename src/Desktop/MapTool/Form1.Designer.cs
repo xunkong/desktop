@@ -64,14 +64,14 @@ namespace Xunkong.Desktop.MapTool
             this.titleBar.Name = "titleBar";
             this.titleBar.Size = new System.Drawing.Size(797, 38);
             this.titleBar.TabIndex = 1;
+            this.titleBar.DoubleClick += new System.EventHandler(this.titleBar_DoubleClick);
             this.titleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.titleBar_MouseDown);
             this.titleBar.MouseMove += new System.Windows.Forms.MouseEventHandler(this.titleBar_MouseMove);
             // 
             // button_seting
             // 
-            this.button_seting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button_seting.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F);
-            this.button_seting.Location = new System.Drawing.Point(696, 0);
+            this.button_seting.Location = new System.Drawing.Point(0, 0);
             this.button_seting.Margin = new System.Windows.Forms.Padding(2);
             this.button_seting.Name = "button_seting";
             this.button_seting.Size = new System.Drawing.Size(36, 36);
@@ -82,9 +82,8 @@ namespace Xunkong.Desktop.MapTool
             // 
             // button_resize
             // 
-            this.button_resize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button_resize.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F);
-            this.button_resize.Location = new System.Drawing.Point(729, 0);
+            this.button_resize.Location = new System.Drawing.Point(33, 0);
             this.button_resize.Margin = new System.Windows.Forms.Padding(2);
             this.button_resize.Name = "button_resize";
             this.button_resize.Size = new System.Drawing.Size(36, 36);
@@ -95,9 +94,8 @@ namespace Xunkong.Desktop.MapTool
             // 
             // button_close
             // 
-            this.button_close.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button_close.Font = new System.Drawing.Font("Segoe Fluent Icons", 12F);
-            this.button_close.Location = new System.Drawing.Point(761, 0);
+            this.button_close.Location = new System.Drawing.Point(65, 0);
             this.button_close.Margin = new System.Windows.Forms.Padding(0);
             this.button_close.Name = "button_close";
             this.button_close.Size = new System.Drawing.Size(36, 36);

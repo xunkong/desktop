@@ -7,7 +7,7 @@ namespace Xunkong.Desktop.Controls
     internal class CachedImage : ImageEx
     {
 
-        
+
         private int randomId;
 
 

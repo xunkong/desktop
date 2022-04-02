@@ -15,12 +15,13 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
 
-        <Grid Padding="48,0,48,0"
+        <Grid Grid.ColumnSpan="2"
+              Padding="48,0,48,0"
               Background="{ThemeResource CustomControlBackgroundAcrylicBrush}"
               CornerRadius="4,0,0,4">
             <TextBlock HorizontalAlignment="Left"
@@ -52,8 +53,9 @@
                 <Button Command="{x:Bind DrawImageCommand}" Content="生成图片" />
                 <ProgressRing IsActive="{x:Bind DrawImageCommand.IsRunning}" />
             </StackPanel>
+            <Button Command="{x:Bind SaveImageCommand}" Content="保存图片" />
             <StackPanel Orientation="Horizontal" Spacing="16">
-                <Button Command="{x:Bind PrecacheAllImgesCommand}" Content="预缓存所需图片" />
+                <Button Command="{x:Bind PrecacheAllImgesCommand}" Content="预缓存图片资源" />
                 <TextBlock VerticalAlignment="Center" Visibility="{x:Bind PrecacheAllImgesCommand.IsRunning, Converter={StaticResource BoolToVisibilityConverter}}">
                     <Run Text="{x:Bind FinishedCount}" />
                     <Run Text="/" />
@@ -62,7 +64,11 @@
             </StackPanel>
         </StackPanel>
 
-
+        <Image Grid.Row="1"
+               Grid.Column="1"
+               Margin="24"
+               HorizontalAlignment="Left"
+               Source="{x:Bind bitmapImage}" />
 
     </Grid>
 </Page>
