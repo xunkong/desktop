@@ -1,6 +1,6 @@
 ﻿// Xunkong.Desktop.RegistryInvoker.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
-#pragma comment(linker,"/subsystem:\"Windows\" /entry:\"mainCRTStartup\"")
+//#pragma comment(linker,"/subsystem:\"Windows\" /entry:\"mainCRTStartup\"")
 #include <iostream>
 #include <Windows.h>
 
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
 	{
 		byte pData[8192] = { 0 };
 		DWORD length = 8192;
-		auto stats = RegGetValue(HKEY_CURRENT_USER, lpSubKey, lpValue, REG_BINARY, nullptr, pData, &length);
+		auto stats = RegGetValue(HKEY_CURRENT_USER, lpSubKey, lpValue, RRF_RT_ANY, nullptr, pData, &length);
 		if (stats != ERROR_SUCCESS)
 		{
 			std::cout << "Cannot get ADLPROD for current user (ErrorCode: " << stats << ")";
