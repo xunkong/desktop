@@ -412,19 +412,21 @@ namespace Xunkong.Desktop.Toolbox
                         File.Delete(file);
                     }
                 }
-
-                await Parallel.ForEachAsync(emos, async (url, _) =>
+                var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 4 };
+                await Parallel.ForEachAsync(emos, parallelOptions, async (url, _) =>
                 {
                     try
                     {
                         var uri = new Uri(url);
                         await ImageCache.Instance.PreCacheAsync(uri);
+                    }
+                    finally
+                    {
                         lock (_precacheImage_lock)
                         {
                             MainWindow.Current.DispatcherQueue.TryEnqueue(() => FinishedCount++);
                         }
                     }
-                    catch { }
                 });
             }
             catch (Exception ex)

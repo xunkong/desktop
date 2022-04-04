@@ -969,18 +969,21 @@ namespace Xunkong.Desktop.ViewModels
                 list = await ctx.Set<CharacterConstellationInfo>().Where(x => !string.IsNullOrWhiteSpace(x.Icon)).Select(x => x.Icon).ToListAsync();
                 images.AddRange(list!);
                 PrecacheImage_TotalCount = images.Count;
-                await Parallel.ForEachAsync(images, async (url, _) =>
+                var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount * 4 };
+                await Parallel.ForEachAsync(images, parallelOptions, async (url, _) =>
                 {
                     try
                     {
                         var uri = new Uri(url!);
                         await ImageCache.Instance.PreCacheAsync(uri);
+                    }
+                    finally
+                    {
                         lock (_precacheImage_lock)
                         {
                             MainWindow.Current.DispatcherQueue.TryEnqueue(() => PrecacheImage_FinishCount++);
                         }
                     }
-                    catch { }
                 });
                 await Task.Delay(1000);
             }
