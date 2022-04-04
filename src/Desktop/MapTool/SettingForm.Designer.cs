@@ -50,6 +50,9 @@ namespace Xunkong.Desktop.MapTool
             this.button3 = new System.Windows.Forms.Button();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.SuspendLayout();
@@ -77,7 +80,7 @@ namespace Xunkong.Desktop.MapTool
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(24, 185);
+            this.label3.Location = new System.Drawing.Point(25, 219);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(116, 18);
@@ -87,7 +90,7 @@ namespace Xunkong.Desktop.MapTool
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(24, 216);
+            this.label4.Location = new System.Drawing.Point(25, 250);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(170, 18);
@@ -97,7 +100,7 @@ namespace Xunkong.Desktop.MapTool
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(27, 283);
+            this.label6.Location = new System.Drawing.Point(28, 317);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(80, 18);
@@ -107,7 +110,7 @@ namespace Xunkong.Desktop.MapTool
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(27, 247);
+            this.checkBox1.Location = new System.Drawing.Point(28, 281);
             this.checkBox1.Margin = new System.Windows.Forms.Padding(2);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(142, 22);
@@ -117,7 +120,7 @@ namespace Xunkong.Desktop.MapTool
             // 
             // trackBar1
             // 
-            this.trackBar1.Location = new System.Drawing.Point(108, 282);
+            this.trackBar1.Location = new System.Drawing.Point(109, 316);
             this.trackBar1.Margin = new System.Windows.Forms.Padding(2);
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(242, 69);
@@ -126,7 +129,7 @@ namespace Xunkong.Desktop.MapTool
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(27, 333);
+            this.label5.Location = new System.Drawing.Point(28, 367);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(134, 18);
@@ -136,7 +139,7 @@ namespace Xunkong.Desktop.MapTool
             // checkBox2
             // 
             this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(30, 369);
+            this.checkBox2.Location = new System.Drawing.Point(31, 403);
             this.checkBox2.Margin = new System.Windows.Forms.Padding(2);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(142, 22);
@@ -147,7 +150,7 @@ namespace Xunkong.Desktop.MapTool
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(27, 414);
+            this.label7.Location = new System.Drawing.Point(28, 448);
             this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(80, 18);
@@ -156,7 +159,7 @@ namespace Xunkong.Desktop.MapTool
             // 
             // trackBar2
             // 
-            this.trackBar2.Location = new System.Drawing.Point(111, 414);
+            this.trackBar2.Location = new System.Drawing.Point(112, 448);
             this.trackBar2.Margin = new System.Windows.Forms.Padding(2);
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Size = new System.Drawing.Size(239, 69);
@@ -164,7 +167,7 @@ namespace Xunkong.Desktop.MapTool
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(30, 506);
+            this.button1.Location = new System.Drawing.Point(31, 540);
             this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(98, 35);
@@ -175,7 +178,7 @@ namespace Xunkong.Desktop.MapTool
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(152, 506);
+            this.button2.Location = new System.Drawing.Point(153, 540);
             this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(96, 35);
@@ -206,7 +209,7 @@ namespace Xunkong.Desktop.MapTool
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(279, 506);
+            this.button3.Location = new System.Drawing.Point(280, 540);
             this.button3.Margin = new System.Windows.Forms.Padding(2);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(162, 35);
@@ -218,7 +221,7 @@ namespace Xunkong.Desktop.MapTool
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(27, 465);
+            this.label10.Location = new System.Drawing.Point(28, 499);
             this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(566, 18);
@@ -228,16 +231,50 @@ namespace Xunkong.Desktop.MapTool
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(276, 563);
+            this.label11.Location = new System.Drawing.Point(277, 597);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(323, 18);
             this.label11.TabIndex = 18;
             this.label11.Text = "https://github.com/Scighost/Xunkong";
             // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(25, 164);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(80, 18);
+            this.label12.TabIndex = 19;
+            this.label12.Text = "选择地图";
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Location = new System.Drawing.Point(125, 162);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(141, 22);
+            this.radioButton1.TabIndex = 20;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "提瓦特大地图";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(292, 162);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(105, 22);
+            this.radioButton2.TabIndex = 21;
+            this.radioButton2.TabStop = true;
+            this.radioButton2.Text = "空荧酒馆";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            // 
             // SettingForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(611, 590);
+            this.ClientSize = new System.Drawing.Size(611, 671);
+            this.Controls.Add(this.radioButton2);
+            this.Controls.Add(this.radioButton1);
+            this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.button3);
@@ -287,5 +324,8 @@ namespace Xunkong.Desktop.MapTool
         private Button button3;
         private Label label10;
         private Label label11;
+        private Label label12;
+        private RadioButton radioButton1;
+        private RadioButton radioButton2;
     }
 }

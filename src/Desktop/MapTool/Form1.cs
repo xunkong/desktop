@@ -64,7 +64,7 @@ namespace Xunkong.Desktop.MapTool
             {
                 Setting = new Setting();
             }
-
+            RefreshWebView();
             RegisterHotKey(_hwnd, 1001, HotKeyModifiers.MOD_ALT, (uint)Keys.Q);
             RegisterHotKey(_hwnd, 1002, HotKeyModifiers.MOD_ALT, (uint)Keys.S);
             RegisterHotKey(_hwnd, 1003, HotKeyModifiers.MOD_ALT, (uint)Keys.Up);
@@ -181,6 +181,18 @@ namespace Xunkong.Desktop.MapTool
             }
         }
 
+
+        public void RefreshWebView()
+        {
+            if (Setting?.UseYuanShenSite ?? false)
+            {
+                webView21.Source = new Uri("https://yuanshen.site/index.html", UriKind.Absolute);
+            }
+            else
+            {
+                webView21.Source = new Uri("https://webstatic.mihoyo.com/app/ys-map-cn/index.html", UriKind.Absolute);
+            }
+        }
 
 
         private void Form1_SizeChanged(object sender, EventArgs e)

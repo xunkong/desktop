@@ -48,7 +48,6 @@ namespace Xunkong.Desktop.MapTool
             this.webView21.Margin = new System.Windows.Forms.Padding(0);
             this.webView21.Name = "webView21";
             this.webView21.Size = new System.Drawing.Size(0, 0);
-            this.webView21.Source = new System.Uri("https://webstatic.mihoyo.com/app/ys-map-cn/index.html", System.UriKind.Absolute);
             this.webView21.TabIndex = 0;
             this.webView21.ZoomFactor = 1D;
             // 

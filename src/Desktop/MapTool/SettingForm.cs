@@ -18,7 +18,13 @@ namespace Xunkong.Desktop.MapTool
             checkBox2.Checked = setting.DisableClickTransparentWhenDeactived;
             trackBar1.Value = (int)(10 * setting.OpacityWhenActived);
             trackBar2.Value = (int)(10 * setting.OpacityWhenDeactived);
+            radioButton1.Checked = !setting.UseYuanShenSite;
+            radioButton2.Checked = setting.UseYuanShenSite;
+            lastUseYuanShenSite = setting.UseYuanShenSite;
         }
+
+
+        private bool lastUseYuanShenSite;
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -26,6 +32,11 @@ namespace Xunkong.Desktop.MapTool
             Form1.Instance.Setting.DisableClickTransparentWhenDeactived = checkBox2.Checked;
             Form1.Instance.Setting.OpacityWhenActived = (double)trackBar1.Value / 10;
             Form1.Instance.Setting.OpacityWhenDeactived = (double)trackBar2.Value / 10;
+            Form1.Instance.Setting.UseYuanShenSite = radioButton2.Checked;
+            if (lastUseYuanShenSite != radioButton2.Checked)
+            {
+                Form1.Instance.RefreshWebView();
+            }
             Form1.Instance.RefreshState();
             Close();
         }

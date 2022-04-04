@@ -11,6 +11,8 @@
 
         public double OpacityWhenDeactived { get; set; } = 0.6;
 
+        public bool UseYuanShenSite { get; set; }
+
         public int Left { get; set; }
 
         public int Top { get; set; }

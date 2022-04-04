@@ -22,8 +22,25 @@ namespace Xunkong.Desktop.MapTool
         public static extern int GetWindowLong(IntPtr hWnd, WindowLongFlags nIndex);
 
 
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
+        private static extern IntPtr SetWindowLong32(IntPtr hWnd, WindowLongFlags nIndex, uint dwNewLong);
+
+
         [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
-        public static extern IntPtr SetWindowLong(IntPtr hWnd, WindowLongFlags nIndex, uint dwNewLong);
+        private static extern IntPtr SetWindowLong64(IntPtr hWnd, WindowLongFlags nIndex, uint dwNewLong);
+
+        public static IntPtr SetWindowLong(IntPtr hWnd, WindowLongFlags nIndex, uint dwNewLong)
+        {
+            if (IntPtr.Size == 4)
+            {
+                return SetWindowLong32(hWnd, nIndex, dwNewLong);
+            }
+            if (IntPtr.Size == 8)
+            {
+                return SetWindowLong64(hWnd, nIndex, dwNewLong);
+            }
+            return IntPtr.Zero;
+        }
 
         [DllImport("user32.dll", ExactSpelling = true, SetLastError = true)]
         [SecurityCritical]
