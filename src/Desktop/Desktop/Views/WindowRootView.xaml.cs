@@ -190,6 +190,12 @@ namespace Xunkong.Desktop.Views
                     else
                     {
                         var tag = args.InvokedItemContainer.Tag as string;
+                        if (tag == "HomePage")
+                        {
+                            var webTool_HomePage = new WebToolItem { Id = -1, Url = "https://xunkong.cc" };
+                            _rootFrame.Navigate(typeof(WebToolPage), webTool_HomePage);
+                            return;
+                        }
                         var asm = typeof(WindowRootView).Assembly;
                         var type = asm.GetType($"Xunkong.Desktop.Pages.{tag}");
                         if (type is not null)
