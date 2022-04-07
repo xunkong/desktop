@@ -52,6 +52,7 @@ namespace Xunkong.Desktop.MapTool
             if (pros != null)
             {
                 var hwnd = pros.MainWindowHandle;
+                SetForegroundWindow(hwnd);
                 if (GetWindowRect(hwnd, out var rect))
                 {
                     Form1.Instance.hwnd_genshin = hwnd;

@@ -140,7 +140,7 @@
 
 
             <NavigationView.PaneFooter>
-                <cc:SwitchPresenter Name="_PaneFooter_BackgroundWallpaper"
+                <cc:SwitchPresenter x:Name="_PaneFooter_BackgroundWallpaper"
                                     AllowDrop="True"
                                     DragOver="_PaneFooter_BackgroundWallpaper_DragOver"
                                     Drop="_PaneFooter_BackgroundWallpaper_Drop"
