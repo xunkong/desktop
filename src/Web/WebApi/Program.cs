@@ -42,6 +42,8 @@ builder.Services.AddVersionedApiExplorer(options =>
 });
 
 
+builder.Services.AddCors(options => options.AddDefaultPolicy(builder => builder.SetIsOriginAllowed(host => host.Contains("xunkong.cc"))));
+
 
 builder.Services.AddResponseCompression();
 builder.Services.AddMemoryCache();
@@ -125,6 +127,7 @@ app.UseResponseCompression();
 
 app.UseHttpLogging();
 
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {

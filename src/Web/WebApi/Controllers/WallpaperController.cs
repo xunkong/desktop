@@ -217,7 +217,8 @@ namespace Xunkong.Web.Api.Controllers
                     rows = await _dbContext.Database.ExecuteSqlRawAsync($"UPDATE wallpapers SET Recommend=1 WHERE Id = {info?.Id ?? 0};");
                 }
                 await t.CommitAsync();
-                return await RedirectToRecommendWallpaperImageAsync();
+                var recommend = await _dbContext.WallpaperInfos.AsNoTracking().Where(x => x.Enable).FirstOrDefaultAsync();
+                return RedirectToImage(recommend!.Url!, "/thumb");
             }
             catch (Exception ex)
             {
@@ -229,9 +230,9 @@ namespace Xunkong.Web.Api.Controllers
 
 
 
-        private IActionResult RedirectToImage(string fileName)
+        private IActionResult RedirectToImage(string fileName, string? style = null)
         {
-            var url = $"https://file.xunkong.cc/wallpaper/{Uri.EscapeDataString(fileName)}";
+            var url = $"https://file.xunkong.cc/wallpaper/{Uri.EscapeDataString(fileName)}{style}";
             return Redirect(url);
         }
 

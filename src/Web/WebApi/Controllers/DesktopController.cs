@@ -97,7 +97,7 @@ namespace Xunkong.Web.Api.Controllers
             var vmin = new Version(0, 0);
             var vmax = new Version(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue);
             var notifications = await _dbContext.NotificationItems.AsNoTracking()
-                                                                  .Where(x => x.Platform == PlatformType.Desktop && x.Channel.HasFlag(channel) && x.Id > lastId && x.Enable)
+                                                                  .Where(x => x.Platform == PlatformType.Desktop && x.Channel.HasFlag(channel) && x.Enable)
                                                                   .ToListAsync();
             notifications = notifications.Where(x => (x.MinVersion ?? vmin) <= v && v < (x.MaxVersion ?? vmax))
                                          .OrderByDescending(x => x.Time)
