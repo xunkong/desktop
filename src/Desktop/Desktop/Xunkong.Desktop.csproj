@@ -43,6 +43,7 @@
 		<None Remove="Pages\WishlogSummaryPage.xaml" />
 		<None Remove="Toolbox\PixivMetadataTool.xaml" />
 		<None Remove="Toolbox\TravelNoteTool.xaml" />
+		<None Remove="Toolbox\WishlogManageTool.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Update="WebViews\dist\*">
@@ -56,7 +57,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AngleSharp" Version="0.16.1" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0-preview1" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0-preview3" />
 		<PackageReference Include="CommunityToolkit.WinUI.Notifications" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Behaviors" Version="7.1.2" />
 		<PackageReference Include="CommunityToolkit.WinUI.UI.Controls" Version="7.1.2" />
@@ -77,6 +78,7 @@
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="2.1.0" />
 		<PackageReference Include="Syncfusion.Chart.WinUI" Version="20.1.0.47" />
+		<PackageReference Include="Syncfusion.Grid.WinUI" Version="20.1.0.47" />
 		<PackageReference Include="Vanara.PInvoke.User32" Version="3.4.0" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
@@ -87,6 +89,12 @@
 		<ProjectReference Include="..\Database\Xunkong.Desktop.Database.csproj" />
 		<ProjectReference Include="..\Extension\Xunkong.Desktop.Extension.csproj" />
 		<ProjectReference Include="..\Secret\Xunkong.Desktop.Secret.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Toolbox\WishlogManageTool.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 
 	<ItemGroup>

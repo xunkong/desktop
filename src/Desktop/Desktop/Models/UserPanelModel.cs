@@ -56,16 +56,10 @@ namespace Xunkong.Desktop.Models
         }
 
 
+        [ObservableProperty]
         [AlsoNotifyChangeFor(nameof(PinButtonVisibility))]
         private DailyNoteInfo? _DailyNoteInfo;
-        public DailyNoteInfo? DailyNoteInfo
-        {
-            get => _DailyNoteInfo;
-            set
-            {
-                SetProperty(ref _DailyNoteInfo, value);
-            }
-        }
+
 
 
         public Visibility PinButtonVisibility

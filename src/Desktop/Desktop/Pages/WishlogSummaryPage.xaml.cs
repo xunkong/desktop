@@ -2,7 +2,6 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media.Animation;
-using Windows.ApplicationModel.DataTransfer;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -15,8 +14,6 @@ namespace Xunkong.Desktop.Pages
     public sealed partial class WishlogSummaryPage : Page
     {
 
-        private const string HasShownUpdateMetadataTeachingTip = "HasShownUpdateMetadataTeachingTip";
-
         private WishlogSummaryViewModel vm => (DataContext as WishlogSummaryViewModel)!;
 
 
@@ -25,21 +22,8 @@ namespace Xunkong.Desktop.Pages
             this.InitializeComponent();
             DataContext = ActivatorUtilities.CreateInstance<WishlogSummaryViewModel>(App.Current.Services);
             Loaded += async (_, _) => await vm.InitializePageDataAsync();
-            Loaded += ShowUpdateMetadataTeachingTip;
         }
 
-        private void ShowUpdateMetadataTeachingTip(object sender, RoutedEventArgs e)
-        {
-            if (!LocalSettingHelper.GetSetting<bool>(HasShownUpdateMetadataTeachingTip))
-            {
-                _TeachingTip_UpdateMetadata.IsOpen = true;
-            }
-        }
-
-        private void _TeachingTip_UpdateMetadata_CloseButtonClick(TeachingTip sender, object args)
-        {
-            LocalSettingHelper.SaveSetting(HasShownUpdateMetadataTeachingTip, true);
-        }
 
         private void _Flyout_InputWishlogUrl_Opened(object sender, object e)
         {
@@ -132,30 +116,6 @@ namespace Xunkong.Desktop.Pages
             }
         }
 
-
-        private void _AppBarButton_Import_Click(object sender, RoutedEventArgs e)
-        {
-            _TeachingTip_Import.IsOpen = true;
-        }
-
-        private void _AppBarButton_Import_DragOver(object sender, DragEventArgs e)
-        {
-            e.AcceptedOperation = DataPackageOperation.Copy;
-            e.DragUIOverride.IsCaptionVisible = false;
-            e.DragUIOverride.IsGlyphVisible = false;
-        }
-
-        private async void _AppBarButton_Import_Drop(object sender, DragEventArgs e)
-        {
-            if (e.DataView.Contains(StandardDataFormats.StorageItems))
-            {
-                var items = await e.DataView.GetStorageItemsAsync();
-                if (items.Count > 0)
-                {
-                    await vm.ImportWishlogItemsFromExcelOrJsonFile(items.Select(x => x.Path));
-                }
-            }
-        }
 
 
     }

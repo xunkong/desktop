@@ -69,6 +69,7 @@ namespace Xunkong.Desktop
 #if !DEBUG
             InitializeAppCenter.Initialize();
 #endif
+            RegisterSyncfusion.Register();
             m_window = new MainWindow();
             m_window.Activate();
         }

@@ -102,14 +102,9 @@
             <NavigationView.MenuItems>
                 <NavigationViewItemSeparator />
                 <NavigationViewItemHeader Content="主要功能" />
-                <NavigationViewItem Content="主页" Tag="HomePage">
-                    <NavigationViewItem.Icon>
-                        <BitmapIcon Width="36"
-                                    Height="36"
-                                    ShowAsMonochrome="False"
-                                    UriSource="ms-appx:///Assets/Logos/StoreLogo.png" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
+                <NavigationViewItem Content="主页"
+                                    Icon="Home"
+                                    Tag="HomePage" />
                 <NavigationViewItem Content="相册"
                                     Icon="Camera"
                                     Tag="AlbumPage" />

@@ -49,7 +49,7 @@ namespace Xunkong.Desktop.Services
                 WishlogList = orderedItems,
             };
             var dir = Path.Combine(XunkongEnvironment.UserDataPath, @"Backup\Wishlog");
-            var file = Path.Combine(dir, $"wishlog_{uid}_{DateTime.Now:yyyyMMddHHmmss}.json");
+            var file = Path.Combine(dir, $"Wishlog_{uid}_{DateTime.Now:yyyyMMdd_HHmmss}.json");
             Directory.CreateDirectory(dir);
             _logger.LogInformation($"Backup file path: {file}");
             using var stream = File.Create(file);
@@ -58,7 +58,7 @@ namespace Xunkong.Desktop.Services
         }
 
 
-        public async Task<string> BackupWishlogItemsAsync(int uid, bool throwError = false)
+        public async Task<string> BackupWishlogItemsAsync(int uid)
         {
             _logger.LogInformation($"Start to backup wishlog items of uid {uid}.");
             using var ctx = _ctxFactory.CreateDbContext();
@@ -75,7 +75,7 @@ namespace Xunkong.Desktop.Services
                 WishlogList = orderedItems,
             };
             var dir = Path.Combine(XunkongEnvironment.UserDataPath, @"Backup\Wishlog");
-            var file = Path.Combine(dir, $"wishlog_{uid}_{DateTime.Now:yyyyMMddHHmmss}.json");
+            var file = Path.Combine(dir, $"Wishlog_{uid}_{DateTime.Now:yyyyMMdd_HHmmss}.json");
             Directory.CreateDirectory(dir);
             _logger.LogInformation($"Backup file path: {file}");
             using var stream = File.Create(file);

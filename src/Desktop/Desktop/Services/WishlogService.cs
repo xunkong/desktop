@@ -290,97 +290,12 @@ namespace Xunkong.Desktop.Services
 
 
 
-        public async Task<string> ImportFromJsonFile(string file)
-        {
-            _logger.LogInformation($"Start to import wishlog from json file: {file}");
-            var str = await File.ReadAllTextAsync(file);
-            var importer = new JsonImporter();
-            var list = importer.Deserialize(str);
-            _logger.LogInformation($"Total deserialozed wishlog count: {list.Count}");
-            if (!list.Any())
-            {
-                throw new XunkongException(ErrorCode.InternalException, "No wishlogs in the imported file.");
-            }
-            if (list.Any(x => x.Uid == 0))
-            {
-                throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have items without uid.");
-            }
-            if (list.DistinctBy(x => x.Uid).Count() > 1)
-            {
-                throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have more than one uid.");
-            }
-            var uid = list.FirstOrDefault()!.Uid;
-            _logger.LogInformation($"Imported uid of wishlog is {uid}");
-            using var ctx = _ctxFactory.CreateDbContext();
-            if (await ctx.WishlogItems.AnyAsync(x => x.Uid == uid))
-            {
-                await _backupService.BackupWishlogItemsAsync(uid);
-            }
-            var existing = await ctx.WishlogItems.Where(x => x.Uid == uid).Select(x => x.Id).ToListAsync();
-            _logger.LogInformation($"Uid {uid} has existed wishlog count {existing.Count}");
-            var adding = list.ExceptBy(existing, x => x.Id).ToList();
-            _logger.LogInformation($"This import action need to add wishlog count {adding.Count}");
-            ctx.AddRange(adding);
-            await ctx.SaveChangesAsync();
-            _logger.LogInformation("Import action and operation database is finished.");
-            var addCount = adding.Count;
-            var totalCount = await ctx.WishlogItems.Where(x => x.Uid == uid).CountAsync();
-            return $"账号 {uid} 此次导入新增 {addCount} 条记录，导入后总计 {totalCount} 条";
-        }
-
-
-
-
-        public async Task<string> ImportFromExcelFile(string file)
-        {
-            _logger.LogInformation($"Start to import wishlog from excel file: {file}");
-            var items = await MiniExcelLibs.MiniExcel.QueryAsync<WishlogItemExcelModel>(file, "原始数据");
-            var list = items.Adapt<List<WishlogItem>>().Where(x => x.Uid != 0).ToList();
-            _logger.LogInformation($"Total deserialozed wishlog count: {list.Count}");
-            if (!list.Any())
-            {
-                throw new XunkongException(ErrorCode.InternalException, "No wishlogs in the imported file.");
-            }
-            if (list.Any(x => x.Uid == 0))
-            {
-                throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have items without uid.");
-            }
-            if (list.DistinctBy(x => x.Uid).Count() > 1)
-            {
-                throw new XunkongException(ErrorCode.InternalException, "Imported wishlogs have more than one uid.");
-            }
-            var uid = list.FirstOrDefault()!.Uid;
-            _logger.LogInformation($"Imported uid of wishlog is {uid}");
-            using var ctx = _ctxFactory.CreateDbContext();
-            if (await ctx.WishlogItems.AnyAsync(x => x.Uid == uid))
-            {
-                await _backupService.BackupWishlogItemsAsync(uid);
-            }
-            var existing = await ctx.WishlogItems.Where(x => x.Uid == uid).Select(x => x.Id).ToListAsync();
-            _logger.LogInformation($"Uid {uid} has existed wishlog count {existing.Count}");
-            var adding = list.ExceptBy(existing, x => x.Id).ToList();
-            _logger.LogInformation($"This import action need to add wishlog count {adding.Count}");
-            ctx.AddRange(adding);
-            await ctx.SaveChangesAsync();
-            _logger.LogInformation("Import action and operation database is finished.");
-            var addCount = adding.Count;
-            var totalCount = await ctx.WishlogItems.Where(x => x.Uid == uid).CountAsync();
-            return $"账号 {uid} 此次导入新增 {addCount} 条记录，导入后总计 {totalCount} 条";
-        }
-
-
-
-
-
-
-
-
 
         public async Task<List<WishlogItemEx>> GetWishlogItemExByUidAsync(int uid)
         {
             using var ctx = _ctxFactory.CreateDbContext();
-            var items = await ctx.WishlogItems.Where(x => x.Uid == uid).ToListAsync();
-            var events = await ctx.WishEventInfos.ToListAsync();
+            var items = await ctx.WishlogItems.AsNoTracking().Where(x => x.Uid == uid).ToListAsync();
+            var events = await ctx.WishEventInfos.AsNoTracking().ToListAsync();
             var models = items.Adapt<List<WishlogItemEx>>();
             var groups = models.GroupBy(x => x.QueryType);
             Parallel.ForEach(groups, group =>
@@ -430,14 +345,6 @@ namespace Xunkong.Desktop.Services
             });
             return models;
         }
-
-
-
-
-
-
-
-
 
 
 

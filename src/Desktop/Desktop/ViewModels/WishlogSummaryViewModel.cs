@@ -1,8 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
-using Windows.Storage.Pickers;
-using WinRT.Interop;
 using Xunkong.Core.Hoyolab;
 using Xunkong.Core.Metadata;
 using Xunkong.Core.Wish;
@@ -661,75 +659,6 @@ namespace Xunkong.Desktop.ViewModels
             }
         }
 
-
-        /// <summary>
-        /// 从 Excel 或 Json 文件导入祈愿记录
-        /// </summary>
-        /// <param name="files"></param>
-        /// <returns></returns>
-        public async Task ImportWishlogItemsFromExcelOrJsonFile(IEnumerable<string> files)
-        {
-            if (!files.Any())
-            {
-                return;
-            }
-            IsLoading = true;
-            StateText = "导入中";
-            await Task.Delay(100);
-            foreach (var file in files)
-            {
-                _logger.LogInformation($"Imported file path: {file}.");
-                try
-                {
-                    if (Path.GetExtension(file).ToLower() == ".json")
-                    {
-                        var result = await _wishlogService.ImportFromJsonFile(file);
-                        InfoBarHelper.Success(result, 5000);
-                        continue;
-                    }
-                    if (Path.GetExtension(file).ToLower() == ".xlsx")
-                    {
-                        var result = await _wishlogService.ImportFromExcelFile(file);
-                        InfoBarHelper.Success(result, 5000);
-                        continue;
-                    }
-                    InfoBarHelper.Warning("仅支持 Excel 或 Json 文件", 3000);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "ImportWishlogItemsFromJsonFile");
-                    InfoBarHelper.Error(ex);
-                }
-            }
-            StateText = "";
-            IsLoading = false;
-        }
-
-
-        /// <summary>
-        /// 选择导入的文件
-        /// </summary>
-        /// <returns></returns>
-        [ICommand(AllowConcurrentExecutions = false)]
-        private async Task OpenImportedFilesAsync()
-        {
-            try
-            {
-                var dialog = new FileOpenPicker();
-                dialog.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-                dialog.FileTypeFilter.Add("*");
-                dialog.FileTypeFilter.Add(".json");
-                dialog.FileTypeFilter.Add(".xlsx");
-                InitializeWithWindow.Initialize(dialog, MainWindow.Hwnd);
-                var files = await dialog.PickMultipleFilesAsync();
-                await ImportWishlogItemsFromExcelOrJsonFile(files.Select(x => x.Path));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Open imported files.");
-                InfoBarHelper.Error(ex);
-            }
-        }
 
 
 

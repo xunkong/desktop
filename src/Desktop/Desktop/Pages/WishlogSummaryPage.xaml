@@ -393,43 +393,10 @@
                               Icon="ContactInfo"
                               Label="更新元数据"
                               ToolTipService.ToolTip="更新角色、武器、卡池等信息" />
-                <AppBarButton Name="_AppBarButton_Import"
-                              AllowDrop="True"
-                              Click="_AppBarButton_Import_Click"
-                              DragOver="_AppBarButton_Import_DragOver"
-                              Drop="_AppBarButton_Import_Drop"
-                              Icon="Download"
-                              Label="导入记录" />
-
             </StackPanel>
         </Grid>
 
-        <TeachingTip Content="元数据更新完毕，请刷新界面"
-                     IsLightDismissEnabled="True"
-                     IsOpen="{x:Bind vm.IsRefreshPageTeachingTipOpen, Mode=TwoWay}"
-                     PreferredPlacement="BottomLeft"
-                     Target="{x:Bind _AppBarButton_RefreshPage}" />
-
-        <TeachingTip Name="_TeachingTip_UpdateMetadata"
-                     CloseButtonClick="_TeachingTip_UpdateMetadata_CloseButtonClick"
-                     Content="首次使用或卡池更新后记得「更新元数据」"
-                     PreferredPlacement="BottomLeft"
-                     Target="{x:Bind _AppBarButton_UpdateMetadata}" />
-
-        <TeachingTip Name="_TeachingTip_Import"
-                     IsLightDismissEnabled="True"
-                     PreferredPlacement="BottomLeft"
-                     Target="{x:Bind _AppBarButton_Import}">
-            <StackPanel>
-                <TextBlock VerticalAlignment="Center" Text="拖入 Excel 或 Json 文件到箭头所指的按键上" />
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="也可以手动" />
-                    <Button Command="{x:Bind vm.OpenImportedFilesCommand, Mode=OneTime}" Content="选择文件" />
-                </StackPanel>
-            </StackPanel>
-        </TeachingTip>
-
-
+   
         <Pivot Grid.Row="2">
             <Pivot.Resources>
                 <Thickness x:Key="PivotItemMargin">0</Thickness>
