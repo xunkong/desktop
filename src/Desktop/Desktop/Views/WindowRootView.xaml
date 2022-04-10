@@ -110,10 +110,7 @@
                                     Tag="AlbumPage" />
                 <NavigationViewItem Content="祈愿记录" Tag="WishlogSummaryPage">
                     <NavigationViewItem.Icon>
-                        <BitmapIcon Width="36"
-                                    Height="36"
-                                    ShowAsMonochrome="False"
-                                    UriSource="ms-appx:///Assets/Images/Ui_SystemOpenIcon_Gacha.png" />
+                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/Images/Ui_SystemOpenIcon_Gacha.png" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="角色信息"
@@ -122,8 +119,12 @@
                 <NavigationViewItem Content="旅行札记"
                                     Icon="PhoneBook"
                                     Tag="TravelNotesPage" />
+                <NavigationViewItem Content="深境螺旋" Tag="SpiralAbyssPage">
+                    <NavigationViewItem.Icon>
+                        <BitmapIcon ShowAsMonochrome="False" UriSource="ms-appx:///Assets/Images/UI_Icon_Tower_Star.png" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
             </NavigationView.MenuItems>
-
 
 
             <NavigationView.FooterMenuItems>

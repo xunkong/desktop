@@ -632,7 +632,7 @@
                                         <LineBreak />
                                         <Run FontSize="12"
                                              Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                             Text="开发过程中使用" />
+                                             Text="数据库版本落后时用这个" />
                                     </TextBlock>
                                     <Button HorizontalAlignment="Right"
                                             Command="{x:Bind vm.MigrateDatabaseCommand, Mode=OneTime}"
@@ -707,12 +707,7 @@
                     <!--  其他  -->
                     <TextBlock />
                     <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="其他" />
-                    <StackPanel Orientation="Horizontal" Spacing="16">
-                        <Button Command="{x:Bind vm.GetSpiralAbyssInfoSummaryCommand, Mode=OneTime}" Content="获取深渊记录" />
-                        <controls:GenshinElementLoading Height="24"
-                                                        IsActive="{x:Bind vm.GetSpiralAbyssInfoSummaryCommand.IsRunning}"
-                                                        SyncActiveAndVisibility="True" />
-                    </StackPanel>
+
                     <Button Command="{x:Bind vm.StartMapToolCommand, Mode=OneTime}" Content="启动小地图" />
 
                 </StackPanel>

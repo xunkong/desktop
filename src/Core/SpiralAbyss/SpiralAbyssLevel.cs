@@ -30,5 +30,8 @@
         public List<SpiralAbyssBattle> Battles { get; set; }
 
 
+        [JsonIgnore, NotMapped]
+        public DateTimeOffset FirstBattleTime => Battles.FirstOrDefault()?.Time ?? new();
+
     }
 }

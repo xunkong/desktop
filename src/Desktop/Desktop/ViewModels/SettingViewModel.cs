@@ -93,6 +93,16 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+        [ICommand]
+        private void CopyDevelopersMail()
+        {
+            var data = new DataPackage();
+            data.RequestedOperation = DataPackageOperation.Copy;
+            data.SetText("scighost@outlook.com");
+            Clipboard.SetContent(data);
+            InfoBarHelper.Success("已复制开发者的邮件（如果没收到回复，可能是被识别为垃圾邮件了）", 5000);
+        }
+
 
         #region Version and Theme
 
@@ -844,26 +854,7 @@ namespace Xunkong.Desktop.ViewModels
 
 
 
-        #region Others
-
-
-
-        [ICommand(AllowConcurrentExecutions = false)]
-        private async Task GetSpiralAbyssInfoSummary()
-        {
-            try
-            {
-                var role = await _hoyolabService.GetLastSelectedOrFirstUserGameRoleInfoAsync();
-                var c = await _hoyolabService.GetSpiralAbyssInfoAsync(role, 1);
-                var l = await _hoyolabService.GetSpiralAbyssInfoAsync(role, 2);
-                InfoBarHelper.Success($"{role.Nickname}的深渊记录保存成功");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Get spiral abyss summary info.");
-                InfoBarHelper.Error(ex);
-            }
-        }
+        #region Database
 
 
         [ICommand(AllowConcurrentExecutions = false)]
@@ -898,6 +889,13 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+        #endregion
+
+
+
+        #region Image Cache
+
+
         [ICommand]
         private void ClearImageCache()
         {
@@ -918,18 +916,6 @@ namespace Xunkong.Desktop.ViewModels
                 InfoBarHelper.Error(ex);
             }
         }
-
-
-        [ICommand]
-        private void CopyDevelopersMail()
-        {
-            var data = new DataPackage();
-            data.RequestedOperation = DataPackageOperation.Copy;
-            data.SetText("scighost@outlook.com");
-            Clipboard.SetContent(data);
-            InfoBarHelper.Success("已复制开发者的邮件（如果没收到回复，可能是被识别为垃圾邮件了）", 5000);
-        }
-
 
 
         private int _PrecacheImage_TotalCount;
@@ -1014,6 +1000,11 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+        #endregion
+
+
+
+
         [ICommand]
         private void StartMapTool()
         {
@@ -1027,10 +1018,6 @@ namespace Xunkong.Desktop.ViewModels
                 InfoBarHelper.Error(ex);
             }
         }
-
-
-        #endregion
-
 
     }
 }

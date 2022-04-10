@@ -36,6 +36,7 @@
 		<None Remove="Controls\WebToolContentControl.xaml" />
 		<None Remove="Pages\AlbumPage.xaml" />
 		<None Remove="Pages\CharacterInfoPage.xaml" />
+		<None Remove="Pages\SpiralAbyssPage.xaml" />
 		<None Remove="Pages\ToolboxPage.xaml" />
 		<None Remove="Pages\TravelNotesPage.xaml" />
 		<None Remove="Pages\WebViewPage.xaml" />
@@ -89,6 +90,12 @@
 		<ProjectReference Include="..\Database\Xunkong.Desktop.Database.csproj" />
 		<ProjectReference Include="..\Extension\Xunkong.Desktop.Extension.csproj" />
 		<ProjectReference Include="..\Secret\Xunkong.Desktop.Secret.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="Pages\SpiralAbyssPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 
 	<ItemGroup>
