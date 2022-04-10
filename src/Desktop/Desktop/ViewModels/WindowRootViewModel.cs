@@ -76,6 +76,27 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
+        /// <summary>
+        /// 签到所有账号
+        /// </summary>
+        /// <returns></returns>
+        public async Task SignInAllAccountsAsync()
+        {
+            try
+            {
+                var roles = await _hoyolabService.GetUserGameRoleInfoListAsync();
+                foreach (var role in roles)
+                {
+                    await _hoyolabService.SignInAsync(role);
+                }
+            }
+            catch (Exception ex)
+            {
+                InfoBarHelper.Error(ex, "签到过程中出现错误");
+                _logger.LogError(ex, nameof(SignInAllAccountsAsync));
+            }
+        }
+
 
 
         private WallpaperInfo? _BackgroundWallpaper;
@@ -196,7 +217,7 @@ namespace Xunkong.Desktop.ViewModels
         }
 
 
-        public async void GetAllGenshinData()
+        public async void GetAllGenshinDataAsync()
         {
             await _xunkongApiService.GetAllGenshinDataFromServerAsync(false);
         }

@@ -78,11 +78,12 @@ namespace Xunkong.Desktop.Views
             {
                 await vm.InitializeBackgroundWallpaperAsync();
             }
-            await Task.Delay(100);
+            await Task.Delay(1000);
             CheckNotifications();
             vm.CheckVersionUpdateAsync();
             vm.CheckWebView2Runtime();
-            vm.GetAllGenshinData();
+            vm.GetAllGenshinDataAsync();
+            await vm.SignInAllAccountsAsync();
         }
 
 
