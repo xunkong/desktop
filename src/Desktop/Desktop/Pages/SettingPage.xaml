@@ -593,6 +593,116 @@
                         </Expander.Content>
                     </Expander>
 
+                    <!--  数据库操作  -->
+                    <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <Expander.Header>
+                            <Grid>
+                                <StackPanel Padding="4,16,0,16" Orientation="Horizontal">
+                                    <Path Width="20"
+                                          Data="M925.0304 82.3808c-25.4464-16.6912-61.0816-31.488-105.9328-43.9296-89.1904-24.7808-207.36-38.4-332.6976-38.4s-243.5072 13.6704-332.6976 38.4c-44.9024 12.4416-80.5376 27.2384-105.9328 43.9296C16.0768 103.2192 0 127.1296 0 153.6v614.4c0 26.4704 16.0768 50.432 47.7696 71.2192 25.4464 16.6912 61.0816 31.488 105.9328 43.9296 89.1904 24.7808 207.36 38.4 332.6976 38.4s243.5072-13.6704 332.6976-38.4512c44.9024-12.4416 80.5376-27.2384 105.9328-43.9296 31.6928-20.7872 47.7696-44.7488 47.7696-71.2192v-614.4c0-26.4704-16.0768-50.432-47.7696-71.2192zM167.424 87.7568C252.3136 64.2048 365.568 51.2 486.4 51.2s234.1376 13.0048 318.976 36.5568C897.28 113.3056 921.6 141.9776 921.6 153.6s-24.2688 40.2944-116.224 65.8432C720.4864 242.9952 607.232 256 486.4 256s-234.1376-13.0048-318.976-36.5568C75.52 193.8944 51.2 165.2224 51.2 153.6s24.2688-40.2944 116.224-65.8432z m637.952 746.0864c-84.8896 23.552-198.144 36.5568-318.976 36.5568s-234.1376-13.0048-318.976-36.5568C75.52 808.2944 51.2 779.6224 51.2 768v-131.3792c25.1904 15.8208 59.5968 29.8496 102.5024 41.7792 89.1904 24.7808 207.36 38.4 332.6976 38.4s243.5072-13.6704 332.6976-38.4512c42.9056-11.9296 77.3632-25.9584 102.5024-41.7792v131.3792c0 11.6224-24.2688 40.2944-116.224 65.8432z m0-204.8c-84.8896 23.552-198.144 36.5568-318.976 36.5568s-234.1376-13.0048-318.976-36.5568C75.52 603.4944 51.2 574.8224 51.2 563.2V431.8208c25.1904 15.8208 59.5968 29.8496 102.5024 41.7792 89.1904 24.7808 207.36 38.4 332.6976 38.4s243.5072-13.6704 332.6976-38.4c42.9056-11.9296 77.3632-25.9584 102.5024-41.7792V563.2c0 11.6224-24.2688 40.2944-116.224 65.8432z m0-204.8C720.4864 447.7952 607.232 460.8 486.4 460.8s-234.1376-13.0048-318.976-36.5568C75.52 398.6944 51.2 370.0224 51.2 358.4V227.0208c25.1904 15.8208 59.5968 29.8496 102.5024 41.7792C242.8928 293.5808 361.0624 307.2 486.4 307.2s243.5072-13.6704 332.6976-38.4c42.9056-11.9296 77.3632-25.9584 102.5024-41.7792V358.4c0 11.6224-24.2688 40.2944-116.224 65.8432z"
+                                          Fill="{ThemeResource TextFillColorPrimaryBrush}"
+                                          Stretch="Uniform" />
+                                    <TextBlock Margin="20,0,0,0">
+                                        <Run Text="数据库操作" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="如果觉得数据库文件很大了，可以尝试清理一下" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Expander.Header>
+                        <Expander.Content>
+                            <StackPanel Margin="0,-16,44,-16">
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock>
+                                        <Run Text="清理并压缩数据库" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="仅会清理实时便笺记录、签到记录等无用的数据" />
+                                    </TextBlock>
+                                    <Button HorizontalAlignment="Right"
+                                            Command="{x:Bind vm.CompressDatabaseCommand, Mode=OneTime}"
+                                            Content="开始清理" />
+                                </Grid>
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock TextWrapping="Wrap">
+                                        <Run Text="更新数据库表结构" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="开发过程中使用" />
+                                    </TextBlock>
+                                    <Button HorizontalAlignment="Right"
+                                            Command="{x:Bind vm.MigrateDatabaseCommand, Mode=OneTime}"
+                                            Content="开始更新" />
+                                </Grid>
+                            </StackPanel>
+                        </Expander.Content>
+                    </Expander>
+
+                    <!--  图片缓存  -->
+                    <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <Expander.Header>
+                            <Grid>
+                                <StackPanel Padding="4,16,0,16" Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center"
+                                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                               FontSize="20"
+                                               Text="&#xE81E;" />
+                                    <TextBlock Margin="20,0,0,0">
+                                        <Run Text="图片缓存" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="这个功能很有用" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Expander.Header>
+                        <Expander.Content>
+                            <StackPanel Margin="0,-16,44,-16">
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock TextWrapping="Wrap">
+                                        <Run Text="预缓存所需图片" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="请耐心等待，如遇到卡顿或进程占用，可以重启应用后再重新下载" />
+                                    </TextBlock>
+                                    <StackPanel HorizontalAlignment="Right"
+                                                Orientation="Horizontal"
+                                                Spacing="8">
+                                        <ProgressBar Width="160"
+                                                     Maximum="{x:Bind vm.PrecacheImage_TotalCount}"
+                                                     Visibility="{x:Bind vm.PrecacheAllImagesCommand.IsRunning, Converter={StaticResource BoolToVisibilityConverter}}"
+                                                     Value="{x:Bind vm.PrecacheImage_FinishCount}" />
+                                        <TextBlock VerticalAlignment="Center" Visibility="{x:Bind vm.PrecacheAllImagesCommand.IsRunning, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <Run Text="{x:Bind vm.PrecacheImage_FinishCount}" />
+                                            <Run Text="/" />
+                                            <Run Text="{x:Bind vm.PrecacheImage_TotalCount}" />
+                                        </TextBlock>
+                                        <Button Command="{x:Bind vm.PrecacheAllImagesCommand, Mode=OneTime}" Content="开始下载" />
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock>
+                                        <Run Text="清理图片缓存" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="默认30天后自动清理过期图片" />
+                                    </TextBlock>
+                                    <Button HorizontalAlignment="Right"
+                                            Command="{x:Bind vm.ClearImageCacheCommand, Mode=OneTime}"
+                                            Content="开始清理" />
+                                </Grid>
+                            </StackPanel>
+                        </Expander.Content>
+                    </Expander>
+
+
 
                     <!--  其他  -->
                     <TextBlock />
@@ -603,25 +713,6 @@
                                                         IsActive="{x:Bind vm.GetSpiralAbyssInfoSummaryCommand.IsRunning}"
                                                         SyncActiveAndVisibility="True" />
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="16">
-                        <Button Command="{x:Bind vm.MigrateDatabaseCommand, Mode=OneTime}" Content="更新数据库结构" />
-                        <controls:GenshinElementLoading Height="24"
-                                                        IsActive="{x:Bind vm.MigrateDatabaseCommand.IsRunning}"
-                                                        SyncActiveAndVisibility="True" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="16">
-                        <Button Command="{x:Bind vm.PrecacheAllImagesCommand, Mode=OneTime}" Content="预缓存所需图片" />
-                        <ProgressBar Width="160"
-                                     Maximum="{x:Bind vm.PrecacheImage_TotalCount}"
-                                     Visibility="{x:Bind vm.PrecacheAllImagesCommand.IsRunning, Converter={StaticResource BoolToVisibilityConverter}}"
-                                     Value="{x:Bind vm.PrecacheImage_FinishCount}" />
-                        <TextBlock VerticalAlignment="Center" Visibility="{x:Bind vm.PrecacheAllImagesCommand.IsRunning, Converter={StaticResource BoolToVisibilityConverter}}">
-                            <Run Text="{x:Bind vm.PrecacheImage_FinishCount}" />
-                            <Run Text="/" />
-                            <Run Text="{x:Bind vm.PrecacheImage_TotalCount}" />
-                        </TextBlock>
-                    </StackPanel>
-                    <Button Command="{x:Bind vm.ClearImageCacheCommand, Mode=OneTime}" Content="清理图片缓存" />
                     <Button Command="{x:Bind vm.StartMapToolCommand, Mode=OneTime}" Content="启动小地图" />
 
                 </StackPanel>

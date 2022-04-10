@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using System.Net;
@@ -132,13 +133,13 @@ namespace Xunkong.Desktop.Toolbox
                     image.Metadata.ExifProfile = ep;
                     if (useCompactName)
                     {
-                        var file = Path.Combine(Path.GetDirectoryName(path)!, $"{pid}_p{p}.webp");
-                        await image.SaveAsWebpAsync(file, new WebpEncoder());
+                        var file = Path.Combine(Path.GetDirectoryName(path)!, $"{pid}_p{p}.jpg");
+                        await image.SaveAsJpegAsync(file, new JpegEncoder());
                     }
                     else
                     {
                         var file = Path.Combine(Path.GetDirectoryName(path)!, wallpaper.FileName);
-                        await image.SaveAsWebpAsync(file, new WebpEncoder());
+                        await image.SaveAsJpegAsync(file, new JpegEncoder());
                     }
                 }
                 wallpaperInfos.Add(wallpaper);

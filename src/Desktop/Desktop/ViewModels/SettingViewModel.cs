@@ -34,6 +34,8 @@ namespace Xunkong.Desktop.ViewModels
 
         private readonly InvokeService _invokeService;
 
+        private readonly BackupService _backupService;
+
         public string AppName => XunkongEnvironment.AppName;
 
         public string AppVersion => XunkongEnvironment.AppVersion.ToString();
@@ -51,7 +53,8 @@ namespace Xunkong.Desktop.ViewModels
                                 XunkongApiService xunkongApiService,
                                 WishlogService wishlogService,
                                 HoyolabService hoyolabService,
-                                InvokeService backgroundService)
+                                InvokeService backgroundService,
+                                BackupService backupService)
         {
             _logger = logger;
             _ctxFactory = dbContextFactory;
@@ -61,6 +64,7 @@ namespace Xunkong.Desktop.ViewModels
             _wishlogService = wishlogService;
             _hoyolabService = hoyolabService;
             _invokeService = backgroundService;
+            _backupService = backupService;
         }
 
 
@@ -863,13 +867,28 @@ namespace Xunkong.Desktop.ViewModels
 
 
         [ICommand(AllowConcurrentExecutions = false)]
+        private async Task CompressDatabaseAsync()
+        {
+            try
+            {
+                await _backupService.BackupAndCompressDatabaseAsync();
+                InfoBarHelper.Success($"完成");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, nameof(CompressDatabaseAsync));
+                InfoBarHelper.Error(ex);
+            }
+        }
+
+
+        [ICommand(AllowConcurrentExecutions = false)]
         private async Task MigrateDatabaseAsync()
         {
             try
             {
-                using var ctx = _ctxFactory.CreateDbContext();
-                await ctx.Database.MigrateAsync();
-                InfoBarHelper.Success($"成功");
+                await _backupService.BackupAndMigrateDatabaseAsync();
+                InfoBarHelper.Success($"完成");
             }
             catch (Exception ex)
             {

@@ -83,6 +83,42 @@ namespace Xunkong.Desktop.Services
             return file;
         }
 
+
+
+        public async Task<string> BackupAndCompressDatabaseAsync()
+        {
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $@"Xunkong\Backup\Database\XunkongData_{DateTimeOffset.Now:yyyyMMdd_HHmmss}.db");
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+            using var backupConnection = new SqliteConnection($"Data Source={filePath};");
+            using var cnt = _cntFactory.CreateDbConnection();
+            backupConnection.Open();
+            cnt.Open();
+            cnt.BackupDatabase(backupConnection);
+            var latestDailyCheckId = await cnt.QueryFirstAsync<int>("SELECT Id FROM DailyCheckInItems ORDER BY Id DESC LIMIT 1;");
+            await cnt.ExecuteAsync($"DELETE FROM DailyCheckInItems WHERE Id<{latestDailyCheckId};");
+            var latestDailyNoteId = await cnt.QueryFirstAsync<int>("SELECT Id FROM DailyNote_Items ORDER BY Id DESC LIMIT 1;");
+            await cnt.ExecuteAsync($"DELETE FROM DailyNote_Items WHERE Id<{latestDailyNoteId};");
+            await cnt.ExecuteAsync("VACUUM;");
+            return filePath;
+        }
+
+
+        public async Task<string> BackupAndMigrateDatabaseAsync()
+        {
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $@"Xunkong\Backup\Database\XunkongData_{DateTimeOffset.Now:yyyyMMdd_HHmmss}.db");
+            Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+            var backupConnection = new SqliteConnection($"Data Source={filePath};");
+            using var cnt = _cntFactory.CreateDbConnection();
+            cnt.BackupDatabase(backupConnection);
+            using var ctx = _ctxFactory.CreateDbContext();
+            await ctx.Database.MigrateAsync();
+            return filePath;
+        }
+
+
+
+
+
     }
 
 
