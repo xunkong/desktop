@@ -249,7 +249,7 @@
 
             <StackPanel Grid.Row="2" Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="文件格式及更多内容请查看" />
-                <HyperlinkButton Content="帮助文档" NavigateUri="https://xunkong.cc/help/wishlog" />
+                <HyperlinkButton Content="帮助文档" NavigateUri="https://xunkong.cc/help/desktop/wishlog" />
             </StackPanel>
 
         </Grid>

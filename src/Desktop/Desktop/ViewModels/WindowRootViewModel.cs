@@ -19,7 +19,6 @@ namespace Xunkong.Desktop.ViewModels
         private readonly XunkongApiService _xunkongApiService;
 
 
-
         public WindowRootViewModel(ILogger<WindowRootViewModel> logger,
                                    IDbContextFactory<XunkongDbContext> dbFactory,
                                    UserSettingService userSettingService,

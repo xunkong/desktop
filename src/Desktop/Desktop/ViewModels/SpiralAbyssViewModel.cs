@@ -42,6 +42,7 @@ namespace Xunkong.Desktop.ViewModels
         [ObservableProperty]
         private SpiralAbyss_AbyssInfo? selectedAbyssInfo;
 
+        private Dictionary<int, SpiralAbyss_AbyssInfo> abyssDic = new();
 
 
         public async Task InitializeDataAsync()
@@ -69,27 +70,32 @@ namespace Xunkong.Desktop.ViewModels
         {
             try
             {
-                using var ctx = _ctxFactory.CreateDbContext();
-                var info = await ctx.SpiralAbyssInfos.AsNoTracking()
-                                                    .Where(x => x.Id == id)
-                                                    .Include(x => x.DamageRank)
-                                                    .Include(x => x.DefeatRank)
-                                                    .Include(x => x.EnergySkillRank)
-                                                    .Include(x => x.NormalSkillRank)
-                                                    .Include(x => x.RevealRank)
-                                                    .Include(x => x.TakeDamageRank)
-                                                    .Include(x => x.Floors)
-                                                    .ThenInclude(x => x.Levels)
-                                                    .ThenInclude(x => x.Battles)
-                                                    .ThenInclude(x => x.Avatars)
-                                                    .FirstOrDefaultAsync();
-                if (info is null)
+                if (abyssDic.TryGetValue(id, out var info))
                 {
-                    return;
+                    SelectedAbyssInfo = info;
                 }
-                SelectedAbyssInfo = info.Adapt<SpiralAbyss_AbyssInfo>();
-
-
+                else
+                {
+                    using var ctx = _ctxFactory.CreateDbContext();
+                    var originInfo = await ctx.SpiralAbyssInfos.AsNoTracking()
+                                                               .Where(x => x.Id == id)
+                                                               .Include(x => x.DamageRank)
+                                                               .Include(x => x.DefeatRank)
+                                                               .Include(x => x.EnergySkillRank)
+                                                               .Include(x => x.NormalSkillRank)
+                                                               .Include(x => x.RevealRank)
+                                                               .Include(x => x.TakeDamageRank)
+                                                               .Include(x => x.Floors)
+                                                               .ThenInclude(x => x.Levels)
+                                                               .ThenInclude(x => x.Battles)
+                                                               .ThenInclude(x => x.Avatars)
+                                                               .FirstOrDefaultAsync();
+                    if (originInfo is not null)
+                    {
+                        SelectedAbyssInfo = originInfo.Adapt<SpiralAbyss_AbyssInfo>();
+                        abyssDic.TryAdd(id, SelectedAbyssInfo);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -114,6 +120,7 @@ namespace Xunkong.Desktop.ViewModels
                 var l = await _hoyolabService.GetSpiralAbyssInfoAsync(role, 2);
                 var c = await _hoyolabService.GetSpiralAbyssInfoAsync(role, 1);
                 SelectedAbyssInfo = null;
+                abyssDic.Clear();
                 await InitializeDataAsync();
                 InfoBarHelper.Success($"已获取 {role.Nickname} 最新的深渊记录");
             }

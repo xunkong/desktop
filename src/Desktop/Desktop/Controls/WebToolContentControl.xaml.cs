@@ -32,7 +32,11 @@ namespace Xunkong.Desktop.Controls
 
         private async void WebToolContentControl_LoadedAsync(object sender, RoutedEventArgs e)
         {
-            await _WebView2.EnsureCoreWebView2Async();
+            try
+            {
+                await _WebView2.EnsureCoreWebView2Async();
+            }
+            catch { }
             _WebView2.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
         }
 

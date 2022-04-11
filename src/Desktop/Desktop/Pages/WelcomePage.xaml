@@ -93,6 +93,10 @@
                 </StackPanel>
 
                 <TextBlock />
+                <TextBlock FontSize="24" Text="显示内容超出窗口范围" />
+                <TextBlock Text="您在使用的过程中可能会遇见页面内容超出窗口大小的问题，请点击左上角的个人头像增加可显示页面的范围。" />
+
+                <TextBlock />
                 <TextBlock Text="点击下方按钮不再显示欢迎界面" />
                 <Button Name="_Button_NotShowWelcomePage"
                         Click="_Button_NotShowWelcomePage_Click"

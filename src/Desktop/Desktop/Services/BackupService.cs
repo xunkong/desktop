@@ -117,6 +117,39 @@ namespace Xunkong.Desktop.Services
 
 
 
+        public void AutoBackupDatabase()
+        {
+            try
+            {
+                var dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $@"Xunkong\Backup\Database\");
+                if (Directory.Exists(dir))
+                {
+                    var files = Directory.GetFiles(dir);
+                    var filename = Path.GetFileNameWithoutExtension(files.LastOrDefault());
+                    if (!string.IsNullOrWhiteSpace(filename))
+                    {
+                        var fileData = filename.Substring(filename.IndexOf("_") + 1);
+                        var nowData = DateTime.Now.AddDays(-7).ToString("yyyyMMdd_HHmmss");
+                        if (fileData.CompareTo(nowData) == 1)
+                        {
+                            return;
+                        }
+                    }
+                }
+                var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $@"Xunkong\Backup\Database\XunkongData_{DateTimeOffset.Now:yyyyMMdd_HHmmss}.db");
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+                var backupConnection = new SqliteConnection($"Data Source={filePath};");
+                using var cnt = _cntFactory.CreateDbConnection();
+                backupConnection.Open();
+                cnt.Open();
+                cnt.BackupDatabase(backupConnection);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, nameof(AutoBackupDatabase));
+            }
+        }
+
 
 
     }

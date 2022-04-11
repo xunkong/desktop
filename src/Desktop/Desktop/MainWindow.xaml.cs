@@ -93,6 +93,7 @@ namespace Xunkong.Desktop
             LocalSettingHelper.SaveSetting(SettingKeys.WindowTop, wp.rcNormalPosition.top);
             LocalSettingHelper.SaveSetting(SettingKeys.WindowRight, wp.rcNormalPosition.right);
             LocalSettingHelper.SaveSetting(SettingKeys.WindowBottom, wp.rcNormalPosition.bottom);
+            ActivatorUtilities.GetServiceOrCreateInstance<BackupService>(App.Current.Services)?.AutoBackupDatabase();
             _logger.LogInformation("MainWindow closed.");
         }
 
