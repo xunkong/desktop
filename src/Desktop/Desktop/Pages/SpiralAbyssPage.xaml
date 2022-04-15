@@ -162,7 +162,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="abyss:SpiralAbyssRank">
-                                    <Grid Width="80">
+                                    <Grid Width="80" Height="96">
                                         <cc:ImageEx Source="{x:Bind Rarity, Converter={StaticResource RarityToBackgroundImageConverter}}" />
                                         <cc:ImageEx VerticalAlignment="Top"
                                                     CornerRadius="0,0,16,0"
