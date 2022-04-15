@@ -110,12 +110,22 @@
                 <!--  上半部分每期统计  -->
                 <Grid ColumnSpacing="48">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="504" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <!--  左上挑战回顾和出战次数  -->
                     <StackPanel Spacing="8">
                         <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="挑战回顾" />
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                                <Run Text="第" />
+                                <Run Text="{x:Bind vm.SelectedAbyssInfo.ScheduleId}" />
+                                <Run Text="期" />
+                            </TextBlock>
+                            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind vm.SelectedAbyssInfo.StartTime, Converter={StaticResource DateTimeOffsetToDateTimeStringConverter}}" />
+                            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="~" />
+                            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind vm.SelectedAbyssInfo.EndTime, Converter={StaticResource DateTimeOffsetToDateTimeStringConverter}}" />
+                        </StackPanel>
                         <StackPanel Orientation="Horizontal" Spacing="16">
                             <TextBlock VerticalAlignment="Center"
                                        FontSize="16"
@@ -139,9 +149,10 @@
                                            Text="{x:Bind vm.SelectedAbyssInfo.TotalStar}" />
                             </StackPanel>
                         </StackPanel>
-                        <TextBlock />
-                        <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="出战次数" />
-                        <ItemsControl Height="120" ItemsSource="{x:Bind vm.SelectedAbyssInfo.RevealRank}">
+                        <TextBlock Margin="0,8,0,0"
+                                   Style="{ThemeResource SubtitleTextBlockStyle}"
+                                   Text="出战次数" />
+                        <ItemsControl ItemsSource="{x:Bind vm.SelectedAbyssInfo.RevealRank}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <StackPanel VerticalAlignment="Center"
@@ -277,8 +288,7 @@
                                                                                        VerticalAlignment="Bottom"
                                                                                        FontSize="12"
                                                                                        Foreground="#84603D">
-                                                                                <Run Text="Lv." />
-                                                                                <Run Text="{x:Bind Level}" />
+                                                                                <Run Text="Lv." /><Run Text="{x:Bind Level}" />
                                                                             </TextBlock>
                                                                         </Grid>
                                                                     </DataTemplate>

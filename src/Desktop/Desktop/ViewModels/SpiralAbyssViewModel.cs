@@ -21,7 +21,7 @@ namespace Xunkong.Desktop.ViewModels
         {
             TypeAdapterConfig<SpiralAbyssInfo, SpiralAbyss_AbyssInfo>.NewConfig()
                                                                      .Map(dest => dest.DamageRank, src => src.DamageRank.FirstOrDefault())
-                                                                     .Map(dest => dest.DefeatRank, src => src.DamageRank.FirstOrDefault())
+                                                                     .Map(dest => dest.DefeatRank, src => src.DefeatRank.FirstOrDefault())
                                                                      .Map(dest => dest.EnergySkillRank, src => src.EnergySkillRank.FirstOrDefault())
                                                                      .Map(dest => dest.NormalSkillRank, src => src.NormalSkillRank.FirstOrDefault())
                                                                      .Map(dest => dest.TakeDamageRank, src => src.TakeDamageRank.FirstOrDefault());
@@ -85,7 +85,7 @@ namespace Xunkong.Desktop.ViewModels
                                                                .Include(x => x.NormalSkillRank)
                                                                .Include(x => x.RevealRank)
                                                                .Include(x => x.TakeDamageRank)
-                                                               .Include(x => x.Floors)
+                                                               .Include(x => x.Floors.Where(x => x.Index > 8))
                                                                .ThenInclude(x => x.Levels)
                                                                .ThenInclude(x => x.Battles)
                                                                .ThenInclude(x => x.Avatars)
