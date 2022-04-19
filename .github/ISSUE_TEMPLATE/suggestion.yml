@@ -1,0 +1,16 @@
+name: 提建议
+description: 你的建议可能让所有人受益
+title: 你的标题
+labels:
+  - suggestion
+body:
+- type: markdown
+  attributes: 
+    value: |
+      > 请自由发挥
+- type: textarea
+  id: description
+  validations:
+    required: true
+  attributes:
+     label: 你的建议

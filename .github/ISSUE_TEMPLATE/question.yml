@@ -1,0 +1,45 @@
+name: 提问题
+description: 请按照模板填写你的问题
+title: 你的标题
+labels:
+  - question
+body:
+- type: textarea
+  id: description
+  validations:
+    required: true
+  attributes:
+     label: 问题描述
+- type: textarea
+  id: repro-steps
+  validations:
+    required: true
+  attributes:
+     label: 复现步骤
+     render: plain text
+     description: 复现问题的操作步骤
+- type: textarea
+  id: screenshots
+  attributes:
+     label: 截图
+     description: 提交截图更有助于分析问题
+- type: input
+  id: system-version
+  attributes:
+     label: 系统版本
+     description: 精确到版本号，如 Windows 10 21H2
+- type: input
+  id: xunkong-version
+  attributes:
+     label: 寻空版本
+     description: 更新到最新版后再反馈问题
+- type: textarea
+  id: log-info
+  attributes:
+     label: 日志
+     description: 如要上传日志，注意删除个人信息
+- type: textarea
+  id: additional-context
+  attributes:
+     label: 备注
+     description: 添加你认为有必要的信息
