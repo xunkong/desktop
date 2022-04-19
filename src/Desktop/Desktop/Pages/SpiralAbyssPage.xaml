@@ -194,7 +194,7 @@
                             <TextBlock Text="最多击破数" />
                             <TextBlock Text="最强一击" />
                             <TextBlock Text="承受最多伤害" />
-                            <TextBlock Text="元素战绩施放数" />
+                            <TextBlock Text="元素战技施放数" />
                             <TextBlock Text="元素爆发次数" />
                             <cc:ImageEx Source="{x:Bind vm.SelectedAbyssInfo.DefeatRank.AvatarIcon}" />
                             <cc:ImageEx Source="{x:Bind vm.SelectedAbyssInfo.DamageRank.AvatarIcon}" />

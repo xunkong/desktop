@@ -10,10 +10,10 @@
 	<Identity
 	  Name="Xunkong.Desktop"
 	  Publisher="CN=Xunkong by Scighost"
-	  Version="0.1.7.1" />
+	  Version="0.2.0.0" />
 
 	<Properties>
-		<DisplayName>寻空 预览版</DisplayName>
+		<DisplayName>寻空</DisplayName>
 		<PublisherDisplayName>Scighost</PublisherDisplayName>
 		<Logo>Assets\Logos\StoreLogo.png</Logo>
 	</Properties>

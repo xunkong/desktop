@@ -97,11 +97,9 @@
                             <TextBlock Margin="0,0,4,0"
                                        VerticalAlignment="Center"
                                        Text="相关链接" />
-                            <HyperlinkButton Content="GitHub 存储库" NavigateUri="https://github.com/Scighost/Xunkong" />
-                            <HyperlinkButton Content="镜像下载地址"
-                                             NavigateUri="https://scighost.coding.net/public-artifacts/xunkong/releases/packages"
-                                             ToolTipService.ToolTip="每天有 50GB 流量限制" />
-                            <HyperlinkButton Command="{x:Bind vm.CopyDevelopersMailCommand}" Content="联系开发者" />
+                            <HyperlinkButton Content="项目主页" NavigateUri="https://xunkong.cc" />
+                            <HyperlinkButton Content="GitHub 项目地址" NavigateUri="https://github.com/xunkong/desktop" />
+                            <HyperlinkButton Command="{x:Bind vm.CopyDevelopersMailCommand, Mode=OneTime}" Content="联系开发者" />
                             <HyperlinkButton Content="赞助开发者" NavigateUri="https://xunkong-1306705684.file.myqcloud.com/download/donate.png" />
                         </StackPanel>
                     </Grid>

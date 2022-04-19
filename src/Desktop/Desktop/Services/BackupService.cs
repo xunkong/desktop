@@ -109,6 +109,8 @@ namespace Xunkong.Desktop.Services
             Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
             var backupConnection = new SqliteConnection($"Data Source={filePath};");
             using var cnt = _cntFactory.CreateDbConnection();
+            backupConnection.Open();
+            cnt.Open();
             cnt.BackupDatabase(backupConnection);
             using var ctx = _ctxFactory.CreateDbContext();
             await ctx.Database.MigrateAsync();

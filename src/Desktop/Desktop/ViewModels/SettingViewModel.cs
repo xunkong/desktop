@@ -36,7 +36,13 @@ namespace Xunkong.Desktop.ViewModels
 
         private readonly BackupService _backupService;
 
-        public string AppName => XunkongEnvironment.AppName;
+        public string AppName => XunkongEnvironment.Channel switch
+        {
+            ChannelType.Stable => "寻空 正式版",
+            ChannelType.Preview => "寻空 预览版",
+            ChannelType.Development => "寻空 开发版",
+            _ => "寻空",
+        };
 
         public string AppVersion => XunkongEnvironment.AppVersion.ToString();
 

@@ -101,7 +101,7 @@ namespace Xunkong.Web.Api.Controllers
 
 
         [HttpGet("random")]
-        [ResponseCache(NoStore = true)]
+        [ResponseCache(Duration = 3600)]
         public async Task<ResponseBaseWrapper> GetRandomWallpaperInfoAsync()
         {
             var count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
@@ -113,7 +113,7 @@ namespace Xunkong.Web.Api.Controllers
 
 
         [HttpGet("random/redirect")]
-        [ResponseCache(NoStore = true)]
+        [ResponseCache(Duration = 3600)]
         public async Task<IActionResult> RedirectToRandomWallpaperImageAsync()
         {
             var count = await _dbContext.WallpaperInfos.Where(x => x.Enable).CountAsync();
