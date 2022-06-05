@@ -36,13 +36,18 @@ namespace Xunkong.Desktop.Views
         {
             this.InitializeComponent();
             DataContext = ActivatorUtilities.CreateInstance<UserPanelViewModel>(App.Current.Services);
-            Loaded += async (_, _) => await vm.InitializeDataAsync();
+            Loaded += UserPanelView_Loaded;
             vm.HideUserPanelSelectorFlyout += () => _Flyout_UserPanelSelector.DispatcherQueue.TryEnqueue(() => _Flyout_UserPanelSelector.Hide());
         }
 
-
-
-
+        private async void UserPanelView_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!LocalSettingHelper.GetSetting<bool>("HasShownLeftAvatarTeachingTip"))
+            {
+                _TeachingTip_AvatarOpenPanel.IsOpen = true;
+            }
+            await vm.InitializeDataAsync();
+        }
 
         private void ShowAttachedFlyout(object sender, TappedRoutedEventArgs e)
         {
@@ -98,6 +103,9 @@ namespace Xunkong.Desktop.Views
             }
         }
 
-
+        private void _TeachingTip_AvatarOpenPanel_CloseButtonClick(TeachingTip sender, object args)
+        {
+            LocalSettingHelper.SaveSetting("HasShownLeftAvatarTeachingTip", true);
+        }
     }
 }

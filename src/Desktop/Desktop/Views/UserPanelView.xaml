@@ -39,12 +39,19 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <!--  头像  -->
-                        <cc:ImageEx Width="44"
+                        <cc:ImageEx x:Name="_ImageEx_Avatar"
+                                    Width="44"
                                     Height="44"
                                     CornerRadius="1000"
                                     Source="{Binding SelectedUserPanelModel.UserInfo.AvatarUrl, FallbackValue={StaticResource AvatarUrlFallback}}"
                                     Stretch="Uniform"
                                     Tapped="OpenOrCloseNavigationViewPane" />
+                        <TeachingTip x:Name="_TeachingTip_AvatarOpenPanel"
+                                     Background="{ThemeResource CustomControlBackgroundAcrylicBrush}"
+                                     Content="点击头像可以展开或缩小导航栏"
+                                     CloseButtonClick="_TeachingTip_AvatarOpenPanel_CloseButtonClick"   
+                                     Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                                     Target="{x:Bind _ImageEx_Avatar}" />
                         <!--  昵称  -->
                         <!--  检查是否有米游社账号  -->
                         <cc:SwitchPresenter Grid.Column="1"

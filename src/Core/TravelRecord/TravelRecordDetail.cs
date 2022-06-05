@@ -16,7 +16,7 @@
         /// </summary>
         public void OnDeserialized()
         {
-            if (List is null)
+            if (List is null || List.Count == 0)
             {
                 return;
             }

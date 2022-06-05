@@ -36,6 +36,8 @@ namespace Xunkong.Desktop.ViewModels
 
         private readonly BackupService _backupService;
 
+        private readonly UserSettingService _settingService;
+
         public string AppName => XunkongEnvironment.Channel switch
         {
             ChannelType.Stable => "寻空 正式版",
@@ -60,7 +62,8 @@ namespace Xunkong.Desktop.ViewModels
                                 WishlogService wishlogService,
                                 HoyolabService hoyolabService,
                                 InvokeService backgroundService,
-                                BackupService backupService)
+                                BackupService backupService,
+                                UserSettingService settingService)
         {
             _logger = logger;
             _ctxFactory = dbContextFactory;
@@ -71,6 +74,7 @@ namespace Xunkong.Desktop.ViewModels
             _hoyolabService = hoyolabService;
             _invokeService = backgroundService;
             _backupService = backupService;
+            _settingService = settingService;
         }
 
 
@@ -96,6 +100,11 @@ namespace Xunkong.Desktop.ViewModels
                 _logger.LogError(ex, "Error when get background task setting.");
                 InfoBarHelper.Error(ex, "无法获取后台任务的设置");
             }
+            try
+            {
+                SignInAllAccountsWhenStartUpApplication = _settingService.GetSetting<bool>("SignInAllAccountsWhenStartUpApplication");
+            }
+            catch { }
         }
 
 
@@ -621,6 +630,19 @@ namespace Xunkong.Desktop.ViewModels
                 InfoBarHelper.Information("签到结束");
             }
         }
+
+
+        private bool _SignInAllAccountsWhenStartUpApplication;
+        public bool SignInAllAccountsWhenStartUpApplication
+        {
+            get => _SignInAllAccountsWhenStartUpApplication;
+            set
+            {
+                _settingService.SaveSetting("SignInAllAccountsWhenStartUpApplication", value);
+                SetProperty(ref _SignInAllAccountsWhenStartUpApplication, value);
+            }
+        }
+
 
 
 

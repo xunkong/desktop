@@ -257,6 +257,7 @@
                                        FontWeight="SemiBold"
                                        Foreground="#84603D">
                                 <Run Text="Lv." /><Run Text="{x:Bind Level}" />
+                                <Run Text="C." /><Run Text="{x:Bind ActivedConstellationNumber}" />
                             </TextBlock>
                             <Rectangle Fill="#60000000" Visibility="{x:Bind IsOwn, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
                         </Grid>

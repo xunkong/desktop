@@ -179,8 +179,11 @@ namespace Xunkong.Desktop.ViewModels
                 WishEventInfo.RegionType = WishlogService.UidToRegionType(_SelectedUid);
                 var ctx = _ctxFactory.CreateDbContext();
                 var characters = await ctx.CharacterInfos.ToListAsync();
+                var dic_characters = characters.Where(x => !string.IsNullOrWhiteSpace(x.Name)).ToImmutableDictionary(x => x.Name!);
                 var weapons = await ctx.WeaponInfos.ToListAsync();
+                var dic_weapons = weapons.Where(x => !string.IsNullOrWhiteSpace(x.Name)).ToImmutableDictionary(x => x.Name!);
                 var wishlogs = await _wishlogService.GetWishlogItemExByUidAsync(_SelectedUid);
+                var wishlogs_group_dic = wishlogs.GroupBy(x => x.Name).ToImmutableDictionary(x => x.Key);
 
                 if (!ignoreWishlogStats)
                 {
@@ -203,7 +206,7 @@ namespace Xunkong.Desktop.ViewModels
                         var currentGuarantee = items.Last().RankType == 5 ? 0 : items.Last().GuaranteeIndex;
                         var maxGuarantee = rank5Count == 0 ? currentGuarantee : items.Where(x => x.RankType == 5).Max(x => x.GuaranteeIndex);
                         var minGuarantee = rank5Count == 0 ? currentGuarantee : items.Where(x => x.RankType == 5).Min(x => x.GuaranteeIndex);
-                        var rank5Items = items.Where(x => x.RankType == 5).Select(x => new WishlogSummary_Rank5Item(x.Name, x.GuaranteeIndex, x.Time, type == WishType.Permanent ? true : x.IsUp)).ToList();
+                        var rank5Items = items.Where(x => x.RankType == 5).Select(x => new WishlogSummary_Rank5Item(x.Name, x.GuaranteeIndex, x.Time, type == WishType.Permanent || x.IsUp)).ToList();
                         rank5Items.Where(x => !x.IsUp).ToList().ForEach(x => { x.Color = "#808080"; x.Foreground = "#808080"; });
                         var colors = ColorSet.OrderBy(x => Random.Shared.Next()).ToList();
                         var gi = rank5Items.Where(x => x.IsUp).GroupBy(x => x.Name).OrderBy(x => x.Min(y => y.Time));
@@ -233,32 +236,29 @@ namespace Xunkong.Desktop.ViewModels
                                                     .Concat(statsCollection.Where(x => x.QueryType == WishType.WeaponEvent))
                                                     .Concat(statsCollection.Where(x => x.QueryType == WishType.Permanent))
                                                     .ToList();
-                    var query1 = from c in characters
-                                 join w in wishlogs
-                                 on c.Name equals w.Name into g
-                                 where g.Any()
-                                 select new WishlogSummary_ItemThumb(c.Name, c.Rarity, c.Element, c.WeaponType, g.Count(), c.FaceIcon, g.Last().Time);
-                    CharacterThumbs = new(query1.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime));
-                    var query2 = from c in weapons
-                                 join w in wishlogs
-                                 on c.Name equals w.Name into g
-                                 where g.Any()
-                                 select new WishlogSummary_ItemThumb(c.Name, c.Rarity, ElementType.None, c.WeaponType, g.Count(), c.Icon, g.Last().Time);
-                    WeaponThumbs = new(query2.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime));
+                    var query_character = from g in wishlogs_group_dic
+                                          join c in dic_characters
+                                          on g.Key equals c.Key
+                                          select new WishlogSummary_ItemThumb(g.Key, c.Value.Rarity, c.Value.Element, c.Value.WeaponType, g.Value.Count(), c.Value.FaceIcon, g.Value.Last().Time);
+                    CharacterThumbs = new(query_character.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime));
+                    var query_weapon = from g in wishlogs_group_dic
+                                       join c in dic_weapons
+                                       on g.Key equals c.Key
+                                       select new WishlogSummary_ItemThumb(g.Key, c.Value.Rarity, ElementType.None, c.Value.WeaponType, g.Value.Count(), c.Value.Icon, g.Value.Last().Time);
+                    WeaponThumbs = new(query_weapon.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime));
                 }
 
                 var eventInfos = await ctx.WishEventInfos.ToListAsync();
 
                 var character_groups = eventInfos.Where(x => x.QueryType == WishType.CharacterEvent).GroupBy(x => x.StartTime).ToList();
-                var character_dics = characters.ToDictionary(x => x.Name!);
                 var character_eventStats = new List<WishlogSummary_EventStats>();
                 foreach (var group in character_groups)
                 {
                     var stats = group.FirstOrDefault()?.Adapt<WishlogSummary_EventStats>()!;
                     character_eventStats.Add(stats);
                     stats.Name = string.Join(" ", group.Select(x => x.Name));
-                    stats.UpItems = group.SelectMany(x => x.Rank5UpItems).Join(character_dics, str => str, dic => dic.Key, (str, dic) => dic.Value).ToList().Adapt<List<WishlogSummary_UpItem>>();
-                    stats.UpItems.AddRange(group.FirstOrDefault()!.Rank4UpItems.Join(character_dics, str => str, dic => dic.Key, (str, dic) => dic.Value).Adapt<IEnumerable<WishlogSummary_UpItem>>());
+                    stats.UpItems = group.SelectMany(x => x.Rank5UpItems).Join(dic_characters, str => str, dic => dic.Key, (str, dic) => dic.Value).ToList().Adapt<List<WishlogSummary_UpItem>>();
+                    stats.UpItems.AddRange(group.FirstOrDefault()!.Rank4UpItems.Join(dic_characters, str => str, dic => dic.Key, (str, dic) => dic.Value).Adapt<IEnumerable<WishlogSummary_UpItem>>());
                     var currentEventItems = wishlogs.Where(x => x.QueryType == WishType.CharacterEvent && stats.StartTime <= x.Time && x.Time <= stats.EndTime).OrderByDescending(x => x.Id).ToList();
                     stats.TotalCount = currentEventItems.Count;
                     stats.Rank3Count = currentEventItems.Count(x => x.RankType == 3);
@@ -272,15 +272,14 @@ namespace Xunkong.Desktop.ViewModels
                 CharacterEventStats = character_eventStats.OrderByDescending(x => x.StartTime).ToList();
 
                 var weapon_groups = eventInfos.Where(x => x.QueryType == WishType.WeaponEvent).GroupBy(x => x.StartTime).ToList();
-                var weapon_dics = weapons.ToDictionary(x => x.Name!);
                 var weapon_eventStats = new List<WishlogSummary_EventStats>();
                 foreach (var group in weapon_groups)
                 {
                     var stats = group.FirstOrDefault()?.Adapt<WishlogSummary_EventStats>()!;
                     weapon_eventStats.Add(stats);
                     stats.Name = string.Join(" ", group.Select(x => x.Name));
-                    stats.UpItems = group.SelectMany(x => x.Rank5UpItems).Join(weapon_dics, str => str, dic => dic.Key, (str, dic) => dic.Value).ToList().Adapt<List<WishlogSummary_UpItem>>();
-                    stats.UpItems.AddRange(group.FirstOrDefault()!.Rank4UpItems.Join(weapon_dics, str => str, dic => dic.Key, (str, dic) => dic.Value).Adapt<IEnumerable<WishlogSummary_UpItem>>());
+                    stats.UpItems = group.SelectMany(x => x.Rank5UpItems).Join(dic_weapons, str => str, dic => dic.Key, (str, dic) => dic.Value).ToList().Adapt<List<WishlogSummary_UpItem>>();
+                    stats.UpItems.AddRange(group.FirstOrDefault()!.Rank4UpItems.Join(dic_weapons, str => str, dic => dic.Key, (str, dic) => dic.Value).Adapt<IEnumerable<WishlogSummary_UpItem>>());
                     var currentEventItems = wishlogs.Where(x => x.QueryType == WishType.WeaponEvent && stats.StartTime <= x.Time && x.Time <= stats.EndTime).OrderByDescending(x => x.Id).ToList();
                     stats.TotalCount = currentEventItems.Count;
                     stats.Rank3Count = currentEventItems.Count(x => x.RankType == 3);

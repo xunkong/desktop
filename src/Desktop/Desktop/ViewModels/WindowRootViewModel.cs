@@ -83,17 +83,24 @@ namespace Xunkong.Desktop.ViewModels
         {
             try
             {
-                var roles = await _hoyolabService.GetUserGameRoleInfoListAsync();
-                foreach (var role in roles)
+                if (await _userSettingService.GetSettingAsync<bool>("SignInAllAccountsWhenStartUpApplication"))
                 {
-                    await _hoyolabService.SignInAsync(role);
+                    try
+                    {
+                        var roles = await _hoyolabService.GetUserGameRoleInfoListAsync();
+                        foreach (var role in roles)
+                        {
+                            await _hoyolabService.SignInAsync(role);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        InfoBarHelper.Error(ex, "签到过程中出现错误");
+                        _logger.LogError(ex, nameof(SignInAllAccountsAsync));
+                    }
                 }
             }
-            catch (Exception ex)
-            {
-                InfoBarHelper.Error(ex, "签到过程中出现错误");
-                _logger.LogError(ex, nameof(SignInAllAccountsAsync));
-            }
+            catch { }
         }
 
 

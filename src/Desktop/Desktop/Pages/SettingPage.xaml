@@ -83,7 +83,7 @@
                         <TextBlock Grid.Column="1"
                                    Margin="0,4,0,0"
                                    TextWrapping="Wrap">
-                            <Run Text="用爱发电的「原神」辅助工具，觉得好用就给个 Star 吧。（如果有赞助就更好了）" />
+                            <Run Text="用爱发电的「原神」辅助工具，觉得好用就给个 Star 吧。" />
                             <LineBreak />
                             <LineBreak />
                             <Run FontSize="12"
@@ -100,7 +100,6 @@
                             <HyperlinkButton Content="项目主页" NavigateUri="https://xunkong.cc" />
                             <HyperlinkButton Content="GitHub 项目地址" NavigateUri="https://github.com/xunkong/desktop" />
                             <HyperlinkButton Command="{x:Bind vm.CopyDevelopersMailCommand, Mode=OneTime}" Content="联系开发者" />
-                            <HyperlinkButton Content="赞助开发者" NavigateUri="https://xunkong-1306705684.file.myqcloud.com/download/donate.png" />
                         </StackPanel>
                     </Grid>
                     <!--  版本与外观  -->
@@ -586,6 +585,18 @@
                                     <Button HorizontalAlignment="Right"
                                             Command="{x:Bind vm.CheckInNowCommand, Mode=OneTime}"
                                             Content="立即签到" />
+                                </Grid>
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock>
+                                        <Run Text="启动应用时自动签到" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="不会重复签到" />
+                                    </TextBlock>
+                                    <ToggleSwitch HorizontalAlignment="Right"
+                                                  IsOn="{x:Bind vm.SignInAllAccountsWhenStartUpApplication, Mode=TwoWay}"
+                                                  Style="{ThemeResource RightAlignToggleSwitchStyle}" />
                                 </Grid>
                             </StackPanel>
                         </Expander.Content>

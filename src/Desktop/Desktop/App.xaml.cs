@@ -232,24 +232,24 @@ namespace Xunkong.Desktop
             try
             {
                 var jumpList = await JumpList.LoadCurrentAsync();
-                var item1 = jumpList.Items.FirstOrDefault(x => x.Arguments == "startgame");
-                if (item1?.GroupName != "启动游戏")
+                var item_stargames = jumpList.Items.Where(x => x.Arguments == "startgame").ToList();
+                foreach (var item_stargame in item_stargames)
                 {
-                    jumpList.Items.Remove(item1);
-                    item1 = JumpListItem.CreateWithArguments("startgame", "启动游戏");
-                    item1.GroupName = "启动游戏";
-                    item1.Logo = new Uri("ms-appx:///Assets/Logos/StoreLogo.png");
-                    jumpList.Items.Add(item1);
+                    jumpList.Items.Remove(item_stargame);
                 }
-                var item2 = jumpList.Items.FirstOrDefault(x => x.Arguments == "maptool");
-                if (item2 is null)
+                var item1 = JumpListItem.CreateWithArguments("startgame", "启动游戏");
+                item1.GroupName = "启动游戏";
+                item1.Logo = new Uri("ms-appx:///Assets/Logos/StoreLogo.png");
+                jumpList.Items.Add(item1);
+                var item_maptools = jumpList.Items.Where(x => x.Arguments == "maptool").ToList();
+                foreach (var item_maptool in item_maptools)
                 {
-                    item2 = JumpListItem.CreateWithArguments("maptool", "启动小地图");
-                    item2.Logo = new Uri("ms-appx:///Assets/Images/mapicon.png");
-                    jumpList.Items.Add(item2);
+                    jumpList.Items.Remove(item_maptool);
                 }
+                var item2 = JumpListItem.CreateWithArguments("maptool", "启动小地图");
+                item2.Logo = new Uri("ms-appx:///Assets/Images/mapicon.png");
+                jumpList.Items.Add(item2);
                 await jumpList.SaveAsync();
-
             }
             catch (Exception ex)
             {

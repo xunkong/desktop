@@ -193,7 +193,9 @@
         </DataTemplate>
         <!--  角色武器活动祈愿模板  -->
         <DataTemplate x:Key="WishEventStatsDataTemplate" x:DataType="models:WishlogSummary_EventStats">
-            <Grid Margin="24,6,24,6" ColumnSpacing="8">
+            <Grid MinHeight="80"
+                  Margin="24,6,24,6"
+                  ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="240" />
                     <ColumnDefinition Width="8" />
@@ -234,6 +236,51 @@
                     <Run Foreground="{ThemeResource Rank3ForegroundBrush}" Text="{x:Bind Rank3Count}" />
                 </TextBlock>
                 <AppBarSeparator Grid.Column="3" />
+                <!--<ItemsRepeater Grid.Column="4" ItemsSource="{x:Bind UpItems}">
+                    <ItemsRepeater.Layout>
+                        <StackLayout Orientation="Horizontal" Spacing="8" />
+                    </ItemsRepeater.Layout>
+                    <ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:DataType="models:WishlogSummary_UpItem">
+                            <Grid Width="64"
+                                  Height="78"
+                                  CornerRadius="4">
+                                <cc:ImageEx Source="{x:Bind Rarity, Converter={StaticResource RarityToBackgroundImageConverter}}" Stretch="Uniform" />
+                                <controls:CachedImage VerticalAlignment="Top"
+                                                      CornerRadius="4,4,16,4"
+                                                      Source="{x:Bind Icon}"
+                                                      Stretch="Uniform" />
+                                <cc:ImageEx Width="16"
+                                            Height="16"
+                                            Margin="1"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Source="{x:Bind Element, Converter={StaticResource ElementToElementImageConverter}}" />
+                                <TextBlock Margin="0,0,0,1"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Bottom"
+                                           FontSize="10"
+                                           Foreground="#84603D"
+                                           Text="{x:Bind Name}" />
+                                <Border Height="18"
+                                        MinWidth="18"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        Background="#80000000"
+                                        CornerRadius="0,4,0,4"
+                                        Visibility="{x:Bind AnyData, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <TextBlock Margin="2"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               FontSize="12"
+                                               Foreground="#F3F3F3"
+                                               Text="{x:Bind Count}" />
+                                </Border>
+                                <Rectangle Fill="#60000000" Visibility="{x:Bind AnyData, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsRepeater.ItemTemplate>
+                </ItemsRepeater>-->
                 <ItemsControl Grid.Column="4" ItemsSource="{x:Bind UpItems}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -396,7 +443,7 @@
             </StackPanel>
         </Grid>
 
-   
+
         <Pivot Grid.Row="2">
             <Pivot.Resources>
                 <Thickness x:Key="PivotItemMargin">0</Thickness>
@@ -486,11 +533,11 @@
                           ItemTemplate="{StaticResource WishEventStatsDataTemplate}"
                           ItemsSource="{x:Bind vm.CharacterEventStats}"
                           SelectionMode="None">
-                    <ListView.ItemsPanel>
+                    <!--<ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel />
                         </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
+                    </ListView.ItemsPanel>-->
 
                 </ListView>
             </PivotItem>
@@ -500,11 +547,11 @@
                           ItemTemplate="{StaticResource WishEventStatsDataTemplate}"
                           ItemsSource="{x:Bind vm.WeaponEventStats}"
                           SelectionMode="None">
-                    <ListView.ItemsPanel>
+                    <!--<ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel />
                         </ItemsPanelTemplate>
-                    </ListView.ItemsPanel>
+                    </ListView.ItemsPanel>-->
                 </ListView>
             </PivotItem>
 
