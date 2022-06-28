@@ -271,6 +271,10 @@
                     <TextBlock VerticalAlignment="Center"
                                Style="{ThemeResource CaptionTextBlockStyle}"
                                Text="寻空" />
+                    <TextBlock x:Name="TextBlock_TitleBar"
+                               Margin="240,0,0,0"
+                               VerticalAlignment="Center"
+                               Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                 </StackPanel>
             </Border>
 

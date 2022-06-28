@@ -10,7 +10,7 @@
 	<Identity
 	  Name="Xunkong.Desktop"
 	  Publisher="CN=Xunkong by Scighost"
-	  Version="0.2.0.1" />
+	  Version="0.2.0.2" />
 
 	<Properties>
 		<DisplayName>寻空</DisplayName>
@@ -64,6 +64,7 @@
 						<desktop:ParameterGroup GroupId="HoyolabCheckInTask" Parameters="HoyolabCheckInTask"/>
 					</desktop:FullTrustProcess>
 				</desktop:Extension>
+				<Extension Category="windows.updateTask" EntryPoint="Xunkong.Desktop.BackgroundTask.UpdatedTask"/>
 			</Extensions>
 		</Application>
 
@@ -79,6 +80,7 @@
 				<Path>Xunkong.Desktop\WinRT.Host.dll</Path>
 				<ActivatableClass ActivatableClassId="Xunkong.Desktop.BackgroundTask.DailyNoteTask" ThreadingModel="both" />
 				<ActivatableClass ActivatableClassId="Xunkong.Desktop.BackgroundTask.HoyolabCheckInTask" ThreadingModel="both" />
+				<ActivatableClass ActivatableClassId="Xunkong.Desktop.BackgroundTask.UpdatedTask" ThreadingModel="both" />
 			</InProcessServer>
 		</Extension>
 	</Extensions>

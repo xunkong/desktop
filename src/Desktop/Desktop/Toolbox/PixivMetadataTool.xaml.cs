@@ -2,7 +2,6 @@
 using Microsoft.UI.Xaml.Controls;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using System.Net;
 using System.Text;

@@ -10,25 +10,9 @@
 		<Platforms>x86;x64;arm64</Platforms>
 		<RuntimeIdentifiers>win10-x86;win10-x64;win10-arm64</RuntimeIdentifiers>
 		<UseWinUI>true</UseWinUI>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
 	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
-	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|arm64'">
-	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|arm64'">
-	  <DefineConstants>DISABLE_XAML_GENERATED_MAIN</DefineConstants>
-	</PropertyGroup>
+
 	<ItemGroup>
 		<None Remove="Controls\EChartControl.xaml" />
 		<None Remove="Controls\GenshinElementLoading.xaml" />
@@ -66,27 +50,26 @@
 		<PackageReference Include="Mapster" Version="7.3.0" />
 		<PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.5.1" />
 		<PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.5.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.6" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Windows.CsWinRT" Version="1.6.4" />
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.0" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.197" />
-		<PackageReference Include="MiniExcel" Version="1.26.2" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.1" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
+		<PackageReference Include="MiniExcel" Version="1.26.4" />
 		<PackageReference Include="Serilog.Expressions" Version="3.4.0" />
 		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
 		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-		<PackageReference Include="SixLabors.ImageSharp" Version="2.1.2" />
-		<PackageReference Include="Syncfusion.Chart.WinUI" Version="20.1.0.58" />
-		<PackageReference Include="Syncfusion.Grid.WinUI" Version="20.1.0.58" />
-		<PackageReference Include="Vanara.PInvoke.User32" Version="3.4.2" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
+		<PackageReference Include="Syncfusion.Chart.WinUI" Version="20.1.0.61" />
+		<PackageReference Include="Syncfusion.Grid.WinUI" Version="20.1.0.61" />
+		<PackageReference Include="Vanara.PInvoke.User32" Version="3.4.3" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\Xunkong.Core.csproj" />
-		<ProjectReference Include="..\BackgroundTask\Xunkong.Desktop.BackgroundTask.csproj" />
 		<ProjectReference Include="..\Database\Xunkong.Desktop.Database.csproj" />
 		<ProjectReference Include="..\Extension\Xunkong.Desktop.Extension.csproj" />
 		<ProjectReference Include="..\Secret\Xunkong.Desktop.Secret.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />

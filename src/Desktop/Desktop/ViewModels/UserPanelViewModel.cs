@@ -340,7 +340,7 @@ namespace Xunkong.Desktop.ViewModels
             try
             {
                 ShowGenshinElementLoading();
-                _logger.LogDebug($"Refresh daily note with genshin nickname {model.GameRoleInfo.Nickname} uid { model.GameRoleInfo.Uid}");
+                _logger.LogDebug($"Refresh daily note with genshin nickname {model.GameRoleInfo.Nickname} uid {model.GameRoleInfo.Uid}");
                 var info = await _hoyolabService.GetDailyNoteInfoAsync(model.GameRoleInfo);
                 model.DailyNoteInfo = info;
                 if (info is not null && model.IsPinned)

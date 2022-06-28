@@ -13,14 +13,16 @@ namespace Xunkong.Desktop.Secret
 
         public void Execute(GeneratorExecutionContext context)
         {
-            var source = $@"namespace Xunkong.Desktop;
-                            public static class RegisterSyncfusion
-                            {{
-                                public static void Register()
-                                {{
-                                    Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(""{syncfusionKey}"");
-                                }}
-                            }}";
+            var source = $$"""
+                    namespace Xunkong.Desktop;
+                    public static class RegisterSyncfusion
+                    {
+                        public static void Register()
+                        {
+                            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("{{syncfusionKey}}");
+                        }
+                    }
+                    """;
             context.AddSource("RegisterSyncfusion.cs", source);
         }
 

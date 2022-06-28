@@ -81,6 +81,7 @@ namespace Xunkong.Desktop.Views
             await Task.Delay(1000);
             CheckNotifications();
             vm.CheckVersionUpdateAsync();
+            GetTitleBarTextAsync();
             vm.CheckWebView2Runtime();
             vm.GetAllGenshinDataAsync();
             await vm.SignInAllAccountsAsync();
@@ -321,6 +322,20 @@ namespace Xunkong.Desktop.Views
                     _logger.LogError(ex, "Error in {MethodName}", nameof(CheckNotifications));
                 }
             });
+        }
+
+
+
+        private async void GetTitleBarTextAsync()
+        {
+            try
+            {
+                var client = App.Current.Services.GetService<HttpClient>();
+                client!.DefaultRequestHeaders.Add("User-Agent", "Xunkong.Desktop/AppTitleBarText");
+                var text = await client.GetStringAsync("https://api.xunkong.cc/v0.1/desktop/titlebartext");
+                TextBlock_TitleBar.Text = text;
+            }
+            catch { }
         }
 
 

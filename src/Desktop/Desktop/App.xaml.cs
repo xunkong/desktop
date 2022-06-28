@@ -238,7 +238,6 @@ namespace Xunkong.Desktop
                     jumpList.Items.Remove(item_stargame);
                 }
                 var item1 = JumpListItem.CreateWithArguments("startgame", "启动游戏");
-                item1.GroupName = "启动游戏";
                 item1.Logo = new Uri("ms-appx:///Assets/Logos/StoreLogo.png");
                 jumpList.Items.Add(item1);
                 var item_maptools = jumpList.Items.Where(x => x.Arguments == "maptool").ToList();
