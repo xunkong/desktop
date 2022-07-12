@@ -1,0 +1,13 @@
+﻿global using CommunityToolkit.Mvvm.ComponentModel;
+global using CommunityToolkit.Mvvm.Input;
+global using Dapper;
+global using Mapster;
+global using System;
+global using System.Collections.Generic;
+global using System.IO;
+global using System.Linq;
+global using System.Text.Json;
+global using System.Threading.Tasks;
+global using Xunkong.Desktop.Helpers;
+global using Xunkong.Desktop.Models;
+global using Xunkong.Desktop.Services;

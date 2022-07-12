@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap rescap">
+
+	<Identity
+	  Name="a8ef8a14-7336-4b0b-b831-64a7386a3c2d"
+	  Publisher="CN=Xunkong by Scighost"
+	  Version="1.0.3.0" />
+
+	<Properties>
+		<DisplayName>Xunkong.Desktop</DisplayName>
+		<PublisherDisplayName>Scighost</PublisherDisplayName>
+		<Logo>Assets\Logos\StoreLogo.png</Logo>
+	</Properties>
+
+	<Dependencies>
+		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+		<TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+	</Dependencies>
+
+	<Resources>
+		<Resource Language="x-generate"/>
+	</Resources>
+
+	<Applications>
+		<Application Id="App"
+		  Executable="$targetnametoken$.exe"
+		  EntryPoint="$targetentrypoint$">
+			<uap:VisualElements
+					DisplayName="Xunkong.Desktop"
+					Description="Xunkong.Desktop"
+					BackgroundColor="transparent"
+					Square44x44Logo="Assets\Logos\Square44x44Logo.png"
+					Square150x150Logo="Assets\Logos\Square150x150Logo.png">
+				<uap:DefaultTile
+					Square71x71Logo="Assets\Logos\SmallTile.png"
+					Wide310x150Logo="Assets\Logos\Wide310x150Logo.png"
+					Square310x310Logo="Assets\Logos\LargeTile.png">
+					<uap:ShowNameOnTiles>
+						<uap:ShowOn Tile="square150x150Logo"/>
+						<uap:ShowOn Tile="wide310x150Logo"/>
+					</uap:ShowNameOnTiles>
+				</uap:DefaultTile>
+			</uap:VisualElements>
+		</Application>
+	</Applications>
+
+	<Capabilities>
+		<rescap:Capability Name="runFullTrust" />
+	</Capabilities>
+</Package>

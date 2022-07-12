@@ -1,0 +1,248 @@
+﻿<UserControl x:Class="Xunkong.Desktop.Controls.DailyNoteCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dn="using:Xunkong.Hoyolab.DailyNote"
+             xmlns:local="using:Xunkong.Desktop"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Width="308"
+             Height="376"
+             x:DefaultBindMode="OneWay"
+             mc:Ignorable="d">
+
+    <Grid>
+
+        <StackPanel Spacing="8">
+
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <Border Width="48"
+                        Height="48"
+                        Margin="4,0,0,0"
+                        CornerRadius="1000">
+                    <Image Source="{x:Bind HoyolabUserInfo.AvatarUrl}" />
+                </Border>
+                <StackPanel VerticalAlignment="Center"
+                            Spacing="4"
+                            Visibility="{x:Bind GenshinRoleInfo, Converter={StaticResource ObjectToVisibilityConverter}}">
+                    <TextBlock d:Text="旅行者" Text="{x:Bind GenshinRoleInfo.Nickname}" />
+                    <TextBlock Style="{ThemeResource CaptionTextBlockStyle}">
+                        <Run d:Text="天空岛" Text="{x:Bind GenshinRoleInfo.RegionName}" />
+                        <Run d:Text="60" Text="{x:Bind GenshinRoleInfo.Level}" />
+                        <Run Text="级" />
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel VerticalAlignment="Center"
+                            Spacing="4"
+                            Visibility="{x:Bind TravelNotesDayData, Converter={StaticResource ObjectToVisibilityConverter}}">
+                    <Image Width="20" Source="{StaticResource Image_Primogems}" />
+                    <Image Width="20" Source="{StaticResource Image_Mora}" />
+                </StackPanel>
+                <StackPanel Margin="-12,0,0,0"
+                            VerticalAlignment="Center"
+                            Spacing="4"
+                            Visibility="{x:Bind TravelNotesDayData, Converter={StaticResource ObjectToVisibilityConverter}}">
+                    <TextBlock d:Text="60" Text="{x:Bind TravelNotesDayData.CurrentPrimogems}" />
+                    <TextBlock d:Text="120000" Text="{x:Bind TravelNotesDayData.CurrentMora}" />
+                </StackPanel>
+            </StackPanel>
+
+            <MenuFlyoutSeparator />
+
+            <StackPanel Grid.Row="2"
+                        Spacing="8"
+                        Visibility="{x:Bind Error, Converter={StaticResource BoolToVisibilityReversedConverter}}">
+                <!--  原粹树脂  -->
+                <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                    <Image Width="20"
+                           Height="20"
+                           Source="{StaticResource Image_Resin}"
+                           Stretch="Uniform" />
+                    <StackPanel Width="194" Margin="12,0,0,0">
+                        <TextBlock Text="原粹树脂" />
+                        <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Visibility="{x:Bind DailyNoteInfo.IsResinFull, Converter={StaticResource BoolToVisibilityReversedConverter}}">
+                            <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="将于" />
+                            <Run Text="{x:Bind DailyNoteInfo.ResinFullTime, Converter={StaticResource DateTimeOffsetToDayStringConverter}}" />
+                            <Run Text="{x:Bind DailyNoteInfo.ResinFullTime, Converter={StaticResource DateTimeOffsetToTimeStringConverter}}" />
+                            <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="全部恢复" />
+                        </TextBlock>
+                        <TextBlock Foreground="Green"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Text="已全部恢复"
+                                   Visibility="{x:Bind DailyNoteInfo.IsResinFull, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </StackPanel>
+                    <TextBlock Width="80" VerticalAlignment="Center">
+                        <Run Text="{x:Bind DailyNoteInfo.CurrentResin}" />
+                        <Run Text="/" />
+                        <Run Text="{x:Bind DailyNoteInfo.MaxResin}" />
+                    </TextBlock>
+                </StackPanel>
+                <!--  洞天宝钱  -->
+                <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                    <Image Width="20"
+                           Height="20"
+                           Source="{StaticResource Image_HomeCoin}"
+                           Stretch="Uniform" />
+                    <StackPanel Width="194" Margin="12,0,0,0">
+                        <TextBlock Text="洞天宝钱" />
+                        <TextBlock Style="{ThemeResource CaptionTextBlockStyle}" Visibility="{x:Bind DailyNoteInfo.IsHomeCoinFull, Converter={StaticResource BoolToVisibilityReversedConverter}}">
+                            <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="将于" />
+                            <Run Text="{x:Bind DailyNoteInfo.HomeCoinFullTime, Converter={StaticResource DateTimeOffsetToDayStringConverter}}" />
+                            <Run Text="{x:Bind DailyNoteInfo.HomeCoinFullTime, Converter={StaticResource DateTimeOffsetToTimeStringConverter}}" />
+                            <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="达到存储上限" />
+                        </TextBlock>
+                        <TextBlock Foreground="Green"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Text="已达到存储上限"
+                                   Visibility="{x:Bind DailyNoteInfo.IsHomeCoinFull, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    </StackPanel>
+                    <TextBlock Width="80" VerticalAlignment="Center">
+                        <Run d:Text="1200" Text="{x:Bind DailyNoteInfo.CurrentHomeCoin}" />
+                        <Run Text="/" />
+                        <Run d:Text="2400" Text="{x:Bind DailyNoteInfo.MaxHomeCoin}" />
+                    </TextBlock>
+                </StackPanel>
+                <!--  每日委托  -->
+                <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                    <Image Width="20"
+                           Height="20"
+                           Source="{StaticResource Image_QuestEvent}"
+                           Stretch="Uniform" />
+                    <StackPanel Width="194" Margin="12,0,0,0">
+                        <TextBlock Text="每日委托任务" />
+                        <TextBlock Foreground="{x:Bind DailyNoteInfo, Converter={StaticResource QuestEventStatsColorConverter}}"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Text="{x:Bind DailyNoteInfo, Converter={StaticResource QuestEventStatsStringConverter}}" />
+                    </StackPanel>
+                    <TextBlock Width="80" VerticalAlignment="Center">
+                        <Run Text="{x:Bind DailyNoteInfo.FinishedTaskNumber}" />
+                        <Run Text="/" />
+                        <Run Text="{x:Bind DailyNoteInfo.TotalTaskNumber}" />
+                    </TextBlock>
+                </StackPanel>
+                <!--  值得铭记的强敌  -->
+                <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                    <Image Width="20"
+                           Height="20"
+                           Source="{StaticResource Image_Domain}"
+                           Stretch="Uniform" />
+                    <StackPanel Width="194" Margin="12,0,0,0">
+                        <TextBlock Text="值得铭记的强敌" />
+                        <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"
+                                   Text="本周剩余消耗树脂减半次数" />
+                    </StackPanel>
+                    <TextBlock Width="80" VerticalAlignment="Center">
+                        <Run Text="{x:Bind DailyNoteInfo.RemainResinDiscountNumber}" />
+                        <Run Text="/" />
+                        <Run Text="{x:Bind DailyNoteInfo.ResinDiscountLimitedNumber}" />
+                    </TextBlock>
+                </StackPanel>
+                <!--  参量质变仪  -->
+                <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                    <Image Width="20"
+                           Height="20"
+                           Source="{StaticResource Image_Transformer}"
+                           Stretch="Uniform" />
+                    <StackPanel Width="194" Margin="12,0,0,0">
+                        <TextBlock Text="参量质变仪" />
+                        <TextBlock Style="{ThemeResource CaptionTextBlockStyle}">
+                            <Run Text="{x:Bind DailyNoteInfo.Transformer.RecoveryTime.Day}" />
+                            <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="天" />
+                            <Run Text="{x:Bind DailyNoteInfo.Transformer.RecoveryTime.Hour}" />
+                            <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="小时后可再次使用" />
+                        </TextBlock>
+                    </StackPanel>
+                    <TextBlock Width="80"
+                               VerticalAlignment="Center"
+                               Foreground="OrangeRed"
+                               Text="未获得"
+                               Visibility="{x:Bind DailyNoteInfo.Transformer.Obtained, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
+                    <Grid Visibility="{x:Bind DailyNoteInfo.Transformer.Obtained, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Width="80"
+                                   VerticalAlignment="Center"
+                                   Foreground="OrangeRed"
+                                   Text="可使用"
+                                   Visibility="{x:Bind DailyNoteInfo.Transformer.RecoveryTime.Reached, Converter={StaticResource BoolToVisibilityConverter}}" />
+                        <TextBlock Width="80"
+                                   VerticalAlignment="Center"
+                                   Text="冷却中"
+                                   Visibility="{x:Bind DailyNoteInfo.Transformer.RecoveryTime.Reached, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
+                    </Grid>
+                </StackPanel>
+                <MenuFlyoutSeparator />
+                <!--  探索派遣  -->
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}">
+                        <Run Text="探索派遣 ( 已完成" />
+                        <Run d:Text="3" Text="{x:Bind DailyNoteInfo.FinishedExpeditionNumber}" />
+                        <Run Text="/" />
+                        <Run d:Text="5" Text="{x:Bind DailyNoteInfo.CurrentExpeditionNumber}" />
+                        <Run Text=")" />
+                    </TextBlock>
+                    <Button Content="&#xE783;"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Style="{ThemeResource DateTimePickerFlyoutButtonStyle}">
+                        <Button.Flyout>
+                            <Flyout>
+                                <TextBlock Text="下方时间是探索派遣完成的时刻" />
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                </StackPanel>
+                <ItemsControl Margin="4,-12,4,0" ItemsSource="{x:Bind DailyNoteInfo.Expeditions}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="16" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="dn:Expedition">
+                            <StackPanel>
+                                <Grid HorizontalAlignment="Center">
+                                    <Ellipse Width="26"
+                                             Height="26"
+                                             VerticalAlignment="Bottom"
+                                             Stroke="{x:Bind IsFinished, Converter={StaticResource ExpeditionStatusToColorConverter}}" />
+                                    <Image Width="40"
+                                           Height="40"
+                                           Margin="0,0,0,1"
+                                           Source="{x:Bind AvatarSideIcon}"
+                                           Stretch="Uniform" />
+                                </Grid>
+                                <TextBlock Margin="0,4,0,0"
+                                           HorizontalAlignment="Center"
+                                           Style="{ThemeResource CaptionTextBlockStyle}"
+                                           Text="{x:Bind FinishedTime, Converter={StaticResource DateTimeOffsetToTimeStringConverter}}"
+                                           Visibility="{x:Bind IsFinished, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </StackPanel>
+
+
+        <StackPanel Margin="0,80,0,0"
+                    Spacing="20"
+                    Visibility="{x:Bind Error, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Image Width="128" Source="{StaticResource Image_Paimon}" />
+            <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                       HorizontalTextAlignment="Center"
+                       Text="{x:Bind ErrorMessage}"
+                       TextWrapping="Wrap" />
+        </StackPanel>
+
+
+        <Button HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Command="{x:Bind RefreshCommand}"
+                Content="&#xE72C;"
+                FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                Style="{ThemeResource DateTimePickerFlyoutButtonStyle}" />
+
+
+    </Grid>
+
+
+</UserControl>

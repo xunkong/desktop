@@ -1,0 +1,46 @@
+﻿<Window x:Class="Xunkong.Desktop.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="using:Xunkong.Desktop"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xdc="using:Xunkong.Desktop.Controls"
+        mc:Ignorable="d">
+
+    <Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <Frame x:Name="RootFrame" />
+
+        <ContentControl x:Name="FullScreenContent"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        Visibility="Collapsed" />
+
+
+        <!--  Title Bar  -->
+        <Border x:Name="AppTitleBar"
+                Height="48"
+                Margin="0,0,0,0"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top" />
+
+        <!--  Notification Container  -->
+        <StackPanel Name="InfoBarContainer"
+                    MaxWidth="600"
+                    Margin="24,72,24,72"
+                    VerticalAlignment="Bottom">
+            <StackPanel.OpacityTransition>
+                <ScalarTransition />
+            </StackPanel.OpacityTransition>
+            <StackPanel.Transitions>
+                <AddDeleteThemeTransition />
+            </StackPanel.Transitions>
+        </StackPanel>
+
+
+
+    </Grid>
+
+</Window>

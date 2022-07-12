@@ -1,0 +1,168 @@
+﻿<UserControl x:Class="Xunkong.Desktop.Controls.ImageViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cc="using:CommunityToolkit.WinUI.UI.Controls"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:DefaultBindMode="OneWay"
+             mc:Ignorable="d">
+
+    <UserControl.Transitions>
+        <EntranceThemeTransition />
+    </UserControl.Transitions>
+
+
+
+    <Grid Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="4*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+
+
+
+        <ScrollViewer x:Name="_ScrollViewer_Image"
+                      Grid.ColumnSpan="3"
+                      AllowDrop="True"
+                      DoubleTapped="_ScrollViewer_Image_DoubleTapped"
+                      DragOver="_ScrollViewer_Image_DragOver"
+                      Drop="_ScrollViewer_Image_Drop"
+                      HorizontalScrollBarVisibility="Hidden"
+                      HorizontalScrollMode="Enabled"
+                      IsDoubleTapEnabled="True"
+                      IsTapEnabled="True"
+                      PointerMoved="_ScrollViewer_Image_PointerMoved"
+                      PointerPressed="_ScrollViewer_Image_PointerPressed"
+                      PointerReleased="_ScrollViewer_Image_PointerReleased"
+                      Tapped="_ScrollViewer_Image_Tapped"
+                      VerticalScrollBarVisibility="Hidden"
+                      VerticalScrollMode="Enabled"
+                      ViewChanged="_ScrollViewer_Image_ViewChanged"
+                      ZoomMode="Enabled">
+            <cc:ImageEx x:Name="_Image"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        ImageExOpened="_Image_ImageExOpened"
+                        IsDoubleTapEnabled="True"
+                        PointerWheelChanged="_Image_PointerWheelChanged"
+                        Source="{x:Bind Source}">
+                <cc:ImageEx.RotationTransition>
+                    <ScalarTransition />
+                </cc:ImageEx.RotationTransition>
+            </cc:ImageEx>
+        </ScrollViewer>
+
+
+        <GridView x:Name="_GridView_ImageCollection"
+                  Grid.Column="1"
+                  Height="100"
+                  Margin="0,0,0,24"
+                  Padding="8"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Bottom"
+                  Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                  BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  IsItemClickEnabled="True"
+                  ItemsSource="{x:Bind SourceCollection}"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollMode="Enabled"
+                  ScrollViewer.VerticalScrollBarVisibility="Hidden"
+                  ScrollViewer.VerticalScrollMode="Disabled"
+                  SelectedItem="{x:Bind Source, Mode=TwoWay}"
+                  Visibility="Collapsed">
+            <GridView.OpacityTransition>
+                <ScalarTransition />
+            </GridView.OpacityTransition>
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <cc:ImageEx Height="80" Source="{x:Bind}" />
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+
+
+
+
+        <Border x:Name="_Border_ToolBar"
+                Grid.ColumnSpan="3"
+                Margin="0,48,0,0"
+                Padding="8"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+            <Border.OpacityTransition>
+                <ScalarTransition />
+            </Border.OpacityTransition>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <!--  缩小  -->
+                <Button Width="36"
+                        Height="36"
+                        Command="{x:Bind ZoomOutCommand}"
+                        Content="&#xE71F;"
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        Style="{ThemeResource DateTimePickerFlyoutButtonStyle}"
+                        ToolTipService.ToolTip="缩小" />
+                <!--  缩放率  -->
+                <TextBlock x:Name="_TextBlock_Factor"
+                           Width="40"
+                           Margin="0,0,0,2"
+                           VerticalAlignment="Center" />
+                <!--  放大  -->
+                <Button Width="36"
+                        Height="36"
+                        Command="{x:Bind ZoomInCommand}"
+                        Content="&#xE8A3;"
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        Style="{ThemeResource DateTimePickerFlyoutButtonStyle}"
+                        ToolTipService.ToolTip="放大" />
+                <!--  旋转  -->
+                <Button Width="36"
+                        Height="36"
+                        Command="{x:Bind RotateCommand}"
+                        Content="&#xE7AD;"
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        Style="{ThemeResource DateTimePickerFlyoutButtonStyle}"
+                        ToolTipService.ToolTip="旋转" />
+                <AppBarSeparator Padding="0" />
+                <!--  复制  -->
+                <Button x:Name="_Button_Copy"
+                        Width="36"
+                        Height="36"
+                        Command="{x:Bind CopyImageCommand}"
+                        Content="&#xE8C8;"
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        Style="{ThemeResource DateTimePickerFlyoutButtonStyle}"
+                        ToolTipService.ToolTip="复制">
+                    <Button.ContentTransitions>
+                        <ContentThemeTransition />
+                    </Button.ContentTransitions>
+                </Button>
+                <!--  关闭  -->
+                <Button Width="36"
+                        Height="36"
+                        Command="{x:Bind CloseCommand}"
+                        Content="&#xE711;"
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        Style="{ThemeResource DateTimePickerFlyoutButtonStyle}"
+                        ToolTipService.ToolTip="关闭" />
+            </StackPanel>
+        </Border>
+
+
+
+
+
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Xunkong.Desktop (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Xunkong.Desktop (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
