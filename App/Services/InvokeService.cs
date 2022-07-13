@@ -119,8 +119,9 @@ internal class InvokeService
         {
             if (ex is Win32Exception ex32)
             {
-                if (ex32.NativeErrorCode != 1223)
+                if (ex32.NativeErrorCode == 1223)
                 {
+                    // 操作已取消
                     return false;
                 }
             }

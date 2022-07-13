@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Syncfusion.Licensing;
 using Xunkong.Hoyolab.TravelNotes;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -13,6 +14,12 @@ namespace Xunkong.Desktop.Pages;
 [INotifyPropertyChanged]
 public sealed partial class TravelNotesPage : Page
 {
+
+
+    static TravelNotesPage()
+    {
+        SyncfusionLicenseProvider.RegisterLicense("NjEwMjc4QDMyMzAyZTMxMmUzMFkyTEYzc3JuY2hOVXk1azE5d1p1K1NPaFQ4TFF4bU5zYXR2ZUdBQmorc2c9");
+    }
 
 
     private readonly HoyolabService _hoyolabService;

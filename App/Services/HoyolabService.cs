@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Xunkong.Core;
+﻿using Xunkong.Core;
 using Xunkong.Hoyolab;
 using Xunkong.Hoyolab.Account;
 using Xunkong.Hoyolab.Avatar;

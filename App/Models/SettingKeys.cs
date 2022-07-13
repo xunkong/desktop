@@ -44,10 +44,9 @@ internal static class SettingKeys
     public const string NavigationViewPaneClose = nameof(NavigationViewPaneClose);
 
     /// <summary>
-    /// 禁用背景图
+    /// 主页壁纸
     /// </summary>
-    [Obsolete("", true)]
-    public const string DisableBackgroundWallpaper = nameof(DisableBackgroundWallpaper);
+    public const string EnableHomePageWallpaper = nameof(EnableHomePageWallpaper);
 
     /// <summary>
     /// 显示过欢迎页面

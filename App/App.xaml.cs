@@ -18,14 +18,32 @@ public partial class App : Application
     public App()
     {
         this.InitializeComponent();
+        InitializeApplicationTheme();
     }
+
+
+    private void InitializeApplicationTheme()
+    {
+        if (AppSetting.TryGetValue<int>(SettingKeys.ApplicationTheme, out var themeIndex))
+        {
+            if (themeIndex == 1)
+            {
+                RequestedTheme = ApplicationTheme.Light;
+            }
+            if (themeIndex == 2)
+            {
+                RequestedTheme = ApplicationTheme.Dark;
+            }
+        }
+    }
+
 
     /// <summary>
     /// Invoked when the application is launched normally by the end user.  Other entry points
     /// will be used such as when the application is launched to open a specific file.
     /// </summary>
     /// <param name="args">Details about the launch request and process.</param>
-    protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+    protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         m_window = new MainWindow();
         m_window.Activate();

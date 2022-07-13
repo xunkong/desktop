@@ -119,7 +119,7 @@ internal static class NotificationProvider
 
     public static void Error(Exception ex, int delay = 0)
     {
-        AddInfoBarToContainer(InfoBarSeverity.Error, ex.GetType().Name, ex.ToString(), delay);
+        AddInfoBarToContainer(InfoBarSeverity.Error, ex.GetType().Name, ex.Message, delay);
     }
 
 

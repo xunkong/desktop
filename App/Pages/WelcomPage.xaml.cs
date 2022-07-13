@@ -109,7 +109,7 @@ public sealed partial class WelcomPage : Page
     int showIndex = 1;
 
 
-    private void _Button_Next_Click(object sender, RoutedEventArgs e)
+    private async void _Button_Next_Click(object sender, RoutedEventArgs e)
     {
         showIndex++;
         switch (showIndex)
@@ -121,6 +121,10 @@ public sealed partial class WelcomPage : Page
             case 3:
                 Tip_2.Visibility = Visibility.Collapsed;
                 Tip_3.Visibility = Visibility.Visible;
+                break;
+            case 4:
+                Tip_3.Visibility = Visibility.Collapsed;
+                Tip_4.Visibility = Visibility.Visible;
                 _Button_Next.Content = "已完成";
                 break;
             default:
@@ -135,6 +139,17 @@ public sealed partial class WelcomPage : Page
                 }
                 break;
         }
+        _Button_Next.IsEnabled = false;
+        _TextBlock_ClockDown.Visibility = Visibility.Visible;
+        _TextBlock_ClockDown.Text = "3s";
+        await Task.Delay(1000);
+        _TextBlock_ClockDown.Text = "2s";
+        await Task.Delay(1000);
+        _TextBlock_ClockDown.Text = "1s";
+        await Task.Delay(1000);
+        _TextBlock_ClockDown.Text = "";
+        _TextBlock_ClockDown.Visibility = Visibility.Collapsed;
+        _Button_Next.IsEnabled = true;
     }
 
     private void _Button_Privacy_Click(object sender, RoutedEventArgs e)
@@ -155,6 +170,21 @@ public sealed partial class WelcomPage : Page
         }
     }
 
-
-
+    private void _Button_Download_DatabaseMigration_Click(object sender, RoutedEventArgs e)
+    {
+        const string url = "https://file.xunkong.cc/download/tool/DatabaseMigration.zip";
+        try
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                FileName = url,
+            };
+            Process.Start(startInfo);
+        }
+        catch (Exception ex)
+        {
+            NotificationProvider.Error(ex);
+        }
+    }
 }

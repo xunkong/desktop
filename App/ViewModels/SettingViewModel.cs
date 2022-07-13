@@ -29,7 +29,7 @@ internal partial class SettingViewModel : ObservableObject
 
 
 
-    public string AppName => XunkongEnvironment.PackageId.StartsWith("40418Scighost") ? "寻空 商店版" : "寻空 侧载版";
+    public string AppName => XunkongEnvironment.IsStoreVersion ? "寻空 商店版" : "寻空 侧载版";
 
     public string AppVersion => XunkongEnvironment.AppVersion.ToString();
 
@@ -79,19 +79,35 @@ internal partial class SettingViewModel : ObservableObject
         try
         {
             Uri uri;
-            if (XunkongEnvironment.PackageId.StartsWith("40418Scighost"))
+            if (XunkongEnvironment.IsStoreVersion)
             {
-                uri = new("	ms-windows-store://pdp/?productid=9N2SVG0JMT12");
+                uri = new("ms-windows-store://pdp/?productid=9N2SVG0JMT12");
             }
             else
             {
-                uri = new("https://github.com/xunkong/desktop/releases");
+                uri = new("https://go.xunkong.cc/check-update");
             }
             await Launcher.LaunchUriAsync(uri);
         }
         catch (Exception ex)
         {
             NotificationProvider.Error(ex);
+        }
+    }
+
+
+
+
+
+
+    private bool _EnableHomePageWallpaper = AppSetting.GetValue(SettingKeys.EnableHomePageWallpaper, true);
+    public bool EnableHomePageWallpaper
+    {
+        get => _EnableHomePageWallpaper;
+        set
+        {
+            AppSetting.TrySetValue(SettingKeys.EnableHomePageWallpaper, value);
+            SetProperty(ref _EnableHomePageWallpaper, value);
         }
     }
 

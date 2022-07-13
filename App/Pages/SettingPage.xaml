@@ -62,9 +62,14 @@
                         </Border>
                         <TextBlock Grid.Column="1"
                                    Margin="0,4,0,0"
+                                   Text="Scighost 的原神工具箱，觉得好用就给个「好评」和「Star」吧。"
+                                   TextWrapping="Wrap" />
+                        <TextBlock Grid.Column="1"
+                                   Margin="0,32,0,0"
                                    TextWrapping="Wrap">
-                            <Run Text="Scighost 的原神工具箱，觉得好用就给个「好评」和「Star」吧。" />
-                            <LineBreak />
+                            <Run FontSize="12"
+                                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                 Text="Sigrixxx - Rest" />
                             <LineBreak />
                             <Run FontSize="12"
                                  Foreground="{ThemeResource TextFillColorSecondaryBrush}"
@@ -121,7 +126,7 @@
                                 <LineBreak />
                                 <Run FontSize="12"
                                      Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                     Text="白天还是夜晚？" />
+                                     Text="建议使用深色模式获取更好的视觉效果" />
                             </TextBlock>
                         </xdc:SettingCard.Content>
                         <xdc:SettingCard.Selector>
@@ -133,31 +138,51 @@
                         </xdc:SettingCard.Selector>
                     </xdc:SettingCard>
 
-                    <!--  主页图片  -->
-                    <xdc:SettingCard>
-                        <xdc:SettingCard.Icon>
-                            <Path Data="M128.299 128C92.788 128 64 156.788 64 192.299v639.4C64 867.212 92.788 896 128.299 896H895.7c35.512 0 64.3-28.788 64.3-64.299V192.299C960 156.788 931.212 128 895.701 128H128.299zM128 588.313l178.162-178.162c24.795-24.795 64.996-24.795 89.792 0L817.803 832H128V588.313z m768 231.375L666.385 590.073l64.718-64.718c25.153-25.152 65.933-25.152 91.085 0L896 599.167v220.521zM694.65 471.299l-73.519 73.519L432.653 356.34c-45.064-45.064-118.127-45.064-163.19 0L128 497.803V192h768v316.657l-37.358-37.358c-45.286-45.285-118.707-45.285-163.992 0z"
-                                  Fill="{ThemeResource TextFillColorPrimaryBrush}"
-                                  Stretch="Uniform" />
-                        </xdc:SettingCard.Icon>
-                        <xdc:SettingCard.Content>
-                            <TextBlock Grid.Column="1" VerticalAlignment="Center">
-                                <Run Text="主页图片刷新时间" />
-                                <LineBreak />
-                                <Run FontSize="12"
-                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                     Text="虽然无法设计出美观的界面，但是挑选好看的图片还是没问题" />
-                            </TextBlock>
-                        </xdc:SettingCard.Content>
-                        <xdc:SettingCard.Selector>
-                            <ComboBox SelectedIndex="{x:Bind vm.SelectedWallpaperRefreshTimeIndex, Mode=TwoWay}">
-                                <ComboBoxItem Content="实时更新" />
-                                <ComboBoxItem Content="1 小时" />
-                                <ComboBoxItem Content="4 小时" />
-                                <ComboBoxItem Content="12 小时" />
-                            </ComboBox>
-                        </xdc:SettingCard.Selector>
-                    </xdc:SettingCard>
+                    <!--  主页壁纸  -->
+                    <Expander Name="_Expander_HomePageWallpaper"
+                              HorizontalAlignment="Stretch"
+                              HorizontalContentAlignment="Stretch">
+                        <Expander.Header>
+                            <Grid>
+                                <StackPanel Padding="4,16,0,16" Orientation="Horizontal">
+                                    <Path Width="20"
+                                          Height="20"
+                                          Data="M128.299 128C92.788 128 64 156.788 64 192.299v639.4C64 867.212 92.788 896 128.299 896H895.7c35.512 0 64.3-28.788 64.3-64.299V192.299C960 156.788 931.212 128 895.701 128H128.299zM128 588.313l178.162-178.162c24.795-24.795 64.996-24.795 89.792 0L817.803 832H128V588.313z m768 231.375L666.385 590.073l64.718-64.718c25.153-25.152 65.933-25.152 91.085 0L896 599.167v220.521zM694.65 471.299l-73.519 73.519L432.653 356.34c-45.064-45.064-118.127-45.064-163.19 0L128 497.803V192h768v316.657l-37.358-37.358c-45.286-45.285-118.707-45.285-163.992 0z"
+                                          Fill="{ThemeResource TextFillColorPrimaryBrush}"
+                                          Stretch="Uniform" />
+                                    <TextBlock Margin="20,0,0,0">
+                                        <Run Text="主页壁纸" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="虽然无法设计出美观的界面，但是挑选好看的图片还是没问题" />
+                                    </TextBlock>
+                                </StackPanel>
+                                <ToggleSwitch HorizontalAlignment="Right"
+                                              IsOn="{x:Bind vm.EnableHomePageWallpaper, Mode=TwoWay}"
+                                              Style="{ThemeResource RightAlignToggleSwitchStyle}" />
+                            </Grid>
+                        </Expander.Header>
+                        <Expander.Content>
+                            <StackPanel Margin="0,-16,44,-16">
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock TextWrapping="Wrap">
+                                        <Run Text="图片刷新时间" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="量大管饱！" />
+                                    </TextBlock>
+                                    <ComboBox HorizontalAlignment="Right" SelectedIndex="{x:Bind vm.SelectedWallpaperRefreshTimeIndex, Mode=TwoWay}">
+                                        <ComboBoxItem Content="实时更新" />
+                                        <ComboBoxItem Content="1 小时" />
+                                        <ComboBoxItem Content="4 小时" />
+                                        <ComboBoxItem Content="12 小时" />
+                                    </ComboBox>
+                                </Grid>
+                            </StackPanel>
+                        </Expander.Content>
+                    </Expander>
 
                     <!--  功能  -->
                     <TextBlock />
@@ -185,7 +210,7 @@
                             </Grid>
                         </Expander.Header>
                         <Expander.Content>
-                            <StackPanel Margin="0,-16,44,0">
+                            <StackPanel Margin="0,-16,44,-16">
                                 <Grid Padding="44,12,0,12">
                                     <TextBlock TextWrapping="Wrap">
                                         <Run Text="YuanShen.exe 或 GenshinImpact.exe 文件路径" />
@@ -225,73 +250,6 @@
                                                   IsOn="{x:Bind vm.UsePopupWindow, Mode=TwoWay}"
                                                   Style="{ThemeResource RightAlignToggleSwitchStyle}" />
                                 </Grid>
-                                <!--<MenuFlyoutSeparator />-->
-                                <!--  多账号管理  -->
-                                <!--<Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition />
-                                    </Grid.RowDefinitions>
-                                    <CommandBar DefaultLabelPosition="Right">
-                                        <CommandBar.Content>
-                                            <TextBlock Margin="40,8,0,0">
-                                                <Run FontWeight="Bold" Text="多账号管理" />
-                                                <LineBreak />
-                                                <Run FontSize="12"
-                                                     Foreground="{ThemeResource SystemFillColorCautionBrush}"
-                                                     Text="通过读写注册表切换已登录的账号，有一定的风险" />
-                                            </TextBlock>
-                                        </CommandBar.Content>
-                                        <AppBarButton Icon="Add" Label="添加">
-                                            <AppBarButton.Flyout>
-                                                <MenuFlyout Placement="Bottom">
-                                                    <MenuFlyoutItem Command="{x:Bind vm.AddGenshinUserAccountCommand, Mode=OneTime}"
-                                                                    CommandParameter="{StaticResource False}"
-                                                                    Text="国服" />
-                                                    <MenuFlyoutItem Command="{x:Bind vm.AddGenshinUserAccountCommand, Mode=OneTime}"
-                                                                    CommandParameter="{StaticResource True}"
-                                                                    Text="国际服" />
-                                                </MenuFlyout>
-                                            </AppBarButton.Flyout>
-                                        </AppBarButton>
-                                        <AppBarButton Command="{x:Bind vm.DeleteSelectedGenshinUserAccountCommand, Mode=OneTime}"
-                                                      Icon="Delete"
-                                                      Label="删除" />
-                                    </CommandBar>
-                                    <ListView Grid.Row="1"
-                                              Padding="28,0,0,0"
-                                              ItemsSource="{x:Bind vm.UserAccounts}"
-                                              SelectedItem="{x:Bind vm.SelectedUserAccount, Mode=TwoWay}"
-                                              SelectionMode="Single">
-                                        <ListView.ItemTemplate>
-                                            <DataTemplate x:DataType="models:GenshinUserAccount">
-                                                <StackPanel Margin="0,0,16,0"
-                                                            Orientation="Horizontal"
-                                                            Spacing="16">
-                                                    <TextBlock MinWidth="100"
-                                                               VerticalAlignment="Center"
-                                                               Text="{x:Bind UserName}" />
-                                                    <cc:SwitchPresenter Width="60"
-                                                                        VerticalAlignment="Center"
-                                                                        Value="{x:Bind IsOversea}">
-                                                        <cc:Case Value="{StaticResource True}">
-                                                            <TextBlock Text="国际服" />
-                                                        </cc:Case>
-                                                        <cc:Case Value="{StaticResource False}">
-                                                            <TextBlock Text="国服" />
-                                                        </cc:Case>
-                                                    </cc:SwitchPresenter>
-                                                    <TextBlock Width="160"
-                                                               VerticalAlignment="Center"
-                                                               Text="{x:Bind CreateTime, Converter={StaticResource DateTimeOffsetToDateTimeStringConverter}}" />
-                                                    <TextBlock Width="160"
-                                                               VerticalAlignment="Center"
-                                                               Text="{x:Bind LastAccessTime, Converter={StaticResource DateTimeOffsetToDateTimeStringConverter}}" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ListView.ItemTemplate>
-                                    </ListView>
-                                </Grid>-->
                             </StackPanel>
                         </Expander.Content>
                     </Expander>

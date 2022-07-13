@@ -19,99 +19,107 @@
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal">
             <Image Source="ms-appx:///Assets/Images/WelcomBackground.png" />
         </StackPanel>
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="2*" />
-            </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="1"
-                        Height="300"
-                        Margin="24,0,24,0"
-                        HorizontalAlignment="Left">
 
-                <StackPanel x:Name="Tip_1" Spacing="8">
-                    <TextBlock FontSize="24" Text="寻空" />
-                    <TextBlock Text="Scighost 的原神工具箱" />
-                    <TextBlock Text="在使用之前，您需要了解以下内容" />
+        <StackPanel Grid.Column="1"
+                    Height="300"
+                    Margin="24,0,24,0"
+                    HorizontalAlignment="Left">
+
+            <StackPanel x:Name="Tip_1" Spacing="8">
+                <TextBlock FontSize="24" Text="寻空" />
+                <TextBlock Text="Scighost 的原神工具箱" />
+                <TextBlock Text="在使用之前，您需要了解以下内容" />
+            </StackPanel>
+
+            <StackPanel x:Name="Tip_2"
+                        Spacing="8"
+                        Visibility="Collapsed">
+                <TextBlock FontSize="24" Text="隐私 &amp; 用户数据" />
+                <TextBlock Text="「寻空」充分尊重您的隐私，在进行网络通信时，会向服务器发送您的IP和匿名设备ID。" TextWrapping="Wrap" />
+                <TextBlock Text="除此之外，未经您同意的情况下，不会上传您的其他个人信息。" TextWrapping="Wrap" />
+                <TextBlock Text="您的个人数据和其他文件保存在「我的文档\Xunkong」文件夹中。" TextWrapping="Wrap" />
+                <TextBlock>
+                    <Run Text="存储位置：" />
+                    <Run Text="{x:Bind GetXunkongDataPath()}" />
+                </TextBlock>
+                <Button Name="_Button_Privacy"
+                        Click="_Button_Privacy_Click"
+                        Content="隐私策略" />
+            </StackPanel>
+
+            <StackPanel x:Name="Tip_3"
+                        Spacing="8"
+                        Visibility="Collapsed">
+                <TextBlock FontSize="24" Text="依赖组件" />
+                <TextBlock TextWrapping="Wrap">
+                    <Run Text="「寻空」的部分功能依赖 WebView2，您需要安装" />
+                    <Hyperlink NavigateUri="https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/">WebView2 Runtime</Hyperlink>
+                    <Run Text="。" />
+                </TextBlock>
+
+                <TextBlock>
+                    <Run Text="状态:" />
+                    <Run Text="{x:Bind WebView2State}" />
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button Name="_Button_Download"
+                            Click="_Button_Download_Click"
+                            Content="下载" />
+                    <Button Name="_Button_RefreshStats"
+                            Click="_Button_RefreshStats_Click"
+                            Content="刷新状态" />
                 </StackPanel>
-
-                <StackPanel x:Name="Tip_2"
-                            Spacing="8"
-                            Visibility="Collapsed">
-                    <TextBlock FontSize="24" Text="隐私 &amp; 用户数据" />
-                    <TextBlock Text="「寻空」充分尊重您的隐私，在进行网络通信时，会向服务器发送您的IP和匿名设备ID。" TextWrapping="Wrap" />
-                    <TextBlock Text="除此之外，未经您同意的情况下，不会上传您的其他个人信息。" TextWrapping="Wrap" />
-                    <TextBlock Text="您的个人数据和其他文件保存在「我的文档\Xunkong」文件夹中。" TextWrapping="Wrap" />
-                    <TextBlock>
-                        <Run Text="存储位置：" />
-                        <Run Text="{x:Bind GetXunkongDataPath()}" />
-                    </TextBlock>
-                    <Button Name="_Button_Privacy"
-                            Click="_Button_Privacy_Click"
-                            Content="隐私策略" />
+                <TextBlock Text="「寻空」使用了 Windows 11 系统上的图标字体，在 Windows 10 系统上可能会出现乱码问题。" TextWrapping="Wrap" />
+                <TextBlock Text="下行左侧是一个点赞图标，如果不是，您需要安装缺失的字体。" TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <SymbolIcon HorizontalAlignment="Left"
+                                Foreground="{ThemeResource SystemFillColorCautionBrush}"
+                                Symbol="Like" />
+                    <Button Name="_Button_InstallFont"
+                            Click="_Button_InstallFont_Click"
+                            Content="安装 Segoe Fluent Icons" />
                 </StackPanel>
+            </StackPanel>
 
-                <StackPanel x:Name="Tip_3"
-                            Spacing="8"
-                            Visibility="Collapsed">
-                    <TextBlock FontSize="24" Text="依赖组件" />
-                    <TextBlock TextWrapping="Wrap">
-                        <Run Text="「寻空」的部分功能依赖 WebView2，您需要安装" />
-                        <Hyperlink NavigateUri="https://developer.microsoft.com/zh-cn/microsoft-edge/webview2/">WebView2 Runtime</Hyperlink>
-                        <Run Text="。" />
-                    </TextBlock>
+            <StackPanel x:Name="Tip_4"
+                        Spacing="8"
+                        Visibility="Collapsed">
+                <TextBlock FontSize="24" Text="数据库迁移" />
+                <TextBlock Text="如果您之前使用过「寻空」任意 0.x 版本，您需要迁移数据库适应新版本。" TextWrapping="Wrap" />
+                <TextBlock Text="一定要在迁移完成后再点击下方的已完成按键。" TextWrapping="Wrap" />
+                <Button Name="_Button_Download_DatabaseMigration"
+                        Click="_Button_Download_DatabaseMigration_Click"
+                        Content="下载迁移工具" />
+            </StackPanel>
 
-                    <TextBlock>
-                        <Run Text="状态:" />
-                        <Run Text="{x:Bind WebView2State}" />
-                    </TextBlock>
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <Button Name="_Button_Download"
-                                Click="_Button_Download_Click"
-                                Content="下载" />
-                        <Button Name="_Button_RefreshStats"
-                                Click="_Button_RefreshStats_Click"
-                                Content="刷新状态" />
-                    </StackPanel>
-                    <TextBlock Text="「寻空」使用了 Windows 11 系统上的图标字体，在 Windows 10 系统上可能会出现乱码问题。" TextWrapping="Wrap" />
-                    <TextBlock Text="下行左侧是一个点赞图标，如果不是，您需要安装缺失的字体。" TextWrapping="Wrap" />
-                    <StackPanel Orientation="Horizontal" Spacing="8">
-                        <SymbolIcon HorizontalAlignment="Left"
-                                    Foreground="{ThemeResource SystemFillColorCautionBrush}"
-                                    Symbol="Like" />
-                        <Button Name="_Button_InstallFont"
-                                Click="_Button_InstallFont_Click"
-                                Content="安装 Segoe Fluent Icons" />
-                    </StackPanel>
-                </StackPanel>
-
-
+            <StackPanel Margin="0,48,0,0"
+                        Orientation="Horizontal"
+                        Spacing="16">
+                <Button x:Name="_Button_Next"
+                        Click="_Button_Next_Click"
+                        Content="下一条" />
+                <TextBlock x:Name="_TextBlock_ClockDown"
+                           VerticalAlignment="Center"
+                           Visibility="Collapsed" />
             </StackPanel>
 
 
+        </StackPanel>
 
-            <Button x:Name="_Button_Next"
-                    Grid.Column="1"
-                    Margin="24,300,0,0"
-                    VerticalAlignment="Center"
-                    Click="_Button_Next_Click"
-                    Content="下一条" />
-
-            <TextBlock Grid.Column="1"
-                       Margin="0,0,12,8"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Bottom"
-                       FontSize="12"
-                       Text="图片来源：twitter@心臓弱眞君" />
-
-        </Grid>
-
+        <TextBlock Grid.Column="1"
+                   Margin="0,0,12,8"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Bottom"
+                   FontSize="12"
+                   Text="图片来源：twitter@心臓弱眞君" />
 
     </Grid>
+
+
 
 </Page>

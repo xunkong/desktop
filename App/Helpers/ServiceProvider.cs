@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http;
-using Syncfusion.Licensing;
 using System.Net.Http;
 using System.Text.Encodings.Web;
 using Xunkong.ApiClient;
@@ -25,7 +24,6 @@ internal static class ServiceProvider
         ConfigureHttpClient(sc);
         ConfigureService(sc);
         _serviceProvider = sc.BuildServiceProvider();
-        SyncfusionLicenseProvider.RegisterLicense("NjEwMjc4QDMyMzAyZTMxMmUzMFkyTEYzc3JuY2hOVXk1azE5d1p1K1NPaFQ4TFF4bU5zYXR2ZUdBQmorc2c9");
         _isInitialized = true;
     }
 

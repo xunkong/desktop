@@ -23,7 +23,8 @@
 
                 <Grid x:Name="_Grid_Image"
                       MaxHeight="800"
-                      Margin="-48,0,-48,0">
+                      Margin="-48,0,-48,-48"
+                      Visibility="Collapsed">
                     <Border x:Name="_Border_BackgroundImage" SizeChanged="_Border_BackgroundImage_SizeChanged" />
 
                     <!--  背景图片信息  -->
@@ -100,18 +101,24 @@
                     </StackPanel>
                 </Grid>
 
-
-                <StackPanel x:Name="_StackPanel_InfoBar"
-                            Margin="0,-48,0,24"
-                            Visibility="Collapsed">
-                    <StackPanel.ChildrenTransitions>
-                        <AddDeleteThemeTransition />
-                    </StackPanel.ChildrenTransitions>
-                </StackPanel>
+                <Grid x:Name="_Grid_InfoBar"
+                      Margin="0,24,0,0"
+                      Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MaxWidth="1200" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel x:Name="_StackPanel_InfoBar">
+                        <StackPanel.ChildrenTransitions>
+                            <AddDeleteThemeTransition />
+                        </StackPanel.ChildrenTransitions>
+                    </StackPanel>
+                </Grid>
 
 
                 <Pivot x:Name="_Pivot_Info"
                        Grid.Row="2"
+                       Margin="0,24,0,0"
                        Visibility="Collapsed">
                     <Pivot.Resources>
                         <Thickness x:Key="PivotItemMargin">0</Thickness>

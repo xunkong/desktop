@@ -110,6 +110,11 @@ public sealed partial class HomePage : Page
     {
         try
         {
+            if (!AppSetting.GetValue(SettingKeys.EnableHomePageWallpaper, true))
+            {
+                return;
+            }
+            _Grid_Image.Visibility = Visibility.Visible;
             var wallpaper = _xunkongApiService.GetPreparedWallpaper();
             string file;
             if (wallpaper is null)
@@ -147,7 +152,6 @@ public sealed partial class HomePage : Page
         {
             NotificationProvider.Error(ex);
         }
-
     }
 
 
@@ -342,7 +346,7 @@ public sealed partial class HomePage : Page
             var list = await _xunkongApiService.GetInfoBarContentListAsync();
             if (list?.Any() ?? false)
             {
-                _StackPanel_InfoBar.Visibility = Visibility.Visible;
+                _Grid_InfoBar.Visibility = Visibility.Visible;
                 foreach (var item in list)
                 {
                     var infoBar = new InfoBar
@@ -374,6 +378,41 @@ public sealed partial class HomePage : Page
                         infoBar.ActionButton = button;
                     }
                     _StackPanel_InfoBar.Children.Add(infoBar);
+                }
+            }
+            var client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("Xunkong"));
+            var release = await client.Repository.Release.GetLatest("xunkong", "desktop");
+            if (Version.TryParse(release.TagName, out var version))
+            {
+                if (version > XunkongEnvironment.AppVersion)
+                {
+                    _Grid_InfoBar.Visibility = Visibility.Visible;
+                    var infoBar = new InfoBar
+                    {
+                        Severity = InfoBarSeverity.Success,
+                        Title = $"新版本 {version}",
+                        Message = release.Name,
+                        IsOpen = true,
+                    };
+                    var button = new Button
+                    {
+                        Content = "下载",
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        Style = Application.Current.Resources["DateTimePickerFlyoutButtonStyle"] as Style,
+                    };
+                    button.Click += async (_, _) =>
+                    {
+                        try
+                        {
+                            await Launcher.LaunchUriAsync(new Uri(release.HtmlUrl));
+                        }
+                        catch (Exception ex)
+                        {
+                            NotificationProvider.Error(ex);
+                        }
+                    };
+                    infoBar.ActionButton = button;
+                    _StackPanel_InfoBar.Children.Insert(0, infoBar);
                 }
             }
         }
