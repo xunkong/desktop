@@ -35,7 +35,7 @@ internal class XunkongApiService
 
     public async Task<List<InfoBarContent>> GetInfoBarContentListAsync()
     {
-        return await _xunkongClient.GetInfoBarContentListAsync();
+        return await _xunkongClient.GetInfoBarContentListAsync(XunkongEnvironment.Channel, XunkongEnvironment.AppVersion);
     }
 
 

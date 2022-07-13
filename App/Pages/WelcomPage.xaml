@@ -15,18 +15,24 @@
     </Page.Resources>
 
     <Grid Background="#F1E0CE" RequestedTheme="Light">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="3*" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal">
+        <StackPanel Grid.RowSpan="2"
+                    Grid.ColumnSpan="2"
+                    Orientation="Horizontal">
             <Image Source="ms-appx:///Assets/Images/WelcomBackground.png" />
         </StackPanel>
 
 
 
-        <StackPanel Grid.Column="1"
-                    Height="300"
+        <StackPanel Grid.Row="1"
+                    Grid.Column="1"
                     Margin="24,0,24,0"
                     HorizontalAlignment="Left">
 
@@ -91,6 +97,7 @@
                         Visibility="Collapsed">
                 <TextBlock FontSize="24" Text="数据库迁移" />
                 <TextBlock Text="如果您之前使用过「寻空」任意 0.x 版本，您需要迁移数据库适应新版本。" TextWrapping="Wrap" />
+                <TextBlock Text="如果提示迁移后的数据库已存在，请删除文件：我的文档\Xunkong\Database\XunkongData.db" TextWrapping="Wrap" />
                 <TextBlock Text="一定要在迁移完成后再点击下方的已完成按键。" TextWrapping="Wrap" />
                 <Button Name="_Button_Download_DatabaseMigration"
                         Click="_Button_Download_DatabaseMigration_Click"
@@ -111,7 +118,8 @@
 
         </StackPanel>
 
-        <TextBlock Grid.Column="1"
+        <TextBlock Grid.Row="1"
+                   Grid.Column="1"
                    Margin="0,0,12,8"
                    HorizontalAlignment="Right"
                    VerticalAlignment="Bottom"

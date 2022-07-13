@@ -1,4 +1,6 @@
-﻿namespace Xunkong.Desktop.Helpers;
+﻿using System.ComponentModel;
+
+namespace Xunkong.Desktop.Helpers;
 
 internal static class UserSetting
 {
@@ -6,14 +8,19 @@ internal static class UserSetting
     public static T? GetValue<T>(string key, T? defaultValue = default)
     {
         using var dapper = DatabaseProvider.CreateConnection();
-        var value = dapper.QuerySingleOrDefault<T>("SELECT Value FROM Setting WHERE Key=@Key LIMIT 1;", new { Key = key });
-        if (value is null)
+        var value = dapper.QuerySingleOrDefault<string>("SELECT Value FROM Setting WHERE Key=@Key LIMIT 1;", new { Key = key });
+        try
         {
-            return defaultValue;
+            var converter = TypeDescriptor.GetConverter(typeof(T));
+            if (converter == null)
+            {
+                return default;
+            }
+            return (T?)converter.ConvertFromString(value);
         }
-        else
+        catch (NotSupportedException)
         {
-            return (T?)value;
+            return default;
         }
     }
 
@@ -21,30 +28,34 @@ internal static class UserSetting
     public static void SetValue<T>(string key, T value)
     {
         using var dapper = DatabaseProvider.CreateConnection();
-        dapper.Execute("INSERT OR REPLACE INTO Setting (Key, Value) VALUES (@Key, @Value);", new { Key = key, Value = value });
+        dapper.Execute("INSERT OR REPLACE INTO Setting (Key, Value) VALUES (@Key, @Value);", new { Key = key, Value = value?.ToString() });
     }
 
 
     public static bool TryGetValue<T>(string key, out T? result, T? defaultValue = default)
     {
+        result = defaultValue;
         try
         {
             using var dapper = DatabaseProvider.CreateConnection();
-            var value = dapper.QuerySingleOrDefault<T>("SELECT Value FROM Setting WHERE Key=@Key LIMIT 1;", new { Key = key });
-            if (value is null)
+            var value = dapper.QuerySingleOrDefault<string>("SELECT Value FROM Setting WHERE Key=@Key LIMIT 1;", new { Key = key });
+            try
             {
-                result = defaultValue;
-                return false;
-            }
-            else
-            {
-                result = (T?)value;
+                var converter = TypeDescriptor.GetConverter(typeof(T));
+                if (converter == null)
+                {
+                    return false;
+                }
+                result = (T?)converter.ConvertFromString(value);
                 return true;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
             }
         }
         catch
         {
-            result = defaultValue;
             return false;
         }
     }
@@ -55,7 +66,7 @@ internal static class UserSetting
         try
         {
             using var dapper = DatabaseProvider.CreateConnection();
-            dapper.Execute("INSERT OR REPLACE INTO Setting (Key, Value) VALUES (@Key, @Value);", new { Key = key, Value = value });
+            dapper.Execute("INSERT OR REPLACE INTO Setting (Key, Value) VALUES (@Key, @Value);", new { Key = key, Value = value?.ToString() });
             return true;
         }
         catch
@@ -63,9 +74,6 @@ internal static class UserSetting
             return false;
         }
     }
-
-
-
 
 
 }

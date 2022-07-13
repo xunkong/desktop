@@ -1,17 +1,28 @@
 ﻿namespace Xunkong.Desktop.Models;
 
-internal class WebToolItem
+[INotifyPropertyChanged]
+public partial class WebToolItem
 {
-    public int Id { get; set; }
 
-    public string? Title { get; set; }
+    [ObservableProperty]
+    private int id;
 
-    public string? Icon { get; set; }
+    [ObservableProperty]
+    private string? title;
 
-    public int Order { get; set; }
+    [ObservableProperty]
+    private string? name;
 
-    public string Url { get; set; }
+    [ObservableProperty]
+    private string? icon;
 
-    public string? JavaScript { get; set; }
+    [ObservableProperty]
+    private int order;
+
+    [ObservableProperty]
+    private string url;
+
+    [ObservableProperty]
+    private string? javaScript;
 
 }

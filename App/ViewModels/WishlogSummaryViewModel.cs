@@ -128,12 +128,13 @@ internal partial class WishlogSummaryViewModel : ObservableObject
     /// </summary>
     /// <returns></returns>
     [RelayCommand]
-    public async Task InitializePageDataAsync()
+    public async void InitializePageData()
     {
         try
         {
             Uids = (_wishlogService.GetAllUids()).Select(x => x.ToString()).ToList();
             _SelectedUid = UserSetting.GetValue<int>(SettingKeys.LastSelectedUidInWishlogSummaryPage);
+            await Task.Delay(500);
             OnPropertyChanged(nameof(SelectedUid));
             if (!Uids.Contains(SelectedUid) || _SelectedUid == 0)
             {
@@ -142,11 +143,6 @@ internal partial class WishlogSummaryViewModel : ObservableObject
             if (_SelectedUid == 0)
             {
                 StateText = "没有祈愿数据";
-                await LoadWishlogAsync(true);
-            }
-            else
-            {
-                await LoadWishlogAsync();
             }
         }
         catch (Exception ex)
@@ -160,10 +156,9 @@ internal partial class WishlogSummaryViewModel : ObservableObject
     /// 加载已选择uid的祈愿信息
     /// </summary>
     /// <returns></returns>
-    public async Task LoadWishlogAsync(bool ignoreWishlogStats = false)
+    public void LoadWishlog(bool ignoreWishlogStats = false)
     {
         IsLoading = true;
-        await Task.Delay(100);
         try
         {
             WishEventInfo.RegionType = WishlogService.UidToRegionType(_SelectedUid);
@@ -230,12 +225,12 @@ internal partial class WishlogSummaryViewModel : ObservableObject
                                       join c in dic_characters
                                       on g.Key equals c.Key
                                       select new WishlogSummaryPage_ItemThumb(g.Key, c.Value.Rarity, c.Value.Element, c.Value.WeaponType, g.Value.Count(), c.Value.FaceIcon, g.Value.Last().Time);
-                CharacterThumbs = new(query_character.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime));
+                CharacterThumbs = query_character.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime).ToList();
                 var query_weapon = from g in wishlogs_group_dic
                                    join c in dic_weapons
                                    on g.Key equals c.Key
                                    select new WishlogSummaryPage_ItemThumb(g.Key, c.Value.Rarity, ElementType.None, c.Value.WeaponType, g.Value.Count(), c.Value.Icon, g.Value.Last().Time);
-                WeaponThumbs = new(query_weapon.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime));
+                WeaponThumbs = query_weapon.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime).ToList();
             }
 
             var eventInfos = liteDb.GetCollection<WishEventInfo>().FindAll().ToList();
@@ -327,7 +322,7 @@ internal partial class WishlogSummaryViewModel : ObservableObject
                 StateText = $"新增 {addCount} 条祈愿记录";
             }
             SelectedUid = uid.ToString();
-            await InitializePageDataAsync();
+            InitializePageData();
         }
         catch (Exception ex) when (ex is HoyolabException or XunkongException)
         {
@@ -363,7 +358,7 @@ internal partial class WishlogSummaryViewModel : ObservableObject
             var addCount = await _wishlogService.GetWishlogByUidAsync(uid, progressHandler);
             StateText = $"新增 {addCount} 条祈愿记录";
             SelectedUid = uid.ToString();
-            await InitializePageDataAsync();
+            InitializePageData();
         }
         catch (Exception ex) when (ex is HoyolabException or XunkongException)
         {
@@ -402,7 +397,7 @@ internal partial class WishlogSummaryViewModel : ObservableObject
             var addCount = await _wishlogService.GetWishlogByUidAsync(uid, progressHandler);
             StateText = $"新增 {addCount} 条祈愿记录";
             SelectedUid = uid.ToString();
-            await InitializePageDataAsync();
+            InitializePageData();
         }
         catch (Exception ex) when (ex is HoyolabException or XunkongException)
         {

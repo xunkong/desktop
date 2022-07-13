@@ -22,7 +22,7 @@ public sealed partial class WishlogSummaryPage : Page
     {
         this.InitializeComponent();
         DataContext = ServiceProvider.GetService<WishlogSummaryViewModel>();
-        Loaded += async (_, _) => await vm.InitializePageDataAsync();
+        Loaded += (_, _) => vm.InitializePageData();
     }
 
 
@@ -32,9 +32,9 @@ public sealed partial class WishlogSummaryPage : Page
         _TextBox_WishlogUrl.Focus(FocusState.Pointer);
     }
 
-    private async void _ComboBox_Uid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void _ComboBox_Uid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        await vm.LoadWishlogAsync();
+        vm.LoadWishlog();
     }
 
     private void _TextBlock_Rank5Item_PointerEntered(object sender, PointerRoutedEventArgs e)

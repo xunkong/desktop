@@ -315,10 +315,10 @@
                                                     <ColumnDefinition Width="4*" />
                                                     <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
-                                                <Image Grid.Column="0"
-                                                       Width="24"
-                                                       Source="{x:Bind Icon}"
-                                                       Stretch="Uniform" />
+                                                <xdc:CachedImage Grid.Column="0"
+                                                                 Width="24"
+                                                                 Source="{x:Bind Icon}"
+                                                                 Stretch="Uniform" />
                                                 <TextBlock Grid.Column="1"
                                                            VerticalAlignment="Center"
                                                            Text="{x:Bind Title}" />
