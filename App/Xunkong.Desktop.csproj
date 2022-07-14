@@ -66,7 +66,7 @@
 		<PackageReference Include="Microsoft.Graphics.Win2D" Version="1.0.3.1" />
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.2" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
-		<PackageReference Include="Octokit" Version="0.52.0" />
+		<PackageReference Include="Octokit" Version="1.0.0" />
 		<PackageReference Include="Vanara.PInvoke.User32" Version="3.4.4" />
 		<PackageReference Include="Syncfusion.Chart.WinUI" Version="20.1.0.61" />
 		<Manifest Include="$(ApplicationManifest)" />
