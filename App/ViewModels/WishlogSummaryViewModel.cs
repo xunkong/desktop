@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using Xunkong.Core;
+using Xunkong.Desktop.Pages;
 using Xunkong.GenshinData.Character;
 using Xunkong.GenshinData.Weapon;
 using Xunkong.Hoyolab;
@@ -75,7 +75,7 @@ internal partial class WishlogSummaryViewModel : ObservableObject
             if (int.TryParse(value, out int uid))
             {
                 SetProperty(ref _SelectedUid, uid);
-                UserSetting.TrySaveValue(SettingKeys.LastSelectedUidInWishlogSummaryPage, uid);
+                UserSetting.TrySetValue(SettingKeys.LastSelectedUidInWishlogSummaryPage, uid);
             }
         }
     }
@@ -161,7 +161,9 @@ internal partial class WishlogSummaryViewModel : ObservableObject
         IsLoading = true;
         try
         {
+            // 卡池信息时区
             WishEventInfo.RegionType = WishlogService.UidToRegionType(_SelectedUid);
+            // 初始化卡池信息，所有祈愿记录
             using var liteDb = DatabaseProvider.CreateLiteDB();
             var characters = liteDb.GetCollection<CharacterInfo>().FindAll().ToList();
             var dic_characters = characters.Where(x => !string.IsNullOrWhiteSpace(x.Name)).ToImmutableDictionary(x => x.Name!);
@@ -172,6 +174,7 @@ internal partial class WishlogSummaryViewModel : ObservableObject
 
             if (!ignoreWishlogStats)
             {
+                // 根据祈愿类型分类计算
                 var queryTypeGroups = wishlogs.GroupBy(x => x.QueryType);
                 var statsCollection = new BlockingCollection<WishlogSummaryPage_QueryTypeStats>();
                 Parallel.ForEach(queryTypeGroups, group =>
@@ -233,6 +236,7 @@ internal partial class WishlogSummaryViewModel : ObservableObject
                 WeaponThumbs = query_weapon.OrderByDescending(x => x.Rarity).ThenByDescending(x => x.Count).ThenByDescending(x => x.LastTime).ToList();
             }
 
+            // 根据卡池分类计算
             var eventInfos = liteDb.GetCollection<WishEventInfo>().FindAll().ToList();
 
             var character_groups = eventInfos.Where(x => x.QueryType == WishType.CharacterEvent).GroupBy(x => x.StartTime).ToList();
@@ -352,9 +356,21 @@ internal partial class WishlogSummaryViewModel : ObservableObject
         await Task.Delay(100);
         try
         {
-            var wishlogUrl = await _wishlogService.FindWishlogUrlFromLogFileAsync(isSea);
+            int uid = _SelectedUid;
             StateText = "验证祈愿记录网址的有效性";
-            var uid = await _wishlogService.GetUidByWishlogUrl(wishlogUrl);
+            try
+            {
+                var wishlogUrl = await _wishlogService.FindWishlogUrlFromLogFileAsync(isSea);
+                uid = await _wishlogService.GetUidByWishlogUrl(wishlogUrl);
+            }
+            catch (FileNotFoundException)
+            {
+                if (!await _wishlogService.CheckWishlogUrlTimeoutAsync(uid))
+                {
+                    StateText = "祈愿记录网址已过期，请在游戏中重新打开历史记录页面";
+                    return;
+                }
+            }
             var addCount = await _wishlogService.GetWishlogByUidAsync(uid, progressHandler);
             StateText = $"新增 {addCount} 条祈愿记录";
             SelectedUid = uid.ToString();
@@ -382,35 +398,49 @@ internal partial class WishlogSummaryViewModel : ObservableObject
     /// <param name="wishlogUrl"></param>
     /// <returns></returns>
     [RelayCommand]
-    private async Task GetWishlogFromWishlogUrlAsync(string wishlogUrl)
+    private async Task GetWishlogFromInputWishlogUrlAsync()
     {
-        if (string.IsNullOrWhiteSpace(wishlogUrl))
+        var textBox = new TextBox();
+        var stackPanel = new StackPanel { Spacing = 8 };
+        stackPanel.Children.Add(new TextBlock { Text = "懂得都懂" });
+        stackPanel.Children.Add(textBox);
+        var dialog = new ContentDialog
         {
-            return;
-        }
-        IsLoading = true;
-        await Task.Delay(100);
-        try
+            Title = "输入祈愿记录网址",
+            Content = stackPanel,
+            PrimaryButtonText = "确认",
+            SecondaryButtonText = "取消",
+            DefaultButton = ContentDialogButton.Primary,
+            XamlRoot = MainWindowHelper.XamlRoot,
+        };
+        var result = await dialog.ShowAsync();
+        if (result == ContentDialogResult.Primary && !string.IsNullOrWhiteSpace(textBox.Text))
         {
-            StateText = "验证祈愿记录网址的有效性";
-            var uid = await _wishlogService.GetUidByWishlogUrl(wishlogUrl);
-            var addCount = await _wishlogService.GetWishlogByUidAsync(uid, progressHandler);
-            StateText = $"新增 {addCount} 条祈愿记录";
-            SelectedUid = uid.ToString();
-            InitializePageData();
-        }
-        catch (Exception ex) when (ex is HoyolabException or XunkongException)
-        {
-            StateText = ex.Message;
-        }
-        catch (Exception ex)
-        {
-            StateText = "";
-            NotificationProvider.Error(ex);
-        }
-        finally
-        {
-            IsLoading = false;
+            IsLoading = true;
+            await Task.Delay(100);
+            var wishlogUrl = textBox.Text;
+            try
+            {
+                StateText = "验证祈愿记录网址的有效性";
+                var uid = await _wishlogService.GetUidByWishlogUrl(wishlogUrl);
+                var addCount = await _wishlogService.GetWishlogByUidAsync(uid, progressHandler);
+                StateText = $"新增 {addCount} 条祈愿记录";
+                SelectedUid = uid.ToString();
+                InitializePageData();
+            }
+            catch (Exception ex) when (ex is HoyolabException or XunkongException)
+            {
+                StateText = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                StateText = "";
+                NotificationProvider.Error(ex);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
     }
 
@@ -670,6 +700,22 @@ internal partial class WishlogSummaryViewModel : ObservableObject
         }
     }
 
+
+    /// <summary>
+    /// 导航到祈愿记录管理页面
+    /// </summary>
+    [RelayCommand]
+    private void NavigateToWishlogManagePage()
+    {
+        try
+        {
+            MainPageHelper.Navigate(typeof(WishlogManagePage), _SelectedUid);
+        }
+        catch (Exception ex)
+        {
+            NotificationProvider.Error(ex);
+        }
+    }
 
 
 

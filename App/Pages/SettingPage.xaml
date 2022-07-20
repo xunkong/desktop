@@ -180,6 +180,18 @@
                                         <ComboBoxItem Content="12 小时" />
                                     </ComboBox>
                                 </Grid>
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock>
+                                        <Run Text="使用按流量计费的网络时下载新图片" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="不用再担心流量偷跑啦" />
+                                    </TextBlock>
+                                    <ToggleSwitch HorizontalAlignment="Right"
+                                                  IsOn="{x:Bind vm.DownloadWallpaperOnMeteredInternet, Mode=TwoWay}"
+                                                  Style="{ThemeResource RightAlignToggleSwitchStyle}" />
+                                </Grid>
                             </StackPanel>
                         </Expander.Content>
                     </Expander>
@@ -338,28 +350,53 @@
                     </Expander>
 
                     <!--  米游社签到  -->
-                    <xdc:SettingCard>
-                        <xdc:SettingCard.Icon>
-                            <Path Width="20"
-                                  Data="M901.784183 130.096944l-71.520459 0 0-91.948962c0-21.034552-17.113446-38.147998-38.147998-38.147998l-2.548388 0c-21.031241 0-38.141375 17.11179-38.141375 38.147998l0 91.948962-475.285176 0 0-91.948962c0-21.034552-17.11179-38.147998-38.147998-38.147998l-2.548388 0c-21.034552 0-38.147998 17.11179-38.147998 38.147998l0 91.948962-75.087209 0c-66.715116 0-120.991315 54.276199-120.991315 120.991315L1.217878 902.998766c0 66.720084 54.276199 121.001251 120.991315 121.001251l779.573334 0c66.720084 0 120.999595-54.281167 120.999595-121.001251l0-651.908851C1022.780466 184.374799 968.499299 130.096944 901.784183 130.096944zM946.487782 944.986733l-867.617748 0L78.870034 404.68371l867.617748 0L946.487782 944.986733zM946.487782 324.319235l-867.617748 0 0-117.927951 867.617748 0L946.487782 324.319235zM408.749706 873.666635c6.794046 6.794046 15.696018 10.188585 24.597991 10.188585 6.029033 0 12.041507-1.596261 17.414814-4.710958 3.086547-1.602885 5.98598-3.690941 8.575765-6.280726L811.395053 520.810071c13.584781-13.586437 13.584781-35.612857 0-49.197637-13.586437-13.584781-35.612857-13.584781-49.199293 0L433.644098 800.165752 267.310017 633.830015c-13.586437-13.584781-35.611201-13.584781-49.197637 0-13.584781 13.586437-13.584781 35.611201 0 49.197637L408.749706 873.666635z"
-                                  Fill="{ThemeResource TextFillColorPrimaryBrush}"
-                                  Stretch="Uniform" />
-                        </xdc:SettingCard.Icon>
-                        <xdc:SettingCard.Content>
-                            <TextBlock>
-                                <Run Text="米游社签到" />
-                                <LineBreak />
-                                <Run FontSize="12"
-                                     Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                     Text="应用启动时自动签到" />
-                            </TextBlock>
-                        </xdc:SettingCard.Content>
-                        <xdc:SettingCard.Selector>
-                            <ToggleSwitch HorizontalAlignment="Right"
-                                          IsOn="{x:Bind vm.SignInAllAccountsWhenStartUpApplication, Mode=TwoWay}"
-                                          Style="{ThemeResource RightAlignToggleSwitchStyle}" />
-                        </xdc:SettingCard.Selector>
-                    </xdc:SettingCard>
+                    <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <Expander.Header>
+                            <Grid>
+                                <StackPanel Padding="4,16,0,16" Orientation="Horizontal">
+                                    <Path Width="20"
+                                          Data="M901.784183 130.096944l-71.520459 0 0-91.948962c0-21.034552-17.113446-38.147998-38.147998-38.147998l-2.548388 0c-21.031241 0-38.141375 17.11179-38.141375 38.147998l0 91.948962-475.285176 0 0-91.948962c0-21.034552-17.11179-38.147998-38.147998-38.147998l-2.548388 0c-21.034552 0-38.147998 17.11179-38.147998 38.147998l0 91.948962-75.087209 0c-66.715116 0-120.991315 54.276199-120.991315 120.991315L1.217878 902.998766c0 66.720084 54.276199 121.001251 120.991315 121.001251l779.573334 0c66.720084 0 120.999595-54.281167 120.999595-121.001251l0-651.908851C1022.780466 184.374799 968.499299 130.096944 901.784183 130.096944zM946.487782 944.986733l-867.617748 0L78.870034 404.68371l867.617748 0L946.487782 944.986733zM946.487782 324.319235l-867.617748 0 0-117.927951 867.617748 0L946.487782 324.319235zM408.749706 873.666635c6.794046 6.794046 15.696018 10.188585 24.597991 10.188585 6.029033 0 12.041507-1.596261 17.414814-4.710958 3.086547-1.602885 5.98598-3.690941 8.575765-6.280726L811.395053 520.810071c13.584781-13.586437 13.584781-35.612857 0-49.197637-13.586437-13.584781-35.612857-13.584781-49.199293 0L433.644098 800.165752 267.310017 633.830015c-13.586437-13.584781-35.611201-13.584781-49.197637 0-13.584781 13.586437-13.584781 35.611201 0 49.197637L408.749706 873.666635z"
+                                          Fill="{ThemeResource TextFillColorPrimaryBrush}"
+                                          Stretch="Uniform" />
+                                    <TextBlock Margin="20,0,0,0">
+                                        <Run Text="米游社签到" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="不会重复发送签到请求" />
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </Expander.Header>
+                        <Expander.Content>
+                            <StackPanel Margin="0,-16,44,-16">
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock TextWrapping="Wrap">
+                                        <Run Text="应用启动时自动签到" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="签到成功时不会有提示" />
+                                    </TextBlock>
+                                    <ToggleSwitch HorizontalAlignment="Right"
+                                                  IsOn="{x:Bind vm.SignInAllAccountsWhenStartUpApplication, Mode=TwoWay}"
+                                                  Style="{ThemeResource RightAlignToggleSwitchStyle}" />
+                                </Grid>
+                                <Grid Padding="44,12,0,12">
+                                    <TextBlock>
+                                        <Run Text="后台定时签到" />
+                                        <LineBreak />
+                                        <Run FontSize="12"
+                                             Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                             Text="请保证每天开机 2 小时以上" />
+                                    </TextBlock>
+                                    <ToggleSwitch HorizontalAlignment="Right"
+                                                  IsOn="{x:Bind vm.IsRegisterHoyolabCheckInTask, Mode=TwoWay}"
+                                                  Style="{ThemeResource RightAlignToggleSwitchStyle}" />
+                                </Grid>
+                            </StackPanel>
+                        </Expander.Content>
+                    </Expander>
 
 
                     <!--  图片缓存  -->

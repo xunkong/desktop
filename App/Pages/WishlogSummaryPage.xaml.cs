@@ -26,11 +26,6 @@ public sealed partial class WishlogSummaryPage : Page
     }
 
 
-    private void _Flyout_InputWishlogUrl_Opened(object sender, object e)
-    {
-        _TextBox_WishlogUrl.Text = "";
-        _TextBox_WishlogUrl.Focus(FocusState.Pointer);
-    }
 
     private void _ComboBox_Uid_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {

@@ -13,7 +13,10 @@ internal class InvokeService
 {
 
 
-
+    /// <summary>
+    /// 刷新磁贴
+    /// </summary>
+    /// <returns></returns>
     public static async Task RefreshDailyNoteTilesAsync()
     {
         try
@@ -33,7 +36,7 @@ internal class InvokeService
                             var info = await service.GetDailyNoteAsync(role);
                             if (info != null)
                             {
-                                await SecondaryTileProvider.RequestPinTileAsync(info);
+                                SecondaryTileProvider.UpdatePinnedTile(info);
                             }
                         }
                     }
@@ -56,7 +59,10 @@ internal class InvokeService
 
 
 
-
+    /// <summary>
+    /// 启动游戏
+    /// </summary>
+    /// <returns></returns>
     public static async Task<bool> StartGameAsync()
     {
         try
@@ -132,7 +138,10 @@ internal class InvokeService
 
 
 
-
+    /// <summary>
+    /// 检查参量质变仪
+    /// </summary>
+    /// <returns></returns>
     public static async Task CheckTransformerReachedAsync()
     {
         try
@@ -164,6 +173,35 @@ internal class InvokeService
         catch (Exception ex)
         {
             await ToastProvider.SendAsync("出错了", ex.Message);
+        }
+    }
+
+
+    /// <summary>
+    /// 签到
+    /// </summary>
+    /// <returns></returns>
+    public static async Task SignInAllAccountAsync()
+    {
+        try
+        {
+            var service = new HoyolabService(new HoyolabClient());
+            var roles = service.GetGenshinRoleInfoList();
+            foreach (var role in roles)
+            {
+                try
+                {
+                    await service.SignInAsync(role);
+                }
+                catch (Exception ex) when (ex is HoyolabException or HttpRequestException)
+                {
+                    await ToastProvider.SendAsync("签到时出现错误", $"Uid {role.Uid}\n{ex.Message}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await ToastProvider.SendAsync("签到时出现错误", ex.Message);
         }
     }
 

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.WinUI.UI;
 using System.Collections.ObjectModel;
 using System.Net.Http;
+using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -43,15 +44,6 @@ internal partial class SettingViewModel : ObservableObject
     }
 
 
-
-    public void InitializeData()
-    {
-        try
-        {
-            SignInAllAccountsWhenStartUpApplication = UserSetting.GetValue<bool>(SettingKeys.SignInAllAccountsWhenStartUpApplication);
-        }
-        catch { }
-    }
 
 
     [RelayCommand]
@@ -140,6 +132,18 @@ internal partial class SettingViewModel : ObservableObject
         }
     }
 
+
+
+    private bool _DownloadWallpaperOnMeteredInternet = AppSetting.GetValue<bool>(SettingKeys.DownloadWallpaperOnMeteredInternet, throwError: false);
+    public bool DownloadWallpaperOnMeteredInternet
+    {
+        get => _DownloadWallpaperOnMeteredInternet;
+        set
+        {
+            AppSetting.TrySetValue(SettingKeys.DownloadWallpaperOnMeteredInternet, value);
+            SetProperty(ref _DownloadWallpaperOnMeteredInternet, value);
+        }
+    }
 
 
 
@@ -318,16 +322,60 @@ internal partial class SettingViewModel : ObservableObject
     #region Hoyolab Check in Task
 
 
-    private bool _SignInAllAccountsWhenStartUpApplication;
+    private bool _SignInAllAccountsWhenStartUpApplication = UserSetting.GetValue<bool>(SettingKeys.SignInAllAccountsWhenStartUpApplication, throwError: false);
     public bool SignInAllAccountsWhenStartUpApplication
     {
         get => _SignInAllAccountsWhenStartUpApplication;
         set
         {
-            UserSetting.SetValue(SettingKeys.SignInAllAccountsWhenStartUpApplication, value);
+            UserSetting.TrySetValue(SettingKeys.SignInAllAccountsWhenStartUpApplication, value);
             SetProperty(ref _SignInAllAccountsWhenStartUpApplication, value);
         }
     }
+
+
+
+    private bool _IsRegisterHoyolabCheckInTask = BackgroundTaskRegistration.AllTasks.Any(x => x.Value.Name == "HoyolabCheckInTask");
+    public bool IsRegisterHoyolabCheckInTask
+    {
+        get => _IsRegisterHoyolabCheckInTask;
+        set
+        {
+            SetProperty(ref _IsRegisterHoyolabCheckInTask, value);
+            RegisterHoyolabCheckInTask(value);
+        }
+    }
+
+
+    private async void RegisterHoyolabCheckInTask(bool enable)
+    {
+        try
+        {
+            var allTasks = BackgroundTaskRegistration.AllTasks;
+            foreach (var item in allTasks)
+            {
+                if (item.Value.Name == "HoyolabCheckInTask")
+                {
+                    item.Value.Unregister(true);
+                }
+            }
+            if (enable)
+            {
+                var requestStatus = await BackgroundExecutionManager.RequestAccessAsync();
+                var builder = new BackgroundTaskBuilder();
+                builder.Name = "HoyolabCheckInTask";
+                builder.SetTrigger(new TimeTrigger(120, false));
+                builder.TaskEntryPoint = "Xunkong.Desktop.Background.HoyolabCheckInTask";
+                BackgroundTaskRegistration task = builder.Register();
+            }
+        }
+        catch (Exception ex)
+        {
+            NotificationProvider.Error(ex);
+        }
+    }
+
+
 
 
     #endregion

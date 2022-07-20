@@ -1,7 +1,6 @@
 ﻿using System.Net.Http;
 using Xunkong.ApiClient;
 using Xunkong.ApiClient.Xunkong;
-using Xunkong.Core;
 using Xunkong.GenshinData.Character;
 using Xunkong.GenshinData.Weapon;
 using Xunkong.Hoyolab.Wishlog;

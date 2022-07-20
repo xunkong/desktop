@@ -1,7 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 using Windows.ApplicationModel;
-using Xunkong.Core;
 
 namespace Xunkong.Desktop.Models;
 

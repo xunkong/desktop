@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Xunkong.Core;
 using Xunkong.Hoyolab.Wishlog;
 
 namespace Xunkong.Desktop.Models;

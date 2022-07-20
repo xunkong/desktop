@@ -373,38 +373,29 @@
                               Icon="Refresh"
                               Label="刷新页面" />
                 <AppBarSeparator />
-                <AppBarButton Icon="OpenFile" Label="日志更新">
+                <AppBarButton Icon="OpenFile" Label="更新记录">
                     <AppBarButton.Flyout>
                         <MenuFlyout>
-                            <MenuFlyoutItem Command="{x:Bind vm.GetWishlogFromSavedWishlogUrlCommand, Mode=OneTime}"
+                            <MenuFlyoutItem Command="{x:Bind vm.GetWishlogFromLogFileCommand, Mode=OneTime}"
                                             CommandParameter="{StaticResource False}"
-                                            Text="使用已保存的网址（增量更新）" />
-                            <MenuFlyoutItem Command="{x:Bind vm.GetWishlogFromSavedWishlogUrlCommand, Mode=OneTime}"
+                                            Text="国服优先" />
+                            <MenuFlyoutItem Command="{x:Bind vm.GetWishlogFromLogFileCommand, Mode=OneTime}"
                                             CommandParameter="{StaticResource True}"
-                                            Text="使用已保存的网址（全量更新）" />
+                                            Text="外服优先" />
                             <MenuFlyoutSeparator />
-                            <MenuFlyoutItem Command="{x:Bind vm.GetWishlogFromLogFileCommand, Mode=OneTime}"
-                                            CommandParameter="{StaticResource False}"
-                                            Text="从日志获取新的网址（国服优先）" />
-                            <MenuFlyoutItem Command="{x:Bind vm.GetWishlogFromLogFileCommand, Mode=OneTime}"
+                            <MenuFlyoutItem Command="{x:Bind vm.GetWishlogFromSavedWishlogUrlCommand, Mode=OneTime}"
                                             CommandParameter="{StaticResource True}"
-                                            Text="从日志获取新的网址（外服优先）" />
+                                            Text="全量更新" />
+                            <MenuFlyoutItem Command="{x:Bind vm.GetWishlogFromInputWishlogUrlCommand, Mode=OneTime}"
+                                            CommandParameter="{StaticResource True}"
+                                            Text="输入网址" />
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
-                <AppBarButton Icon="Globe" Label="网址更新">
-                    <AppBarButton.Flyout>
-                        <Flyout x:Name="_Flyout_InputWishlogUrl" Opened="_Flyout_InputWishlogUrl_Opened">
-                            <StackPanel Width="200" Spacing="8">
-                                <TextBlock Text="输入祈愿记录网址" />
-                                <TextBox Name="_TextBox_WishlogUrl" AllowFocusOnInteraction="True" />
-                                <Button Command="{x:Bind vm.GetWishlogFromWishlogUrlCommand, Mode=OneTime}"
-                                        CommandParameter="{Binding ElementName=_TextBox_WishlogUrl, Path=Text}"
-                                        Content="确认" />
-                            </StackPanel>
-                        </Flyout>
-                    </AppBarButton.Flyout>
-                </AppBarButton>
+                <AppBarButton Name="_AppBarButton_WishlogManage"
+                              Command="{x:Bind vm.NavigateToWishlogManagePageCommand, Mode=OneTime}"
+                              Icon="Shuffle"
+                              Label="管理记录" />
                 <AppBarSeparator />
                 <AppBarButton Label="记录备份">
                     <AppBarButton.Icon>

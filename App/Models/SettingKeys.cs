@@ -124,4 +124,9 @@ internal static class SettingKeys
     /// </summary>
     public const string WishlogBackupAgreement = nameof(WishlogBackupAgreement);
 
+    /// <summary>
+    /// 是否在使用按流量计费的网络时下载主页图片
+    /// </summary>
+    public const string DownloadWallpaperOnMeteredInternet = nameof(DownloadWallpaperOnMeteredInternet);
+
 }

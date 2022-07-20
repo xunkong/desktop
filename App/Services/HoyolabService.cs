@@ -1,5 +1,4 @@
-﻿using Xunkong.Core;
-using Xunkong.Hoyolab;
+﻿using Xunkong.Hoyolab;
 using Xunkong.Hoyolab.Account;
 using Xunkong.Hoyolab.Avatar;
 using Xunkong.Hoyolab.DailyNote;

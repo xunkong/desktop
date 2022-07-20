@@ -13,17 +13,29 @@ internal static class AppSetting
     }
 
 
-    public static T? GetValue<T>(string key, T? defaultValue = default)
+    public static T? GetValue<T>(string key, T? defaultValue = default, bool throwError = true)
     {
-        var value = _container.Values[key];
-        if (value is null)
+        try
         {
+            var value = _container.Values[key];
+            if (value is null)
+            {
+                return defaultValue;
+            }
+            else
+            {
+                return (T?)value;
+            }
+        }
+        catch
+        {
+            if (throwError)
+            {
+                throw;
+            }
             return defaultValue;
         }
-        else
-        {
-            return (T?)value;
-        }
+
     }
 
 

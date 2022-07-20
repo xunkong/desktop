@@ -1,5 +1,4 @@
 ﻿using Microsoft.UI.Xaml.Data;
-using Xunkong.Core;
 
 namespace Xunkong.Desktop.Converters;
 

@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
@@ -135,9 +136,16 @@ public sealed partial class HomePage : Page
                     WallpaperInfo = FallbackWallpaper;
                     file = (await StorageFile.GetFileFromApplicationUriAsync(new(FallbackWallpaperUri))).Path;
                 }
-
             }
             await LoadBackgroundImage(file);
+            if (NetworkHelper.IsInternetOnMeteredConnection)
+            {
+                if (!AppSetting.GetValue<bool>(SettingKeys.DownloadWallpaperOnMeteredInternet))
+                {
+                    // 使用按流量计费的网络时，不下载新图片
+                    return;
+                }
+            }
             var maxage = AppSetting.GetValue<int>(SettingKeys.WallpaperRefreshTime) switch
             {
                 0 => 5,
@@ -162,70 +170,84 @@ public sealed partial class HomePage : Page
     /// <returns></returns>
     private async Task LoadBackgroundImage(string file)
     {
-        _compositor = ElementCompositionPreview.GetElementVisual(_Border_BackgroundImage).Compositor;
-        using var stream = File.OpenRead(file);
-        var decoder = await BitmapDecoder.CreateAsync(stream.AsRandomAccessStream());
-        heightDivWidth = (double)decoder.PixelHeight / decoder.PixelWidth;
-
-        imageSurface = LoadedImageSurface.StartLoadFromUri(new(file));
-        imageBrush = _compositor.CreateSurfaceBrush();
-        imageBrush.Surface = imageSurface;
-        imageBrush.Stretch = CompositionStretch.UniformToFill;
-        imageBrush.VerticalAlignmentRatio = 0;
-
-        linearGradientBrush1 = _compositor.CreateLinearGradientBrush();
-        linearGradientBrush1.StartPoint = Vector2.Zero;
-        linearGradientBrush1.EndPoint = Vector2.UnitY;
-        linearGradientBrush1.ColorStops.Add(_compositor.CreateColorGradientStop(0, Colors.White));
-        linearGradientBrush1.ColorStops.Add(_compositor.CreateColorGradientStop(0.95f, Colors.Black));
-
-        linearGradientBrush2 = _compositor.CreateLinearGradientBrush();
-        linearGradientBrush2.StartPoint = new Vector2(0.5f, 0);
-        linearGradientBrush2.EndPoint = Vector2.UnitY;
-        linearGradientBrush2.ColorStops.Add(_compositor.CreateColorGradientStop(0, Colors.White));
-        linearGradientBrush2.ColorStops.Add(_compositor.CreateColorGradientStop(1, Colors.Black));
-
-        var blendEffect = new BlendEffect
+        try
         {
-            Mode = BlendEffectMode.Multiply,
-            Background = new CompositionEffectSourceParameter("Background"),
-            Foreground = new CompositionEffectSourceParameter("Foreground"),
-        };
+            _compositor = ElementCompositionPreview.GetElementVisual(_Border_BackgroundImage).Compositor;
+            using var stream = File.OpenRead(file);
+            var decoder = await BitmapDecoder.CreateAsync(stream.AsRandomAccessStream());
+            heightDivWidth = (double)decoder.PixelHeight / decoder.PixelWidth;
 
-        var blendEffectFactory = _compositor.CreateEffectFactory(blendEffect);
-        gradientEffectBrush = blendEffectFactory.CreateBrush();
-        gradientEffectBrush.SetSourceParameter("Background", linearGradientBrush2);
-        gradientEffectBrush.SetSourceParameter("Foreground", linearGradientBrush1);
+            imageSurface = LoadedImageSurface.StartLoadFromUri(new(file));
+            imageBrush = _compositor.CreateSurfaceBrush();
+            imageBrush.Surface = imageSurface;
+            imageBrush.Stretch = CompositionStretch.UniformToFill;
+            imageBrush.VerticalAlignmentRatio = 0;
+
+            linearGradientBrush1 = _compositor.CreateLinearGradientBrush();
+            linearGradientBrush1.StartPoint = Vector2.Zero;
+            linearGradientBrush1.EndPoint = Vector2.UnitY;
+            linearGradientBrush1.ColorStops.Add(_compositor.CreateColorGradientStop(0, Colors.White));
+            linearGradientBrush1.ColorStops.Add(_compositor.CreateColorGradientStop(0.95f, Colors.Black));
+
+            linearGradientBrush2 = _compositor.CreateLinearGradientBrush();
+            linearGradientBrush2.StartPoint = new Vector2(0.5f, 0);
+            linearGradientBrush2.EndPoint = Vector2.UnitY;
+            linearGradientBrush2.ColorStops.Add(_compositor.CreateColorGradientStop(0, Colors.White));
+            linearGradientBrush2.ColorStops.Add(_compositor.CreateColorGradientStop(1, Colors.Black));
+
+            var blendEffect = new BlendEffect
+            {
+                Mode = BlendEffectMode.Multiply,
+                Background = new CompositionEffectSourceParameter("Background"),
+                Foreground = new CompositionEffectSourceParameter("Foreground"),
+            };
+
+            var blendEffectFactory = _compositor.CreateEffectFactory(blendEffect);
+            gradientEffectBrush = blendEffectFactory.CreateBrush();
+            gradientEffectBrush.SetSourceParameter("Background", linearGradientBrush2);
+            gradientEffectBrush.SetSourceParameter("Foreground", linearGradientBrush1);
 
 
-        var invertEffect = new LuminanceToAlphaEffect
+            var invertEffect = new LuminanceToAlphaEffect
+            {
+                Source = new CompositionEffectSourceParameter("Source"),
+            };
+
+            var invertEffectFactory = _compositor.CreateEffectFactory(invertEffect);
+            opacityEffectBrush = invertEffectFactory.CreateBrush();
+            opacityEffectBrush.SetSourceParameter("Source", gradientEffectBrush);
+
+            var maskEffect = new AlphaMaskEffect
+            {
+                AlphaMask = new CompositionEffectSourceParameter("Mask"),
+                Source = new CompositionEffectSourceParameter("Source"),
+            };
+
+            var maskFactory = _compositor.CreateEffectFactory(maskEffect);
+            maskEffectBrush = maskFactory.CreateBrush();
+            maskEffectBrush.SetSourceParameter("Mask", opacityEffectBrush);
+            maskEffectBrush.SetSourceParameter("Source", imageBrush);
+
+            imageVisual = _compositor.CreateSpriteVisual();
+            imageVisual.Brush = maskEffectBrush;
+
+            var width = _Border_BackgroundImage.ActualWidth;
+            var height = Math.Clamp(width * heightDivWidth, 0, 800);
+            imageVisual.Size = new Vector2((float)width, (float)height);
+            _Border_BackgroundImage.Height = height;
+            _Border_BackgroundImage.Visibility = Visibility.Visible;
+            ElementCompositionPreview.SetElementChildVisual(_Border_BackgroundImage, imageVisual);
+        }
+        catch (COMException ex)
         {
-            Source = new CompositionEffectSourceParameter("Source"),
-        };
-
-        var invertEffectFactory = _compositor.CreateEffectFactory(invertEffect);
-        opacityEffectBrush = invertEffectFactory.CreateBrush();
-        opacityEffectBrush.SetSourceParameter("Source", gradientEffectBrush);
-
-        var maskEffect = new AlphaMaskEffect
-        {
-            AlphaMask = new CompositionEffectSourceParameter("Mask"),
-            Source = new CompositionEffectSourceParameter("Source"),
-        };
-
-        var maskFactory = _compositor.CreateEffectFactory(maskEffect);
-        maskEffectBrush = maskFactory.CreateBrush();
-        maskEffectBrush.SetSourceParameter("Mask", opacityEffectBrush);
-        maskEffectBrush.SetSourceParameter("Source", imageBrush);
-
-        imageVisual = _compositor.CreateSpriteVisual();
-        imageVisual.Brush = maskEffectBrush;
-
-        var width = _Border_BackgroundImage.ActualWidth;
-        var height = Math.Clamp(width * heightDivWidth, 0, 800);
-        imageVisual.Size = new Vector2((float)width, (float)height);
-        _Border_BackgroundImage.Height = height;
-        ElementCompositionPreview.SetElementChildVisual(_Border_BackgroundImage, imageVisual);
+            if (ex.HResult == unchecked((int)0x88982F8B))
+            {
+                // 部分设备会出现 COMExeption 组件初始化失败。（0x88982F8B）
+                // 原因不明，使用无透明度效果的图片代替
+                _Image_BackgroundImage.Source = file;
+                _Image_BackgroundImage.Visibility = Visibility.Visible;
+            }
+        }
     }
 
 
@@ -498,7 +520,7 @@ public sealed partial class HomePage : Page
             string? file = null;
             if (WallpaperInfo == FallbackWallpaper)
             {
-                file = StorageFile.GetFileFromApplicationUriAsync(new Uri(FallbackWallpaperUri)).GetResults().Path;
+                file = StorageFile.GetFileFromApplicationUriAsync(new Uri(FallbackWallpaperUri)).GetAwaiter().GetResult().Path;
             }
             else
             {

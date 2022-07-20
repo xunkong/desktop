@@ -69,7 +69,7 @@ internal static class SecondaryTileProvider
     }
 
 
-    private static void UpdatePinnedTile(DailyNoteInfo info)
+    public static void UpdatePinnedTile(DailyNoteInfo info)
     {
         info = info.Adapt<DailyNoteInfo>();
         if (info.Expeditions.Count < 5)

@@ -1,5 +1,5 @@
-﻿using System.Text.RegularExpressions;
-using Xunkong.Core;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 using Xunkong.Hoyolab;
 using Xunkong.Hoyolab.Wishlog;
 
@@ -189,21 +189,29 @@ internal class WishlogService
             throw new XunkongException($"Cannot find wishlog url of uid {uid}.");
         }
         long lastId = 0;
+        using var context = DatabaseProvider.CreateContext();
         if (!getAll)
         {
-            lastId = dapper.QueryFirstOrDefault<long>("SELECT Id FROM WishlogItem WHERE Uid=@Uid ORDER BY Id DESC LIMIT 1;", uidObj);
+            //lastId = dapper.QueryFirstOrDefault<long>("SELECT Id FROM WishlogItem WHERE Uid=@Uid ORDER BY Id DESC LIMIT 1;", uidObj);
+            lastId = context.WishlogItem.AsNoTracking().Where(x => x.Uid == uid).OrderByDescending(x => x.Id).Select(x => x.Id).FirstOrDefault();
         }
         var progressHanler = new Progress<(WishType QueryType, int Page)>((param) => progress?.Report($"正在获取 {param.QueryType.ToDescription()} 第 {param.Page} 页"));
         var wishlogs = await _wishlogClient.GetAllWishlogAsync(wishlogUrl, lastId, progress: progressHanler);
         progress?.Report("正在写入数据库");
         await Task.Delay(100);
-        var oldCount = dapper.QuerySingleOrDefault<int>("SELECT COUNT(*) FROM WishlogItem WHERE Uid=@Uid;", uidObj);
-        dapper.Execute("""
-            INSERT OR REPLACE INTO WishlogItem (Uid, Id, WishType, Time, Name, Language, ItemType, RankType, QueryType)
-            VALUES (@Uid, @Id, @WishType, @Time, @Name, @Language, @ItemType, @RankType, @QueryType);
-            """, wishlogs);
-        var newCount = dapper.QuerySingleOrDefault<int>("SELECT COUNT(*) FROM WishlogItem WHERE Uid=@Uid;", uidObj);
-        return newCount - oldCount;
+        //var oldCount = dapper.QuerySingleOrDefault<int>("SELECT COUNT(*) FROM WishlogItem WHERE Uid=@Uid;", uidObj);
+        var oldIds = context.WishlogItem.AsNoTracking().Where(x => x.Uid == uid).Select(x => x.Id).ToList();
+        var insertItems = wishlogs.ExceptBy(oldIds, x => x.Id).ToList();
+        var updateItems = wishlogs.IntersectBy(oldIds, x => x.Id).ToList();
+        context.AddRange(insertItems);
+        context.UpdateRange(updateItems);
+        context.SaveChanges();
+        //dapper.Execute("""
+        //    INSERT OR REPLACE INTO WishlogItem (Uid, Id, WishType, Time, Name, Language, ItemType, RankType, QueryType)
+        //    VALUES (@Uid, @Id, @WishType, @Time, @Name, @Language, @ItemType, @RankType, @QueryType);
+        //    """, wishlogs);
+        //var newCount = dapper.QuerySingleOrDefault<int>("SELECT COUNT(*) FROM WishlogItem WHERE Uid=@Uid;", uidObj);
+        return insertItems.Count;
     }
 
 
@@ -223,22 +231,44 @@ internal class WishlogService
         var uid = await GetUidByWishlogUrl(wishlogUrl);
         var uidObj = new { Uid = uid };
         long lastId = 0;
-        using var dapper = DatabaseProvider.CreateConnection();
+        //using var dapper = DatabaseProvider.CreateConnection();
+        using var context = DatabaseProvider.CreateContext();
         if (!getAll)
         {
-            lastId = dapper.QueryFirstOrDefault<long>("SELECT Id FROM WishlogItem WHERE Uid=@Uid ORDER BY Id DESC LIMIT 1;", uidObj);
+            //lastId = dapper.QueryFirstOrDefault<long>("SELECT Id FROM WishlogItem WHERE Uid=@Uid ORDER BY Id DESC LIMIT 1;", uidObj);
+            lastId = context.WishlogItem.AsNoTracking().Where(x => x.Uid == uid).OrderByDescending(x => x.Id).Select(x => x.Id).FirstOrDefault();
         }
         var progressHanler = new Progress<(WishType QueryType, int Page)>((param) => progress?.Report($"正在获取 {param.QueryType.ToDescription()} 第 {param.Page} 页"));
         var wishlogs = await _wishlogClient.GetAllWishlogAsync(wishlogUrl, lastId, progress: progressHanler);
         progress?.Report("正在写入数据库");
         await Task.Delay(100);
-        var oldCount = dapper.QuerySingleOrDefault<int>("SELECT COUNT(*) FROM WishlogItem WHERE Uid=@Uid;", uidObj);
-        dapper.Execute("""
-            INSERT OR REPLACE INTO WishlogItem (Uid, Id, WishType, Time, Name, Language, ItemType, RankType, QueryType)
-            VALUES (@Uid, @Id, @WishType, @Time, @Name, @Language, @ItemType, @RankType, @QueryType);
-            """, wishlogs);
-        var newCount = dapper.QuerySingleOrDefault<int>("SELECT COUNT(*) FROM WishlogItem WHERE Uid=@Uid;", uidObj);
-        return newCount - oldCount;
+        //var oldCount = dapper.QuerySingleOrDefault<int>("SELECT COUNT(*) FROM WishlogItem WHERE Uid=@Uid;", uidObj);
+        var oldIds = context.WishlogItem.AsNoTracking().Where(x => x.Uid == uid).Select(x => x.Id).ToList();
+        var insertItems = wishlogs.ExceptBy(oldIds, x => x.Id).ToList();
+        var updateItems = wishlogs.IntersectBy(oldIds, x => x.Id).ToList();
+        context.AddRange(insertItems);
+        context.UpdateRange(updateItems);
+        context.SaveChanges();
+        //dapper.Execute("""
+        //    INSERT OR REPLACE INTO WishlogItem (Uid, Id, WishType, Time, Name, Language, ItemType, RankType, QueryType)
+        //    VALUES (@Uid, @Id, @WishType, @Time, @Name, @Language, @ItemType, @RankType, @QueryType);
+        //    """, wishlogs);
+        //var newCount = dapper.QuerySingleOrDefault<int>("SELECT COUNT(*) FROM WishlogItem WHERE Uid=@Uid;", uidObj);
+        return insertItems.Count;
+    }
+
+
+
+    public int InsertWishlogItems(int uid, IEnumerable<WishlogItem> wishlogs)
+    {
+        using var context = DatabaseProvider.CreateContext();
+        var oldIds = context.WishlogItem.AsNoTracking().Where(x => x.Uid == uid).Select(x => x.Id).ToList();
+        var insertItems = wishlogs.ExceptBy(oldIds, x => x.Id).ToList();
+        var updateItems = wishlogs.IntersectBy(oldIds, x => x.Id).ToList();
+        context.AddRange(insertItems);
+        context.UpdateRange(updateItems);
+        context.SaveChanges();
+        return insertItems.Count;
     }
 
 

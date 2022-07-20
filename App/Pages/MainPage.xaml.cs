@@ -29,6 +29,12 @@ public sealed partial class MainPage : Page
 
     public Frame ContentFrame => _MainPageFrame;
 
+
+    private string AppName => $"寻空 {(XunkongEnvironment.IsStoreVersion ? "商店版" : "侧载版")}";
+
+
+
+
     public MainPage()
     {
         this.InitializeComponent();
@@ -362,12 +368,12 @@ public sealed partial class MainPage : Page
             if (_ListView_Account.SelectedItem is GenshinRoleInfo role)
             {
                 GenshinRoleInfo = role;
-                UserSetting.TrySaveValue(SettingKeys.LastSelectGameRoleUid, role.Uid);
+                UserSetting.TrySetValue(SettingKeys.LastSelectGameRoleUid, role.Uid);
                 var user = _hoyolabService.GetHoyolabUserInfoFromDatabaseByCookie(role.Cookie!);
                 if (user is not null)
                 {
                     HoyolabUserInfo = user;
-                    UserSetting.TrySaveValue(SettingKeys.LastSelectUserInfoUid, user.Uid);
+                    UserSetting.TrySetValue(SettingKeys.LastSelectUserInfoUid, user.Uid);
                 }
                 _Flyout_ChangeAccount.Hide();
             }
@@ -393,10 +399,10 @@ public sealed partial class MainPage : Page
                 var roles = await _hoyolabService.GetGenshinRoleInfoListAsync(cookie);
                 HoyolabUserInfo = user;
                 GenshinRoleInfo = roles.FirstOrDefault();
-                UserSetting.TrySaveValue(SettingKeys.LastSelectUserInfoUid, user.Uid);
+                UserSetting.TrySetValue(SettingKeys.LastSelectUserInfoUid, user.Uid);
                 if (GenshinRoleInfo is not null)
                 {
-                    UserSetting.TrySaveValue(SettingKeys.LastSelectGameRoleUid, GenshinRoleInfo.Uid);
+                    UserSetting.TrySetValue(SettingKeys.LastSelectGameRoleUid, GenshinRoleInfo.Uid);
                 }
                 GenshinRoleInfoList = new(_hoyolabService.GetGenshinRoleInfoList());
                 NotificationProvider.Success("已添加账号");
@@ -457,10 +463,10 @@ public sealed partial class MainPage : Page
                 var roles = await _hoyolabService.GetGenshinRoleInfoListAsync(cookie);
                 HoyolabUserInfo = user;
                 GenshinRoleInfo = roles.FirstOrDefault();
-                UserSetting.TrySaveValue(SettingKeys.LastSelectUserInfoUid, user.Uid);
+                UserSetting.TrySetValue(SettingKeys.LastSelectUserInfoUid, user.Uid);
                 if (GenshinRoleInfo is not null)
                 {
-                    UserSetting.TrySaveValue(SettingKeys.LastSelectGameRoleUid, GenshinRoleInfo.Uid);
+                    UserSetting.TrySetValue(SettingKeys.LastSelectGameRoleUid, GenshinRoleInfo.Uid);
                 }
                 GenshinRoleInfoList = new(_hoyolabService.GetGenshinRoleInfoList());
             }

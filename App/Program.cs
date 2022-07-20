@@ -18,7 +18,7 @@ public static class Program
                 var result = InvokeService.StartGameAsync().GetAwaiter().GetResult();
                 if (result)
                 {
-                    InvokeService.CheckTransformerReachedAsync().Wait();
+                    InvokeService.CheckTransformerReachedAsync().GetAwaiter().GetResult();
                 }
                 return;
             }
@@ -26,7 +26,11 @@ public static class Program
             {
                 if (args[2] == "DailyNoteTask")
                 {
-                    InvokeService.RefreshDailyNoteTilesAsync().Wait();
+                    InvokeService.RefreshDailyNoteTilesAsync().GetAwaiter().GetResult();
+                }
+                if (args[2] == "HoyolabCheckInTask")
+                {
+                    InvokeService.SignInAllAccountAsync().GetAwaiter().GetResult();
                 }
                 return;
             }

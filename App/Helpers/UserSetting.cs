@@ -5,22 +5,33 @@ namespace Xunkong.Desktop.Helpers;
 internal static class UserSetting
 {
 
-    public static T? GetValue<T>(string key, T? defaultValue = default)
+    public static T? GetValue<T>(string key, T? defaultValue = default, bool throwError = true)
     {
-        using var dapper = DatabaseProvider.CreateConnection();
-        var value = dapper.QuerySingleOrDefault<string>("SELECT Value FROM Setting WHERE Key=@Key LIMIT 1;", new { Key = key });
         try
         {
-            var converter = TypeDescriptor.GetConverter(typeof(T));
-            if (converter == null)
+            using var dapper = DatabaseProvider.CreateConnection();
+            var value = dapper.QuerySingleOrDefault<string>("SELECT Value FROM Setting WHERE Key=@Key LIMIT 1;", new { Key = key });
+            try
             {
-                return default;
+                var converter = TypeDescriptor.GetConverter(typeof(T));
+                if (converter == null)
+                {
+                    return defaultValue;
+                }
+                return (T?)converter.ConvertFromString(value);
             }
-            return (T?)converter.ConvertFromString(value);
+            catch (NotSupportedException)
+            {
+                return defaultValue;
+            }
         }
-        catch (NotSupportedException)
+        catch
         {
-            return default;
+            if (throwError)
+            {
+                throw;
+            }
+            return defaultValue;
         }
     }
 
@@ -61,7 +72,7 @@ internal static class UserSetting
     }
 
 
-    public static bool TrySaveValue<T>(string key, T value)
+    public static bool TrySetValue<T>(string key, T value)
     {
         try
         {

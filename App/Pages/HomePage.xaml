@@ -25,8 +25,12 @@
                       MaxHeight="800"
                       Margin="-48,0,-48,-48"
                       Visibility="Collapsed">
-                    <Border x:Name="_Border_BackgroundImage" SizeChanged="_Border_BackgroundImage_SizeChanged" />
-
+                    <Border x:Name="_Border_BackgroundImage"
+                            SizeChanged="_Border_BackgroundImage_SizeChanged"
+                            Visibility="Collapsed" />
+                    <StackPanel x:Name="_StackPanel_BackgroundImage">
+                        <cc:ImageEx x:Name="_Image_BackgroundImage" Stretch="UniformToFill" />
+                    </StackPanel>
                     <!--  背景图片信息  -->
                     <StackPanel x:Name="_StackPanel_WallpaperInfo"
                                 Margin="48,24,48,96"

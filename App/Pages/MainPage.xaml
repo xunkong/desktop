@@ -255,7 +255,7 @@
                         Spacing="16">
                 <TextBlock VerticalAlignment="Center"
                            Style="{ThemeResource CaptionTextBlockStyle}"
-                           Text="寻空" />
+                           Text="{x:Bind AppName}" />
             </StackPanel>
         </Border>
 
