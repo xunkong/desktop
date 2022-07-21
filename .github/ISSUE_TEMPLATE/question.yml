@@ -16,7 +16,6 @@ body:
     required: true
   attributes:
      label: 复现步骤
-     render: plain text
      description: 复现问题的操作步骤
 - type: textarea
   id: screenshots
@@ -33,11 +32,6 @@ body:
   attributes:
      label: 寻空版本
      description: 更新到最新版后再反馈问题
-- type: textarea
-  id: log-info
-  attributes:
-     label: 日志
-     description: 如要上传日志，注意删除个人信息
 - type: textarea
   id: additional-context
   attributes:
