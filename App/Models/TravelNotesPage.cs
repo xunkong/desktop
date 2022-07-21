@@ -111,3 +111,38 @@ public record TravelNotesPage_VersionData(string Version, int Primogems, int Mor
         < 0 => $"{MoraChangeRate}%",
     };
 }
+
+
+
+public class TravelNotesPage_TravelNotesMonthData
+{
+
+    public string Uid { get; set; }
+
+    public string Year { get; set; }
+
+    public string Month { get; set; }
+
+    public string CurrentPrimogems { get; set; }
+
+    public string CurrentMora { get; set; }
+
+    public string LastPrimogems { get; set; }
+
+    public string LastMora { get; set; }
+
+}
+
+
+public class TravelNotesPage_TravelNotesAwardItem
+{
+
+    public string Uid { get; set; }
+
+    public string Time { get; set; }
+
+    public string ActionName { get; set; }
+
+    public string Number { get; set; }
+
+}

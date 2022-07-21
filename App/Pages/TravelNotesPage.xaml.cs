@@ -1,6 +1,9 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using MiniExcelLibs;
 using Syncfusion.Licensing;
+using System.Diagnostics;
+using Windows.ApplicationModel;
 using Xunkong.Hoyolab.TravelNotes;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -19,6 +22,7 @@ public sealed partial class TravelNotesPage : Page
     static TravelNotesPage()
     {
         SyncfusionLicenseProvider.RegisterLicense("NjEwMjc4QDMyMzAyZTMxMmUzMFkyTEYzc3JuY2hOVXk1azE5d1p1K1NPaFQ4TFF4bU5zYXR2ZUdBQmorc2c9");
+        TypeAdapterConfig<TravelNotesAwardItem, TravelNotesPage_TravelNotesAwardItem>.NewConfig().Map(dest => dest.Time, src => src.Time.ToString("yyyy-MM-dd HH:mm:ss"));
     }
 
 
@@ -214,6 +218,51 @@ public sealed partial class TravelNotesPage : Page
         }
         await InitializeDataAsync();
     }
+
+
+    [RelayCommand]
+    private async Task ExportDataAsync()
+    {
+        try
+        {
+            var uid = _hoyolabService.GetLastSelectedOrFirstGenshinRoleInfo()?.Uid;
+            if (uid == 0)
+            {
+                return;
+            }
+            var param = new { Uid = uid };
+            using var dapper = DatabaseProvider.CreateConnection();
+            var monthdatas = dapper.Query<TravelNotesMonthData>("SELECT Uid,Year,Month,CurrentPrimogems,CurrentMora,LastPrimogems,LastMora FROM TravelNotesMonthData WHERE Uid=@Uid ORDER BY Year,Month;", param);
+            var primogemsData = dapper.Query<TravelNotesAwardItem>("SELECT * FROM TravelNotesAwardItem WHERE Uid=@Uid AND Type=1 ORDER BY Time ASC, Id DESC;", param);
+            var moraData = dapper.Query<TravelNotesAwardItem>("SELECT * FROM TravelNotesAwardItem WHERE Uid=@Uid AND Type=2 ORDER BY Time ASC, Id DESC;", param);
+            if (!monthdatas.Any() && !primogemsData.Any() && !moraData.Any())
+            {
+                NotificationProvider.Warning($"Uid {uid} 没有任何旅行札记的数据");
+                return;
+            }
+            NotificationProvider.Information("导出中。。。");
+            var obj = new
+            {
+                MonthData = monthdatas.Adapt<List<TravelNotesPage_TravelNotesMonthData>>(),
+                PrimogemsData = primogemsData.Adapt<List<TravelNotesPage_TravelNotesAwardItem>>(),
+                MoraData = moraData.Adapt<List<TravelNotesPage_TravelNotesAwardItem>>()
+            };
+            var filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $@"Xunkong\Export\TravelNotes\TravelNotes_{uid}_{DateTimeOffset.Now:yyyyMMdd_HHmmss}.xlsx");
+            Directory.CreateDirectory(Path.GetDirectoryName(filename)!);
+            using var fs = File.Open(filename, FileMode.CreateNew);
+            var templatePath = Path.Combine(Package.Current.InstalledPath, @"Assets\Others\TravelNotesTemplate.xlsx");
+            await MiniExcel.SaveAsByTemplateAsync(fs, templatePath, obj);
+            void action() => Process.Start(new ProcessStartInfo { FileName = Path.GetDirectoryName(filename), UseShellExecute = true });
+            NotificationProvider.ShowWithButton(InfoBarSeverity.Success, "导出完成", null, "打开文件夹", action);
+        }
+        catch (Exception ex)
+        {
+            NotificationProvider.Error(ex);
+        }
+    }
+
+
+
 
 }
 

@@ -401,13 +401,10 @@ internal partial class WishlogSummaryViewModel : ObservableObject
     private async Task GetWishlogFromInputWishlogUrlAsync()
     {
         var textBox = new TextBox();
-        var stackPanel = new StackPanel { Spacing = 8 };
-        stackPanel.Children.Add(new TextBlock { Text = "懂得都懂" });
-        stackPanel.Children.Add(textBox);
         var dialog = new ContentDialog
         {
             Title = "输入祈愿记录网址",
-            Content = stackPanel,
+            Content = textBox,
             PrimaryButtonText = "确认",
             SecondaryButtonText = "取消",
             DefaultButton = ContentDialogButton.Primary,

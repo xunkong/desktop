@@ -160,7 +160,6 @@ internal static class NotificationProvider
             {
                 Content = buttonContent,
                 HorizontalAlignment = HorizontalAlignment.Right,
-                Style = Application.Current.Resources["DateTimePickerFlyoutButtonStyle"] as Style,
             };
             button.Click += (_, _) =>
             {

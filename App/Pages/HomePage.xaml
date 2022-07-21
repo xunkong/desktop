@@ -112,7 +112,7 @@
                         <ColumnDefinition MaxWidth="1200" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <StackPanel x:Name="_StackPanel_InfoBar">
+                    <StackPanel x:Name="_StackPanel_InfoBar" Spacing="4">
                         <StackPanel.ChildrenTransitions>
                             <AddDeleteThemeTransition />
                         </StackPanel.ChildrenTransitions>

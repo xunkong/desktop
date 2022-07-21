@@ -94,6 +94,9 @@
                         </MenuFlyout>
                     </AppBarButton.Flyout>
                 </AppBarButton>
+                <AppBarButton Command="{x:Bind ExportDataCommand, Mode=OneTime}"
+                              Icon="Share"
+                              Label="导出数据" />
             </StackPanel>
         </Grid>
 

@@ -384,7 +384,6 @@ public sealed partial class HomePage : Page
                         {
                             Content = item.ButtonContent,
                             HorizontalAlignment = HorizontalAlignment.Right,
-                            Style = Application.Current.Resources["DateTimePickerFlyoutButtonStyle"] as Style,
                         };
                         button.Click += async (_, _) =>
                         {
@@ -420,7 +419,6 @@ public sealed partial class HomePage : Page
                     {
                         Content = "下载",
                         HorizontalAlignment = HorizontalAlignment.Right,
-                        Style = Application.Current.Resources["DateTimePickerFlyoutButtonStyle"] as Style,
                     };
                     button.Click += async (_, _) =>
                     {
