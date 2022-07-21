@@ -1,3 +1,7 @@
 # 寻空
 
-> 已重构完成
+![cover](./img/cover.webp)
+
+## 开发指南
+
+请移步 https://github.com/xunkong/dev
