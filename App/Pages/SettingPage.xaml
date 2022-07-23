@@ -83,8 +83,8 @@
                                        VerticalAlignment="Center"
                                        Text="相关链接" />
                             <HyperlinkButton Content="项目主页" NavigateUri="https://xunkong.cc" />
-                            <HyperlinkButton Content="GitHub 项目地址" NavigateUri="https://github.com/xunkong/desktop" />
                             <HyperlinkButton Content="更新记录" NavigateUri="https://go.xunkong.cc/update-history" />
+                            <HyperlinkButton Content="反馈和建议" NavigateUri="https://github.com/xunkong/desktop/issues" />
                             <HyperlinkButton Command="{x:Bind vm.CopyDevelopersMailCommand, Mode=OneTime}" Content="联系开发者" />
                             <HyperlinkButton Content="隐私策略" NavigateUri="https://go.xunkong.cc/privacy-policy" />
                         </StackPanel>

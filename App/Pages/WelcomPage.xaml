@@ -39,7 +39,8 @@
             <StackPanel x:Name="Tip_1" Spacing="8">
                 <TextBlock FontSize="24" Text="寻空" />
                 <TextBlock Text="Scighost 的原神工具箱" />
-                <TextBlock Text="在使用之前，您需要了解以下内容" />
+                <TextBlock Text="本软件使用 MIT 许可证协议开源，并免费发布。" />
+                <TextBlock Text="在使用之前，您需要了解以下内容：" />
             </StackPanel>
 
             <StackPanel x:Name="Tip_2"

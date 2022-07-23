@@ -4,6 +4,7 @@
              xmlns:cc="using:CommunityToolkit.WinUI.UI.Controls"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:xdc="using:Xunkong.Desktop.Controls"
              x:DefaultBindMode="OneWay"
              mc:Ignorable="d">
 
@@ -40,17 +41,17 @@
                       VerticalScrollMode="Enabled"
                       ViewChanged="_ScrollViewer_Image_ViewChanged"
                       ZoomMode="Enabled">
-            <cc:ImageEx x:Name="_Image"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        ImageExOpened="_Image_ImageExOpened"
-                        IsDoubleTapEnabled="True"
-                        PointerWheelChanged="_Image_PointerWheelChanged"
-                        Source="{x:Bind Source}">
-                <cc:ImageEx.RotationTransition>
+            <xdc:CachedImage x:Name="_Image"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             ImageExOpened="_Image_ImageExOpened"
+                             IsDoubleTapEnabled="True"
+                             PointerWheelChanged="_Image_PointerWheelChanged"
+                             Source="{x:Bind Source}">
+                <xdc:CachedImage.RotationTransition>
                     <ScalarTransition />
-                </cc:ImageEx.RotationTransition>
-            </cc:ImageEx>
+                </xdc:CachedImage.RotationTransition>
+            </xdc:CachedImage>
         </ScrollViewer>
 
 
@@ -83,7 +84,7 @@
             </GridView.ItemsPanel>
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="x:String">
-                    <cc:ImageEx Height="80" Source="{x:Bind}" />
+                    <xdc:CachedImage Height="80" Source="{x:Bind}" />
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>

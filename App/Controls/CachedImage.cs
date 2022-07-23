@@ -2,44 +2,49 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Xunkong.Desktop.Controls;
 
 internal class CachedImage : ImageEx
 {
-
-    private int _id;
+    
 
 
     static CachedImage()
     {
-        ImageCache.Instance.CacheDuration = TimeSpan.FromDays(30);
-        ImageCache.Instance.RetryCount = 3;
+        FileCache.Instance.CacheDuration = TimeSpan.FromDays(30);
+        FileCache.Instance.RetryCount = 3;
     }
 
 
     protected override async Task<ImageSource> ProvideCachedResourceAsync(Uri imageUri, CancellationToken token)
     {
-        var id = ++_id;
-        if (imageUri.Scheme is "file" or "ms-appx")
+        try
         {
-            return new BitmapImage(imageUri);
+            if (imageUri.Scheme is "file" or "ms-appx")
+            {
+                return new BitmapImage(imageUri);
+            }
+            var file = await FileCache.Instance.GetFromCacheAsync(imageUri, false, token);
+            if (token.IsCancellationRequested)
+            {
+                throw new TaskCanceledException("Image source has changed.");
+            }
+            return new BitmapImage(new Uri(file.Path));
         }
-        var image = await ImageCache.Instance.GetFromCacheAsync(imageUri, false, token);
-        if (image == null)
+        catch (TaskCanceledException)
         {
-            await ImageCache.Instance.RemoveAsync(new[] { imageUri });
-            image = await ImageCache.Instance.GetFromCacheAsync(imageUri, false, token);
+            throw;
         }
-        if (id == _id)
+        catch
         {
-            return image;
+            await FileCache.Instance.RemoveAsync(new[] { imageUri });
+            throw;
         }
-        else
-        {
-            throw new TaskCanceledException("Image source has changed.");
-        }
+
     }
 
 

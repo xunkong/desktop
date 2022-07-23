@@ -486,12 +486,12 @@ internal partial class SettingViewModel : ObservableObject
         try
         {
             var tempState = ApplicationData.Current.TemporaryFolder.Path;
-            var imageCacheFolder = Path.Combine(tempState, "ImageCache");
-            if (Directory.Exists(imageCacheFolder))
+            var fileCacheFolder = Path.Combine(tempState, "FileCache");
+            if (Directory.Exists(fileCacheFolder))
             {
-                Directory.Delete(imageCacheFolder, true);
+                Directory.Delete(fileCacheFolder, true);
             }
-            Directory.CreateDirectory(imageCacheFolder);
+            Directory.CreateDirectory(fileCacheFolder);
             NotificationProvider.Success($"完成");
         }
         catch (Exception ex)
@@ -529,8 +529,8 @@ internal partial class SettingViewModel : ObservableObject
             _PrecacheImage_FinishCount = 0;
             await Task.Delay(100);
             var tempState = ApplicationData.Current.TemporaryFolder.Path;
-            var imageCacheFolder = Path.Combine(tempState, "ImageCache");
-            var cacheFiles = Directory.EnumerateFiles(imageCacheFolder);
+            var fileCacheFolder = Path.Combine(tempState, "FileCache");
+            var cacheFiles = Directory.EnumerateFiles(fileCacheFolder);
             foreach (var file in cacheFiles)
             {
                 using var fs = File.Open(file, FileMode.Open);
@@ -565,7 +565,7 @@ internal partial class SettingViewModel : ObservableObject
                 try
                 {
                     var uri = new Uri(url!);
-                    await ImageCache.Instance.PreCacheAsync(uri);
+                    await FileCache.Instance.PreCacheAsync(uri);
                 }
                 finally
                 {

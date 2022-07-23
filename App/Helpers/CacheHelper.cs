@@ -26,7 +26,7 @@ internal static class CacheHelper
 
 
 
-    public static string GetCacheFilePath(string url, string cacheFolderName = "ImageCache")
+    public static string GetCacheFilePath(string url, string cacheFolderName = "FileCache")
     {
         return Path.Combine(_cacheBaseDir, cacheFolderName, GetCacheFileName(url));
     }
