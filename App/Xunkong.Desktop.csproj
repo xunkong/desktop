@@ -48,6 +48,7 @@
 		<None Remove="Pages\WebToolPage.xaml" />
 		<None Remove="Pages\WebViewPage.xaml" />
 		<None Remove="Pages\WelcomPage.xaml" />
+		<None Remove="Pages\WishEventHistoryPage.xaml" />
 		<None Remove="Pages\WishlogManagePage.xaml" />
 		<None Remove="Pages\WishlogSummaryPage.xaml" />
 		<None Remove="Themes\RightAlignToggleSwitchStyle.xaml" />
@@ -66,7 +67,7 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.6" />
 		<PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Graphics.Win2D" Version="1.0.3.1" />
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.2" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.3" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
 		<PackageReference Include="MiniExcel" Version="1.26.5" />
 		<PackageReference Include="Octokit" Version="1.0.0" />

@@ -396,6 +396,10 @@
                               Command="{x:Bind vm.NavigateToWishlogManagePageCommand, Mode=OneTime}"
                               Icon="Shuffle"
                               Label="管理记录" />
+                <AppBarButton Name="_AppBarButton_WishEventHistory"
+                              Command="{x:Bind vm.NavigateToWishEventHistoryPageCommand, Mode=OneTime}"
+                              Icon="Clock"
+                              Label="卡池历史" />
                 <AppBarSeparator />
                 <AppBarButton Label="记录备份">
                     <AppBarButton.Icon>

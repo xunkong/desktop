@@ -1,0 +1,169 @@
+﻿<Page x:Class="Xunkong.Desktop.Pages.WishEventHistoryPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:cc="using:CommunityToolkit.WinUI.UI.Controls"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="using:Xunkong.Desktop.Pages"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:xdm="using:Xunkong.Desktop.Models"
+      x:DefaultBindMode="OneWay"
+      mc:Ignorable="d">
+
+    <Page.Resources>
+        <local:WishEventHistoryPageCellToBackgroundBrushConverter x:Key="WishEventHistoryPageCellToBackgroundBrushConverter" />
+        <x:Double x:Key="CellSize">48</x:Double>
+    </Page.Resources>
+
+    <Grid>
+
+        <ScrollViewer Name="_ScrollViewer"
+                      Margin="1"
+                      CornerRadius="8,0,0,0"
+                      HorizontalScrollBarVisibility="Hidden"
+                      HorizontalScrollMode="Enabled"
+                      IsDoubleTapEnabled="True"
+                      IsTapEnabled="True"
+                      PointerMoved="_ScrollViewer_PointerMoved"
+                      PointerPressed="_ScrollViewer_PointerPressed"
+                      PointerReleased="_ScrollViewer_PointerReleased"
+                      UseLayoutRounding="True"
+                      VerticalScrollBarVisibility="Hidden"
+                      VerticalScrollMode="Enabled"
+                      ZoomMode="Enabled">
+
+
+            <ScrollViewer.TopLeftHeader>
+                <Border x:Name="_Border_TopLeftHeader"
+                        Height="60"
+                        MinWidth="144"
+                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
+                    <ComboBox x:Name="_ComboBox"
+                              Width="120"
+                              Margin="12,0,0,0"
+                              VerticalAlignment="Center"
+                              SelectionChanged="_ComboBox_SelectionChanged">
+                        <ComboBoxItem Content="角色祈愿" />
+                        <ComboBoxItem Content="武器祈愿" />
+                    </ComboBox>
+                </Border>
+            </ScrollViewer.TopLeftHeader>
+
+
+
+            <ScrollViewer.TopHeader>
+                <Border x:Name="_Border_TopHeader"
+                        Height="60"
+                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
+                    <ItemsControl VerticalAlignment="Top" ItemsSource="{x:Bind TopHeaders}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="xdm:WishEventHistoryPage_TopHeader">
+                                <Border Width="{StaticResource CellSize}"
+                                        Height="60"
+                                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="0.5,0,0.5,0">
+                                    <cc:ImageEx Width="{StaticResource CellSize}"
+                                                Height="{StaticResource CellSize}"
+                                                VerticalAlignment="Top"
+                                                CornerRadius="8"
+                                                Source="{x:Bind Icon}">
+                                        <cc:ImageEx.Background>
+                                            <ImageBrush ImageSource="{x:Bind Rarity, Converter={StaticResource RarityToBackgroundSquareImageBrushConverter}}" />
+                                        </cc:ImageEx.Background>
+                                    </cc:ImageEx>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </ScrollViewer.TopHeader>
+
+
+            <ScrollViewer.LeftHeader>
+                <Border x:Name="_Border_LeftHeader"
+                        Width="144"
+                        Background="{ThemeResource AcrylicInAppFillColorDefaultBrush}">
+                    <ItemsControl ItemsSource="{x:Bind LeftHeaders}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="xdm:WishEventHistoryPage_LeftHeader">
+                                <Grid Height="{StaticResource CellSize}"
+                                      BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                      BorderThickness="0,0.5,0,0.5">
+                                    <TextBlock Margin="12,0,0,0"
+                                               VerticalAlignment="Center"
+                                               Text="{x:Bind Version}" />
+                                    <TextBlock Margin="48,0,0,0" VerticalAlignment="Center">
+                                        <Run Text="{x:Bind StartTime, Converter={StaticResource DateTimeOffsetToDateStringConverter}}" />
+                                        <LineBreak />
+                                        <Run Text="{x:Bind EndTime, Converter={StaticResource DateTimeOffsetToDateStringConverter}}" />
+                                    </TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </ScrollViewer.LeftHeader>
+
+            <Border HorizontalAlignment="Left" VerticalAlignment="Top">
+                <ItemsControl ItemsSource="{x:Bind Columns}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="xdm:WishEventHistoryPage_Column">
+                            <ItemsControl Width="{StaticResource CellSize}" ItemsSource="{x:Bind Cells}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="xdm:WishEventHistoryPage_Cell">
+                                        <Grid Width="{StaticResource CellSize}"
+                                              Height="{StaticResource CellSize}"
+                                              Background="{x:Bind Converter={StaticResource WishEventHistoryPageCellToBackgroundBrushConverter}}"
+                                              BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                                              BorderThickness="0.5">
+                                            <TextBlock HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Text="{x:Bind IndexString}" />
+                                            <cc:ImageEx Width="{StaticResource CellSize}"
+                                                        Height="{StaticResource CellSize}"
+                                                        CornerRadius="4"
+                                                        Source="{x:Bind Icon}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+
+
+        </ScrollViewer>
+
+
+
+        <ProgressRing x:Name="_ProgressRing"
+                      Width="40"
+                      Height="40"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center" />
+
+
+    </Grid>
+
+
+</Page>

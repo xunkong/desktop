@@ -716,6 +716,24 @@ internal partial class WishlogSummaryViewModel : ObservableObject
 
 
 
+    /// <summary>
+    /// 导航到祈愿活动历史记录页面
+    /// </summary>
+    [RelayCommand]
+    private void NavigateToWishEventHistoryPage()
+    {
+        try
+        {
+            MainPageHelper.Navigate(typeof(WishEventHistoryPage));
+        }
+        catch (Exception ex)
+        {
+            NotificationProvider.Error(ex);
+        }
+    }
+
+
+
 }
 
 

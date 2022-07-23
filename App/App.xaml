@@ -61,6 +61,7 @@
             <xdc:DateTimeOffsetToDateTimeStringConverter x:Key="DateTimeOffsetToDateTimeStringConverter" />
             <xdc:DateTimeOffsetToTimeStringConverter x:Key="DateTimeOffsetToTimeStringConverter" />
             <xdc:DateTimeOffsetToDayStringConverter x:Key="DateTimeOffsetToDayStringConverter" />
+            <xdc:DateTimeOffsetToDateStringConverter x:Key="DateTimeOffsetToDateStringConverter" />
             <xdc:ExpeditionStatusToColorConverter x:Key="ExpeditionStatusToColorConverter" />
             <xdc:ObjectToVisibilityConverter x:Key="ObjectToVisibilityConverter" />
             <xdc:ObjectToVisibilityReversedConverter x:Key="ObjectToVisibilityReversedConverter" />
@@ -78,6 +79,7 @@
             <xdc:WishTypeToGuaranteeCountStringConverter x:Key="WishTypeToGuaranteeCountStringConverter" />
             <xdc:EnumToDescriptionOrStringConverter x:Key="EnumToDescriptionOrStringConverter" />
             <xdc:WishlogItemRarityToForegroundConverter x:Key="WishlogItemRarityToForegroundConverter" />
+            <xdc:RarityToBackgroundSquareImageBrushConverter x:Key="RarityToBackgroundSquareImageBrushConverter" />
 
 
         </ResourceDictionary>
