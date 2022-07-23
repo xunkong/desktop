@@ -62,6 +62,7 @@ public sealed partial class MainWindow : Window
         //{
         this.ExtendsContentIntoTitleBar = true;
         this.SetTitleBar(AppTitleBar);
+        this.Title = XunkongEnvironment.AppName;
         //}
         if (AppSetting.GetValue<bool>(SettingKeys.IsMainWindowMaximum))
         {

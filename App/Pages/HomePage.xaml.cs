@@ -238,15 +238,13 @@ public sealed partial class HomePage : Page
             _Border_BackgroundImage.Visibility = Visibility.Visible;
             ElementCompositionPreview.SetElementChildVisual(_Border_BackgroundImage, imageVisual);
         }
-        catch (COMException ex)
+        catch (COMException)
         {
-            if (ex.HResult == unchecked((int)0x88982F8B))
-            {
-                // 部分设备会出现 COMExeption 组件初始化失败。（0x88982F8B）
-                // 原因不明，使用无透明度效果的图片代替
-                _Image_BackgroundImage.Source = file;
-                _Image_BackgroundImage.Visibility = Visibility.Visible;
-            }
+            // 部分设备会出现 COMExeption 组件初始化失败。（0x88982F8B）
+            // 还有可能会出现其他不知道的错误
+            // 原因不明，使用无透明度效果的图片代替
+            _Image_BackgroundImage.Source = file;
+            _StackPanel_BackgroundImage.Visibility = Visibility.Visible;
         }
     }
 

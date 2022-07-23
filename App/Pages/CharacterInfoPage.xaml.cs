@@ -32,6 +32,10 @@ public sealed partial class CharacterInfoPage : Page
     }
 
 
+    // todo 天赋命座背景装饰图
+    // UI_Img_TalentActive.png
+    // UI_Img_TalentUnactive.png
+
 
     private readonly HoyolabService _houselabService;
 

@@ -312,6 +312,7 @@
                                                 BorderBrush="{ThemeResource CircleStrokeBrush}"
                                                 BorderThickness="2"
                                                 CornerRadius="36">
+                                            <!--  todo 天赋背景装饰图  -->
                                             <xdc:CachedImage Source="{x:Bind Icon}" />
                                         </Border>
                                         <StackPanel VerticalAlignment="Center">
@@ -355,6 +356,7 @@
                                               BorderBrush="{ThemeResource CircleStrokeBrush}"
                                               BorderThickness="2"
                                               CornerRadius="36">
+                                            <!--  todo 命座背景装饰图  -->
                                             <xdc:CachedImage Source="{x:Bind Icon}" />
                                             <Ellipse Fill="#60000000" Visibility="{x:Bind IsActived, Converter={StaticResource BoolToVisibilityReversedConverter}}" />
                                             <Image Width="20"

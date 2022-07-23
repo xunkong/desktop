@@ -30,7 +30,7 @@ public sealed partial class MainPage : Page
     public Frame ContentFrame => _MainPageFrame;
 
 
-    private string AppName => $"寻空 {(XunkongEnvironment.IsStoreVersion ? "商店版" : "侧载版")}";
+    private string AppName => XunkongEnvironment.AppName;
 
 
 

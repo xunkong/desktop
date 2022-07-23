@@ -22,6 +22,11 @@ public static class Program
                 }
                 return;
             }
+            if (args.FirstOrDefault() == "dailynote")
+            {
+                InvokeService.RefreshDailyNoteTilesAsync().GetAwaiter().GetResult();
+                return;
+            }
             if (args.FirstOrDefault() == "/InvokerPRAID:")
             {
                 if (args[2] == "DailyNoteTask")

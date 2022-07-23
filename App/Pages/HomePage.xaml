@@ -28,7 +28,7 @@
                     <Border x:Name="_Border_BackgroundImage"
                             SizeChanged="_Border_BackgroundImage_SizeChanged"
                             Visibility="Collapsed" />
-                    <StackPanel x:Name="_StackPanel_BackgroundImage">
+                    <StackPanel x:Name="_StackPanel_BackgroundImage" Visibility="Collapsed">
                         <cc:ImageEx x:Name="_Image_BackgroundImage" Stretch="UniformToFill" />
                     </StackPanel>
                     <!--  背景图片信息  -->
