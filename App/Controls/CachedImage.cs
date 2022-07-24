@@ -2,15 +2,13 @@
 using CommunityToolkit.WinUI.UI.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Xunkong.Desktop.Controls;
 
 internal class CachedImage : ImageEx
 {
-    
+
 
 
     static CachedImage()

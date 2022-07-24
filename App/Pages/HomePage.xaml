@@ -15,7 +15,7 @@
     <Grid>
 
 
-        <ScrollViewer x:Name="_ScrollViewer_Content" Grid.RowSpan="2">
+        <ScrollViewer x:Name="_ScrollViewer_Content">
             <StackPanel Margin="48,0,48,48">
                 <StackPanel.ChildrenTransitions>
                     <EntranceThemeTransition />

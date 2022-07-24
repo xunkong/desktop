@@ -15,15 +15,12 @@ internal static class NetworkHelper
     private static bool GetIsInternetOnMeteredConnection()
     {
         var profile = NetworkInformation.GetInternetConnectionProfile();
-        var cost = profile.GetConnectionCost();
-        return cost.NetworkCostType switch
+        if (profile is null)
         {
-            NetworkCostType.Unknown => false,
-            NetworkCostType.Unrestricted => false,
-            NetworkCostType.Fixed => cost.OverDataLimit,
-            NetworkCostType.Variable => true,
-            _ => false,
-        };
+            return true;
+        }
+        var cost = profile.GetConnectionCost();
+        return cost.NetworkCostType != NetworkCostType.Unrestricted;
     }
 
 
