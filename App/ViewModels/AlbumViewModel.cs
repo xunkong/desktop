@@ -23,29 +23,70 @@ internal partial class AlbumViewModel : ObservableObject
         _watcher = new();
         _watcher.Filter = "*.png";
         _watcher.Created += FileSystemWatcher_Created;
+        _watcher.Deleted += FileSystemWatcher_Deleted;
     }
 
 
     private void FileSystemWatcher_Created(object sender, FileSystemEventArgs e)
     {
-        if (e.ChangeType == WatcherChangeTypes.Created)
+        try
         {
-            var fileInfo = new FileInfo(e.FullPath);
-            if (fileInfo.Exists && fileInfo.Extension.ToLower() == ".png")
+            if (e.ChangeType == WatcherChangeTypes.Created)
             {
-                var dq = MainWindowHelper.DispatcherQueue;
-                if (latestImages is null)
+                var fileInfo = new FileInfo(e.FullPath);
+                if (fileInfo.Exists && fileInfo.Extension.ToLower() == ".png")
                 {
-                    latestImages = new("新增", new[] { fileInfo });
-                    dq.TryEnqueue(() => ImageGroupList?.Insert(0, latestImages));
+                    var dq = MainWindowHelper.DispatcherQueue;
+                    if (latestImages is null)
+                    {
+                        latestImages = new("新增", new[] { fileInfo });
+                        dq.TryEnqueue(() => ImageGroupList?.Insert(0, latestImages));
+                    }
+                    else
+                    {
+                        dq.TryEnqueue(() => latestImages.Add(fileInfo));
+                    }
+                    dq.TryEnqueue(() => ImageList.Insert(latestImages.Count - 1, fileInfo));
                 }
-                else
-                {
-                    dq.TryEnqueue(() => latestImages.Add(fileInfo));
-                }
-                dq.TryEnqueue(() => ImageList.Insert(latestImages.Count - 1, fileInfo));
             }
         }
+        catch { }
+    }
+
+
+    private void FileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
+    {
+        try
+        {
+            if (e.ChangeType == WatcherChangeTypes.Deleted)
+            {
+                var path = Path.GetFullPath(e.FullPath);
+                var dq = MainWindowHelper.DispatcherQueue;
+                dq.TryEnqueue(() =>
+                {
+                    var file1 = latestImages?.FirstOrDefault(x => x.FullName == path);
+                    if (file1 is not null)
+                    {
+                        latestImages?.Remove(file1);
+                    }
+                    var file2 = ImageList?.FirstOrDefault(x => x.FullName == path);
+                    if (file2 is not null)
+                    {
+                        ImageList?.Remove(file2);
+                    }
+                    foreach (var item in ImageGroupList)
+                    {
+                        var file3 = item.FirstOrDefault(x => x.FullName == path);
+                        if (file3 is not null)
+                        {
+                            item.Remove(file3);
+                            break;
+                        }
+                    }
+                });
+            }
+        }
+        catch { }
     }
 
 
