@@ -270,7 +270,10 @@ public sealed partial class HomePage : Page
     }
 
 
-
+    /// <summary>
+    /// 初始化天赋材料日历
+    /// </summary>
+    /// <returns></returns>
     private async Task InitializeCalendarAsync()
     {
         try
@@ -332,7 +335,11 @@ public sealed partial class HomePage : Page
     }
 
 
-
+    /// <summary>
+    /// 天赋材料日历按日切换
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void _GridView_DaySelction_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         var day = MaterialWeekData?.Skip(_GridView_DaySelction.SelectedIndex).FirstOrDefault();
@@ -344,7 +351,10 @@ public sealed partial class HomePage : Page
     }
 
 
-
+    /// <summary>
+    /// 初始化活动内容
+    /// </summary>
+    /// <returns></returns>
     private async Task InitializeActivityAsync()
     {
         try
@@ -358,7 +368,10 @@ public sealed partial class HomePage : Page
     }
 
 
-
+    /// <summary>
+    /// 初始化通知栏内容
+    /// </summary>
+    /// <returns></returns>
     private async Task InitializeInfoBarContentAsync()
     {
         try
@@ -399,38 +412,42 @@ public sealed partial class HomePage : Page
                     _StackPanel_InfoBar.Children.Add(infoBar);
                 }
             }
-            var client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("Xunkong"));
-            var release = await client.Repository.Release.GetLatest("xunkong", "desktop");
-            if (Version.TryParse(release.TagName, out var version))
+            // 侧载版检查更新
+            if (!XunkongEnvironment.IsStoreVersion)
             {
-                if (version > XunkongEnvironment.AppVersion)
+                var client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue("Xunkong"));
+                var release = await client.Repository.Release.GetLatest("xunkong", "desktop");
+                if (Version.TryParse(release.TagName, out var version))
                 {
-                    _Grid_InfoBar.Visibility = Visibility.Visible;
-                    var infoBar = new InfoBar
+                    if (version > XunkongEnvironment.AppVersion)
                     {
-                        Severity = InfoBarSeverity.Success,
-                        Title = $"新版本 {version}",
-                        Message = release.Name,
-                        IsOpen = true,
-                    };
-                    var button = new Button
-                    {
-                        Content = "下载",
-                        HorizontalAlignment = HorizontalAlignment.Right,
-                    };
-                    button.Click += async (_, _) =>
-                    {
-                        try
+                        _Grid_InfoBar.Visibility = Visibility.Visible;
+                        var infoBar = new InfoBar
                         {
-                            await Launcher.LaunchUriAsync(new Uri(release.HtmlUrl));
-                        }
-                        catch (Exception ex)
+                            Severity = InfoBarSeverity.Success,
+                            Title = $"新版本 {version}",
+                            Message = release.Name,
+                            IsOpen = true,
+                        };
+                        var button = new Button
                         {
-                            NotificationProvider.Error(ex);
-                        }
-                    };
-                    infoBar.ActionButton = button;
-                    _StackPanel_InfoBar.Children.Insert(0, infoBar);
+                            Content = "下载",
+                            HorizontalAlignment = HorizontalAlignment.Right,
+                        };
+                        button.Click += async (_, _) =>
+                        {
+                            try
+                            {
+                                await Launcher.LaunchUriAsync(new Uri(release.HtmlUrl));
+                            }
+                            catch (Exception ex)
+                            {
+                                NotificationProvider.Error(ex);
+                            }
+                        };
+                        infoBar.ActionButton = button;
+                        _StackPanel_InfoBar.Children.Insert(0, infoBar);
+                    }
                 }
             }
         }
@@ -542,6 +559,10 @@ public sealed partial class HomePage : Page
     }
 
 
+    /// <summary>
+    /// 打开图源
+    /// </summary>
+    /// <returns></returns>
     [RelayCommand]
     private async Task OpenImageSourceAsync()
     {
@@ -561,7 +582,11 @@ public sealed partial class HomePage : Page
 
 
 
-
+    /// <summary>
+    /// 天赋材料列表左移
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void _Button_MaterialLeft_Click(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement button)
@@ -574,6 +599,11 @@ public sealed partial class HomePage : Page
     }
 
 
+    /// <summary>
+    /// 天赋材料列表右移
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void _Button_MaterialRight_Click(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement button)
@@ -586,12 +616,16 @@ public sealed partial class HomePage : Page
     }
 
 
-
-    private void HyperlinkButton_Click(object sender, RoutedEventArgs e)
+    /// <summary>
+    /// 打开活动链接
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private async void HyperlinkButton_Click(object sender, RoutedEventArgs e)
     {
         if ((sender as HyperlinkButton)?.DataContext is Hoyolab.Wiki.Activity activity)
         {
-            MainPageHelper.Navigate(typeof(WebViewPage), activity.Url);
+            await Launcher.LaunchUriAsync(new Uri(activity.Url));
         }
     }
 
