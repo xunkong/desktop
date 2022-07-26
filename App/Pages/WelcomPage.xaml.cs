@@ -172,7 +172,7 @@ public sealed partial class WelcomPage : Page
 
     private void _Button_Download_DatabaseMigration_Click(object sender, RoutedEventArgs e)
     {
-        const string url = "https://file.xunkong.cc/download/tool/DatabaseMigration.zip";
+        const string url = "https://go.xunkong.cc/database-migration";
         try
         {
             var startInfo = new ProcessStartInfo

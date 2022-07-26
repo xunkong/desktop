@@ -98,11 +98,10 @@
                         Visibility="Collapsed">
                 <TextBlock FontSize="24" Text="数据库迁移" />
                 <TextBlock Text="如果您之前使用过「寻空」任意 0.x 版本，您需要迁移数据库适应新版本。" TextWrapping="Wrap" />
-                <TextBlock Text="如果提示迁移后的数据库已存在，请删除文件：我的文档\Xunkong\Database\XunkongData.db" TextWrapping="Wrap" />
-                <TextBlock Text="一定要在迁移完成后再点击下方的已完成按键。" TextWrapping="Wrap" />
+                <TextBlock Text="没有使用过则忽略此项。" TextWrapping="Wrap" />
                 <Button Name="_Button_Download_DatabaseMigration"
                         Click="_Button_Download_DatabaseMigration_Click"
-                        Content="下载迁移工具" />
+                        Content="了解详情" />
             </StackPanel>
 
             <StackPanel Margin="0,48,0,0"
@@ -110,7 +109,7 @@
                         Spacing="16">
                 <Button x:Name="_Button_Next"
                         Click="_Button_Next_Click"
-                        Content="下一条" />
+                        Content="下一步" />
                 <TextBlock x:Name="_TextBlock_ClockDown"
                            VerticalAlignment="Center"
                            Visibility="Collapsed" />

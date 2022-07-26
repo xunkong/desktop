@@ -181,9 +181,17 @@ internal class XunkongApiService
     {
         try
         {
-            await GetCharacterInfosFromServerAsync();
-            await GetWeaponInfosFromServerAsync();
-            await GetWishEventInfosFromServerAsync();
+            var data = await _xunkongClient.GetAllGenshinDataAsync();
+            using var liteDb = DatabaseProvider.CreateLiteDB();
+            var col1 = liteDb.GetCollection<CharacterInfo>();
+            col1.DeleteAll();
+            col1.InsertBulk(data.Characters);
+            var col2 = liteDb.GetCollection<WeaponInfo>();
+            col2.DeleteAll();
+            col2.InsertBulk(data.Weapons);
+            var col3 = liteDb.GetCollection<WishEventInfo>();
+            col3.DeleteAll();
+            col3.InsertBulk(data.WishEvents);
         }
         catch
         {
@@ -201,7 +209,7 @@ internal class XunkongApiService
         using var liteDb = DatabaseProvider.CreateLiteDB();
         var col = liteDb.GetCollection<CharacterInfo>();
         col.DeleteAll();
-        col.Insert(characterInfos);
+        col.InsertBulk(characterInfos);
         return characterInfos;
     }
 
@@ -212,7 +220,7 @@ internal class XunkongApiService
         using var liteDb = DatabaseProvider.CreateLiteDB();
         var col = liteDb.GetCollection<WeaponInfo>();
         col.DeleteAll();
-        col.Insert(weaponInfos);
+        col.InsertBulk(weaponInfos);
         return weaponInfos;
     }
 
@@ -223,7 +231,7 @@ internal class XunkongApiService
         using var liteDb = DatabaseProvider.CreateLiteDB();
         var col = liteDb.GetCollection<WishEventInfo>();
         col.DeleteAll();
-        col.Insert(wishEventInfos);
+        col.InsertBulk(wishEventInfos);
         return wishEventInfos;
     }
 

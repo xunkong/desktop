@@ -69,7 +69,7 @@ internal static class AppSetting
     }
 
 
-    public static bool TrySetValue<T>(string key, T value)
+    public static bool TrySetValue<T>(string key, T value, bool setNullWhenError = false)
     {
         try
         {
@@ -78,6 +78,10 @@ internal static class AppSetting
         }
         catch
         {
+            if (setNullWhenError)
+            {
+                _container.Values[key] = null;
+            }
             return false;
         }
     }

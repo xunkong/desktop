@@ -2,6 +2,7 @@
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using System.Runtime.InteropServices;
 using Vanara.PInvoke;
 using Windows.Graphics;
 using WinRT.Interop;
@@ -69,21 +70,15 @@ public sealed partial class MainWindow : Window
             User32.ShowWindow(_hWnd, ShowWindowCommand.SW_MAXIMIZE);
             return;
         }
-        if (AppSetting.TryGetValue<ulong>(SettingKeys.MainWindowRect, out var rect))
+        if (AppSetting.TryGetValue<ulong>(SettingKeys.MainWindowRect, out var value))
         {
-            unchecked
+            var display = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
+            var workAreaWidth = display.WorkArea.Width;
+            var workAreaHeight = display.WorkArea.Height;
+            var rect = new WindowRect(value);
+            if (rect.Left > 0 && rect.Top > 0 && rect.Right < workAreaWidth && rect.Bottom < workAreaHeight)
             {
-                var x = (int)(short)((rect >> 0) & 0xFFFFUL);
-                var y = (int)(short)((rect >> 16) & 0xFFFFUL);
-                var width = (int)(short)((rect >> 32) & 0xFFFFUL);
-                var height = (int)(short)((rect >> 48) & 0xFFFFUL);
-                var display = DisplayArea.GetFromWindowId(windowId, DisplayAreaFallback.Primary);
-                var workAreaWidth = display.WorkArea.Width;
-                var workAreaHeight = display.WorkArea.Height;
-                if (x > 0 && y > 0 && width < workAreaWidth && height < workAreaHeight)
-                {
-                    _appWindow.MoveAndResize(new RectInt32(x, y, width, height));
-                }
+                _appWindow.MoveAndResize(rect.ToRectInt32());
             }
         }
     }
@@ -113,15 +108,10 @@ public sealed partial class MainWindow : Window
         if (User32.GetWindowPlacement(_hWnd, ref wpl))
         {
             AppSetting.TrySetValue(SettingKeys.IsMainWindowMaximum, wpl.showCmd == ShowWindowCommand.SW_MAXIMIZE);
-            unchecked
-            {
-                ulong rect = 0;
-                rect |= ((ulong)(ushort)(short)wpl.rcNormalPosition.X << 0);
-                rect |= ((ulong)(ushort)(short)wpl.rcNormalPosition.Y << 16);
-                rect |= ((ulong)(ushort)(short)wpl.rcNormalPosition.Width << 32);
-                rect |= ((ulong)(ushort)(short)wpl.rcNormalPosition.Height << 48);
-                AppSetting.TrySetValue(SettingKeys.MainWindowRect, rect);
-            }
+            var p = _appWindow.Position;
+            var s = _appWindow.Size;
+            var rect = new WindowRect(p.X, p.Y, s.Width, s.Height);
+            AppSetting.TrySetValue(SettingKeys.MainWindowRect, rect.Value, true);
         }
     }
 
@@ -140,6 +130,57 @@ public sealed partial class MainWindow : Window
     }
 
 
+
+    [StructLayout(LayoutKind.Explicit)]
+    private struct WindowRect
+    {
+        [FieldOffset(0)]
+        public short X;
+
+        [FieldOffset(2)]
+        public short Y;
+
+        [FieldOffset(4)]
+        public short Width;
+
+        [FieldOffset(6)]
+        public short Height;
+
+        [FieldOffset(0)]
+        public ulong Value;
+
+        public int Left => X;
+
+        public int Top => Y;
+
+        public int Right => X + Width;
+
+        public int Bottom => Y + Height;
+
+        public WindowRect(int x, int y, int width, int height)
+        {
+            Value = 0;
+            X = (short)x;
+            Y = (short)y;
+            Width = (short)width;
+            Height = (short)height;
+        }
+
+        public WindowRect(ulong value)
+        {
+            X = 0;
+            Y = 0;
+            Width = 0;
+            Height = 0;
+            Value = value;
+        }
+
+        public RectInt32 ToRectInt32()
+        {
+            return new RectInt32(X, Y, Width, Height);
+        }
+
+    }
 
 
 
